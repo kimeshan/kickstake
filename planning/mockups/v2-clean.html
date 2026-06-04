@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KickStake — Clean</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      colors: {
+        brand: '#4f46e5', branddim: '#6366f1', emerald: '#059669',
+        slate: { 950:'#0b1020' }, paper: '#f6f7fb',
+      },
+      fontFamily: { sans: ['Inter','system-ui','sans-serif'] },
+    }}
+  }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { background:#eceef5; font-family:'Inter',sans-serif; }
+  .phone { box-shadow:0 30px 70px -25px rgba(30,30,80,.35), 0 0 0 1px rgba(0,0,0,.04); }
+  .screen { display:none; } .screen.active { display:block; }
+  ::-webkit-scrollbar { width:0; }
+  .pill-active { background:#4f46e5; color:#fff; box-shadow:0 6px 16px -6px rgba(79,70,229,.6); }
+</style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased">
+<div class="max-w-6xl mx-auto px-5 py-8">
+  <header class="flex items-center justify-between mb-7">
+    <div class="flex items-center gap-3">
+      <div class="h-11 w-11 rounded-2xl bg-brand grid place-items-center text-white font-extrabold text-xl shadow-lg shadow-brand/30">⚽</div>
+      <div>
+        <div class="font-extrabold text-xl tracking-tight text-slate-900">KickStake</div>
+        <div class="text-slate-400 text-xs">Clean — concept v2</div>
+      </div>
+    </div>
+    <div class="text-right text-xs text-slate-400 hidden sm:block">Create · share · draw · settle.<br>The family sweepstake, sorted.</div>
+  </header>
+
+  <div class="flex flex-wrap gap-2 mb-8" id="nav"></div>
+
+  <div class="flex justify-center">
+    <div class="phone w-full max-w-[400px] rounded-[2.5rem] bg-paper overflow-hidden">
+      <div class="flex items-center justify-between px-7 pt-4 pb-2 text-[11px] text-slate-400">
+        <span>9:41</span><span class="font-semibold text-slate-600">kickstake.app</span><span>●●● ▮</span>
+      </div>
+      <div class="h-[720px] overflow-y-auto" id="scroll">
+
+        <!-- JOIN -->
+        <section class="screen active" data-screen="Join · participant">
+          <div class="px-6 pt-2 pb-32">
+            <div class="bg-white rounded-3xl p-6 shadow-sm mb-4">
+              <div class="inline-flex items-center gap-1.5 text-emerald text-xs font-bold bg-emerald/10 px-3 py-1 rounded-full mb-3">● You're invited</div>
+              <h1 class="text-2xl font-extrabold text-slate-900 leading-tight">Naidoo Family World Cup '26</h1>
+              <p class="text-slate-400 text-sm mt-1">Hosted by Priya · 2026 FIFA World Cup 🌍</p>
+              <div class="grid grid-cols-3 gap-3 mt-5">
+                <div class="text-center"><div class="text-2xl font-extrabold text-brand">R150</div><div class="text-[10px] text-slate-400 uppercase tracking-wide">Buy-in</div></div>
+                <div class="text-center border-x border-slate-100"><div class="text-2xl font-extrabold text-slate-900">R2k</div><div class="text-[10px] text-slate-400 uppercase tracking-wide">Pot</div></div>
+                <div class="text-center"><div class="text-2xl font-extrabold text-slate-900">11</div><div class="text-[10px] text-slate-400 uppercase tracking-wide">In so far</div></div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-5 shadow-sm mb-4">
+              <div class="flex items-center justify-between mb-3"><span class="font-bold text-slate-900 text-sm">12 prizes</span><span class="text-brand text-xs font-semibold">See all →</span></div>
+              <div class="space-y-2">
+                <div class="flex justify-between items-center"><span class="text-sm">🏆 Tournament Winner</span><span class="font-bold text-brand text-sm">R500</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm">🥈 Runner-up</span><span class="font-bold text-slate-700 text-sm">R260</span></div>
+                <div class="flex justify-between items-center"><span class="text-sm">⚽ Golden Boot</span><span class="font-bold text-slate-700 text-sm">R80</span></div>
+                <div class="flex justify-between items-center text-slate-400"><span class="text-sm">🟥 Dirtiest team · +8 more</span><span class="font-bold text-sm">…</span></div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-5 shadow-sm">
+              <div class="flex items-center gap-1 mb-2">
+                <div class="h-7 w-7 rounded-full bg-brand grid place-items-center text-white text-[10px] font-bold ring-2 ring-white -mr-2">P</div>
+                <div class="h-7 w-7 rounded-full bg-emerald grid place-items-center text-white text-[10px] font-bold ring-2 ring-white -mr-2">K</div>
+                <div class="h-7 w-7 rounded-full bg-amber-500 grid place-items-center text-white text-[10px] font-bold ring-2 ring-white -mr-2">R</div>
+                <div class="h-7 w-7 rounded-full bg-sky-500 grid place-items-center text-white text-[10px] font-bold ring-2 ring-white -mr-2">A</div>
+                <span class="text-xs text-slate-400 pl-4">Priya, Kim, Ravi & 8 more are in</span>
+              </div>
+              <p class="text-xs text-slate-400">⏳ Draw hasn't run yet — get in before it locks.</p>
+            </div>
+          </div>
+          <div style="position:sticky;bottom:0" class="px-6 pb-6 pt-5 bg-gradient-to-t from-paper via-paper to-transparent">
+            <input placeholder="Your name" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3.5 mb-2 outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 shadow-sm">
+            <input placeholder="Email (optional)" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 mb-3 text-sm outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 shadow-sm">
+            <button class="w-full bg-brand text-white font-bold py-4 rounded-2xl text-lg shadow-lg shadow-brand/30 active:scale-[.98] transition">Join the KickStake</button>
+            <p class="text-center text-slate-400 text-[11px] mt-2">No account needed · pay Priya off-app</p>
+          </div>
+        </section>
+
+        <!-- ORGANISER DETAIL -->
+        <section class="screen" data-screen="Organiser · detail">
+          <div class="px-6 pt-2 pb-10">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-amber-600 bg-amber-100 px-3 py-1 rounded-full">● Open</span>
+              <span class="text-slate-400 text-xs">Created 2 Jun</span>
+            </div>
+            <h1 class="text-2xl font-extrabold text-slate-900 mb-4">Naidoo Family WC '26</h1>
+
+            <div class="bg-white rounded-3xl p-5 shadow-sm mb-3">
+              <div class="flex items-end justify-between mb-3">
+                <div><div class="text-slate-400 text-xs uppercase tracking-wide">Pot collected</div><div class="text-3xl font-extrabold text-slate-900">R1 650<span class="text-slate-300 text-lg"> /2 000</span></div></div>
+                <div class="text-right"><div class="text-emerald font-bold">8 paid</div><div class="text-slate-400 text-xs">3 owe R150</div></div>
+              </div>
+              <div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emerald rounded-full" style="width:82%"></div></div>
+            </div>
+
+            <div class="bg-brand rounded-3xl p-5 shadow-lg shadow-brand/25 mb-4 text-white">
+              <div class="flex items-center gap-4">
+                <div class="h-16 w-16 rounded-xl bg-white grid place-items-center text-slate-900 text-[8px] font-mono leading-none p-1">▣▣▢▣<br>▢▣▣▢<br>▣▢▣▣<br>▣▣▢▣</div>
+                <div class="flex-1">
+                  <div class="font-bold text-sm">Share to join</div>
+                  <div class="text-white/70 text-xs font-mono mb-2">kickstake.app/j/naid26</div>
+                  <button class="bg-white text-brand text-xs font-bold px-3 py-1.5 rounded-full">Copy & WhatsApp</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mb-2"><span class="font-bold text-slate-900">Participants (11)</span><span class="text-slate-400 text-xs">Tap chip = paid</span></div>
+            <div class="space-y-2 mb-4">
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm"><div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-brand grid place-items-center text-white text-xs font-bold">P</div><span class="font-medium text-sm">Priya (you)</span></div><span class="text-emerald text-xs font-bold bg-emerald/10 px-2.5 py-1 rounded-full">✓ Paid</span></div>
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm"><div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-emerald grid place-items-center text-white text-xs font-bold">K</div><span class="font-medium text-sm">Kim</span></div><span class="text-emerald text-xs font-bold bg-emerald/10 px-2.5 py-1 rounded-full">✓ Paid</span></div>
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm"><div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-amber-500 grid place-items-center text-white text-xs font-bold">R</div><span class="font-medium text-sm">Ravi</span></div><span class="text-slate-400 text-xs font-bold border border-slate-200 px-2.5 py-1 rounded-full">Owes R150</span></div>
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm"><div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-sky-500 grid place-items-center text-white text-xs font-bold">A</div><span class="font-medium text-sm">Aisha</span></div><span class="text-emerald text-xs font-bold bg-emerald/10 px-2.5 py-1 rounded-full">✓ Paid</span></div>
+            </div>
+
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 text-center">
+              <p class="text-amber-800 text-xs mb-2">Final pot R1 650 ≠ designed R2 000</p>
+              <button class="text-brand text-xs font-bold underline">Rescale prizes to R1 650</button>
+            </div>
+
+            <button class="w-full bg-brand text-white font-bold py-4 rounded-2xl text-lg shadow-lg shadow-brand/30">Run the Draw</button>
+            <p class="text-center text-slate-400 text-[11px] mt-2">Locks the player list · assigns all 48 teams</p>
+          </div>
+        </section>
+
+        <!-- PRIZE EDITOR -->
+        <section class="screen" data-screen="Prize editor">
+          <div class="px-6 pt-2 pb-32">
+            <div class="text-slate-400 text-xs mb-1">Step 3 of 4</div>
+            <h1 class="text-2xl font-extrabold text-slate-900 mb-4">Design the prizes</h1>
+
+            <div class="bg-white rounded-2xl p-4 shadow-sm mb-4 sticky top-0 z-10">
+              <div class="flex justify-between text-xs mb-2"><span class="text-slate-400">Allocated</span><span class="font-bold text-emerald">R2 000 / R2 000 ✓ Balanced</span></div>
+              <div class="h-2.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emerald rounded-full" style="width:100%"></div></div>
+            </div>
+
+            <div class="space-y-2 mb-5">
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm"><div><div class="font-semibold text-sm">🏆 Tournament Winner</div><div class="text-[11px] text-slate-400">25% of pot</div></div><div class="flex items-center bg-slate-50 rounded-lg px-2 py-1"><span class="text-slate-400 text-sm">R</span><input value="500" class="w-12 bg-transparent text-right font-bold outline-none"></div></div>
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm"><div><div class="font-semibold text-sm">🥈 Runner-up</div><div class="text-[11px] text-slate-400">13%</div></div><div class="flex items-center bg-slate-50 rounded-lg px-2 py-1"><span class="text-slate-400 text-sm">R</span><input value="260" class="w-12 bg-transparent text-right font-bold outline-none"></div></div>
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm"><div><div class="font-semibold text-sm">🥉 Bronze</div><div class="text-[11px] text-slate-400">5%</div></div><div class="flex items-center bg-slate-50 rounded-lg px-2 py-1"><span class="text-slate-400 text-sm">R</span><input value="100" class="w-12 bg-transparent text-right font-bold outline-none"></div></div>
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm ring-1 ring-brand/20"><div><div class="font-semibold text-sm">⬆️ Top of group</div><div class="text-[11px] text-slate-400">split ×12 → R25 each</div></div><div class="flex items-center bg-slate-50 rounded-lg px-2 py-1"><span class="text-slate-400 text-sm">R</span><input value="300" class="w-12 bg-transparent text-right font-bold outline-none"></div></div>
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm ring-1 ring-brand/20"><div><div class="font-semibold text-sm">⬇️ Bottom of group</div><div class="text-[11px] text-slate-400">split ×12 → R20 each</div></div><div class="flex items-center bg-slate-50 rounded-lg px-2 py-1"><span class="text-slate-400 text-sm">R</span><input value="240" class="w-12 bg-transparent text-right font-bold outline-none"></div></div>
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm"><div><div class="font-semibold text-sm">🟥 Dirtiest team</div><div class="text-[11px] text-slate-400">comedy · on</div></div><div class="flex items-center gap-2"><div class="flex items-center bg-slate-50 rounded-lg px-2 py-1"><span class="text-slate-400 text-sm">R</span><input value="80" class="w-10 bg-transparent text-right font-bold outline-none"></div><div class="h-5 w-9 rounded-full bg-brand relative"><div class="h-4 w-4 bg-white rounded-full absolute top-0.5 right-0.5"></div></div></div></div>
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm opacity-50"><div><div class="font-semibold text-sm">🐢 Least possession</div><div class="text-[11px] text-slate-400">off — share redistributed</div></div><div class="h-5 w-9 rounded-full bg-slate-200 relative"><div class="h-4 w-4 bg-white rounded-full absolute top-0.5 left-0.5"></div></div></div>
+            </div>
+            <p class="text-center text-slate-400 text-xs">+5 more categories</p>
+          </div>
+          <div style="position:sticky;bottom:0" class="px-6 pb-6 pt-4 bg-gradient-to-t from-paper to-transparent flex gap-2">
+            <button class="flex-1 bg-white border border-slate-200 font-bold py-3.5 rounded-2xl text-sm shadow-sm">Auto-balance</button>
+            <button class="flex-[2] bg-brand text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-brand/30">Save prizes →</button>
+          </div>
+        </section>
+
+        <!-- DRAW REVEAL -->
+        <section class="screen" data-screen="Draw reveal">
+          <div class="px-6 pt-2 pb-10">
+            <div class="text-center mb-5">
+              <div class="text-brand text-xs font-bold uppercase tracking-widest mb-1">The draw is in</div>
+              <h1 class="text-2xl font-extrabold text-slate-900">🎲 Teams assigned</h1>
+              <p class="text-slate-400 text-sm">48 teams · 11 players · spread fairly</p>
+            </div>
+
+            <div class="bg-brand rounded-3xl p-5 shadow-lg shadow-brand/25 mb-5 text-white">
+              <div class="text-xs text-white/70 uppercase tracking-wide mb-3">Your teams, Priya</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="bg-white/15 rounded-xl px-3 py-2.5 flex items-center gap-2"><span class="text-xl">🇧🇷</span><span class="font-bold text-sm">Brazil</span></div>
+                <div class="bg-white/15 rounded-xl px-3 py-2.5 flex items-center gap-2"><span class="text-xl">🇯🇵</span><span class="font-bold text-sm">Japan</span></div>
+                <div class="bg-white/15 rounded-xl px-3 py-2.5 flex items-center gap-2"><span class="text-xl">🇲🇦</span><span class="font-bold text-sm">Morocco</span></div>
+                <div class="bg-white/15 rounded-xl px-3 py-2.5 flex items-center gap-2"><span class="text-xl">🇶🇦</span><span class="font-bold text-sm">Qatar</span></div>
+              </div>
+            </div>
+
+            <div class="font-bold text-slate-900 mb-2">Everyone's draw</div>
+            <div class="space-y-2 mb-5">
+              <div class="bg-white rounded-2xl px-4 py-3 shadow-sm"><div class="flex items-center justify-between mb-1"><span class="font-medium text-sm">Kim</span><span class="text-slate-400 text-[11px]">4 teams</span></div><div class="text-lg">🇦🇷 🇩🇪 🇵🇹 🇸🇪</div></div>
+              <div class="bg-white rounded-2xl px-4 py-3 shadow-sm"><div class="flex items-center justify-between mb-1"><span class="font-medium text-sm">Ravi</span><span class="text-slate-400 text-[11px]">4 teams</span></div><div class="text-lg">🇪🇸 🇫🇷 🇳🇱 🇭🇷</div></div>
+              <div class="bg-white rounded-2xl px-4 py-3 shadow-sm"><div class="flex items-center justify-between mb-1"><span class="font-medium text-sm">Aisha</span><span class="text-slate-400 text-[11px]">4 teams</span></div><div class="text-lg">🏴󠁧󠁢󠁥󠁮󠁧󠁿 🇧🇪 🇺🇸 🇨🇦</div></div>
+              <div class="bg-slate-100 rounded-2xl px-4 py-3 border border-dashed border-slate-300"><div class="flex items-center justify-between mb-1"><span class="font-medium text-sm text-slate-500">🫙 Pot (unassigned)</span></div><div class="text-lg opacity-70">🇨🇼 🇭🇹 🇯🇴 🇳🇿</div></div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 shadow-sm text-center">
+              <div class="text-xs text-slate-400 mb-1">Provably fair · seed <span class="font-mono text-slate-700">a3f9-22c1</span></div>
+              <button class="text-brand text-xs font-bold underline">How the draw worked →</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- RESULTS CONSOLE -->
+        <section class="screen" data-screen="Results console">
+          <div class="px-6 pt-2 pb-28">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-emerald bg-emerald/10 px-3 py-1 rounded-full">● Live</span>
+              <span class="text-slate-400 text-xs">7 / 12 approved</span>
+            </div>
+            <h1 class="text-2xl font-extrabold text-slate-900 mb-3">Approve prizes</h1>
+            <div class="bg-brand/5 border border-brand/15 rounded-2xl p-4 mb-4">
+              <p class="text-slate-600 text-xs">Suggestions pre-filled from results. Nothing pays out until you approve — and you can override any winner.</p>
+            </div>
+
+            <div class="space-y-2.5 mb-5">
+              <div class="bg-white rounded-2xl p-4 shadow-sm border-l-4 border-amber-400">
+                <div class="flex items-center justify-between mb-2"><span class="font-bold text-sm">🏆 Tournament Winner</span><span class="text-brand font-bold">R500</span></div>
+                <div class="flex items-center gap-2 mb-3 bg-slate-50 rounded-xl px-3 py-2"><span class="text-xl">🇦🇷</span><div><div class="text-sm font-semibold">Argentina → Kim</div><div class="text-[11px] text-slate-400">Suggested · pending approval</div></div></div>
+                <div class="flex gap-2"><button class="flex-1 bg-emerald text-white text-sm font-bold py-2 rounded-xl">✓ Approve</button><button class="flex-1 bg-slate-100 text-sm font-bold py-2 rounded-xl">Override</button></div>
+              </div>
+              <div class="bg-white rounded-2xl p-4 shadow-sm border-l-4 border-emerald">
+                <div class="flex items-center justify-between"><span class="font-bold text-sm">⚽ Golden Boot</span><span class="text-brand font-bold">R80</span></div>
+                <div class="flex items-center gap-2 mt-2 text-sm"><span class="text-xl">🇫🇷</span><span class="font-semibold">Mbappé → Ravi</span><span class="ml-auto text-emerald text-xs font-bold bg-emerald/10 px-2 py-0.5 rounded-full">Approved</span></div>
+              </div>
+              <div class="bg-white rounded-2xl p-4 shadow-sm border-l-4 border-amber-400">
+                <div class="flex items-center justify-between mb-2"><span class="font-bold text-sm">🟥 Dirtiest team</span><span class="text-brand font-bold">R80</span></div>
+                <div class="flex items-center gap-2 mb-3 bg-slate-50 rounded-xl px-3 py-2"><span class="text-xl">🇺🇾</span><div><div class="text-sm font-semibold">Uruguay → Aisha</div><div class="text-[11px] text-slate-400">3 reds · 11 yellows = 65 pts</div></div></div>
+                <div class="flex gap-2"><button class="flex-1 bg-emerald text-white text-sm font-bold py-2 rounded-xl">✓ Approve</button><button class="flex-1 bg-slate-100 text-sm font-bold py-2 rounded-xl">Override</button></div>
+              </div>
+            </div>
+          </div>
+          <div style="position:sticky;bottom:0" class="px-6 pb-6 pt-4 bg-gradient-to-t from-paper to-transparent">
+            <button class="w-full bg-brand text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-brand/30">Bulk-approve remaining (5)</button>
+          </div>
+        </section>
+
+        <!-- SETTLEMENT -->
+        <section class="screen" data-screen="Settlement">
+          <div class="px-6 pt-2 pb-10">
+            <div class="text-center mb-5">
+              <div class="text-brand text-xs font-bold uppercase tracking-widest mb-1">Full time</div>
+              <h1 class="text-2xl font-extrabold text-slate-900">Settlement</h1>
+              <p class="text-slate-400 text-sm">All 12 prizes approved · R2 000 paid out</p>
+            </div>
+            <div class="bg-gradient-to-br from-brand to-branddim rounded-3xl p-6 shadow-lg shadow-brand/25 mb-5 text-center text-white">
+              <div class="text-5xl mb-1">🏆</div>
+              <div class="text-xs text-white/70 uppercase tracking-wide">Biggest winner</div>
+              <div class="text-2xl font-extrabold">Kim · +R430</div>
+              <div class="text-xs text-white/70">R580 won − R150 buy-in</div>
+            </div>
+            <div class="font-bold text-slate-900 mb-2">Net per player</div>
+            <div class="space-y-2 mb-5">
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm"><div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-emerald grid place-items-center text-white text-xs font-bold">K</div><div><div class="font-medium text-sm">Kim</div><div class="text-[11px] text-slate-400">Won R580</div></div></div><span class="font-extrabold text-emerald">+R430</span></div>
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm"><div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-amber-500 grid place-items-center text-white text-xs font-bold">R</div><div><div class="font-medium text-sm">Ravi</div><div class="text-[11px] text-slate-400">Won R340</div></div></div><span class="font-extrabold text-emerald">+R190</span></div>
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm"><div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-brand grid place-items-center text-white text-xs font-bold">P</div><div><div class="font-medium text-sm">Priya (you)</div><div class="text-[11px] text-slate-400">Won R100</div></div></div><span class="font-extrabold text-slate-500">−R50</span></div>
+              <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-3 shadow-sm"><div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-sky-500 grid place-items-center text-white text-xs font-bold">A</div><div><div class="font-medium text-sm">Aisha</div><div class="text-[11px] text-slate-400">Won R80</div></div></div><span class="font-extrabold text-slate-500">−R70</span></div>
+            </div>
+            <button class="w-full bg-brand text-white font-bold py-4 rounded-2xl shadow-lg shadow-brand/30 mb-2">📤 Share settlement</button>
+            <p class="text-center text-slate-400 text-[11px]">Pay-ups happen off-app. KickStake keeps the books.</p>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const screens=[...document.querySelectorAll('.screen')], nav=document.getElementById('nav');
+  const base='text-xs font-semibold px-4 py-2 rounded-full transition bg-white text-slate-500 hover:text-slate-900 shadow-sm';
+  const act='text-xs font-semibold px-4 py-2 rounded-full transition pill-active';
+  screens.forEach((s,i)=>{const b=document.createElement('button');b.textContent=s.dataset.screen;b.className=i===0?act:base;
+    b.onclick=()=>{screens.forEach(x=>x.classList.remove('active'));s.classList.add('active');[...nav.children].forEach(c=>c.className=base);b.className=act;document.getElementById('scroll').scrollTop=0;};
+    nav.appendChild(b);});
+</script>
+</body>
+</html>

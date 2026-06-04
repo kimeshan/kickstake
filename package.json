@@ -1,0 +1,31 @@
+{
+  "name": "kickstake",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.30.3",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "predev": "lsof -ti :3800 | xargs kill -9 2>/dev/null; lsof -ti :3801 | xargs kill -9 2>/dev/null; true",
+    "dev": "turbo run dev --filter=./packages/*",
+    "build": "turbo run build --filter=./packages/*",
+    "lint": "turbo run lint --filter=./packages/*",
+    "test": "turbo run test --filter=./packages/*",
+    "web:dev": "pnpm --filter @kickstake/web dev",
+    "web:build": "pnpm --filter @kickstake/web build",
+    "api:dev": "pnpm --filter @kickstake/api dev",
+    "api:build": "pnpm --filter @kickstake/api build",
+    "postgres:dev": "docker compose up -d && sleep 5 && pnpm db:migrate",
+    "postgres:stop": "docker compose down",
+    "db:migrate": "pnpm --filter @kickstake/api db:migrate",
+    "db:generate": "pnpm --filter @kickstake/api db:generate",
+    "db:seed": "pnpm --filter @kickstake/api db:seed"
+  },
+  "devDependencies": {
+    "turbo": "^2.9.16"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["@nestjs/core", "@swc/core", "esbuild", "sharp"]
+  }
+}

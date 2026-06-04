@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KickStake — Matchday</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#0a0e0a',
+          panel: '#11160f',
+          card: '#161c13',
+          lime: '#c6f135',
+          limedim: '#9bbf2c',
+          chalk: '#e8efe0',
+          muted: '#8a967e',
+        },
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body { background: radial-gradient(circle at 50% -10%, #1b2415 0%, #060806 60%); font-family: 'Inter', sans-serif; }
+  .phone { box-shadow: 0 40px 80px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(198,241,53,.08); }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  ::-webkit-scrollbar { width: 0; }
+  .pill-active { background: #c6f135; color: #0a0e0a; }
+  .grain { background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 3px); }
+</style>
+</head>
+<body class="min-h-screen text-chalk antialiased">
+
+<div class="max-w-6xl mx-auto px-5 py-8">
+  <!-- Header -->
+  <header class="flex items-center justify-between mb-8">
+    <div class="flex items-center gap-3">
+      <div class="h-11 w-11 rounded-2xl bg-lime grid place-items-center text-ink font-black text-xl rotate-3">K</div>
+      <div>
+        <div class="font-black text-xl tracking-tight">KickStake</div>
+        <div class="text-muted text-xs">Matchday — concept v1</div>
+      </div>
+    </div>
+    <div class="text-right text-xs text-muted hidden sm:block">
+      Run the draw. Run the prizes.<br>Run the family bragging rights.
+    </div>
+  </header>
+
+  <!-- Screen switcher -->
+  <div class="flex flex-wrap gap-2 mb-8" id="nav"></div>
+
+  <!-- Phone frame -->
+  <div class="flex justify-center">
+    <div class="phone grain w-full max-w-[400px] rounded-[2.5rem] bg-ink border border-white/5 overflow-hidden">
+      <!-- status bar -->
+      <div class="flex items-center justify-between px-7 pt-4 pb-2 text-[11px] text-muted">
+        <span>9:41</span>
+        <span class="font-semibold text-chalk">kickstake.app</span>
+        <span>●●● ▮</span>
+      </div>
+
+      <div class="h-[720px] overflow-y-auto">
+
+        <!-- ============ JOIN ============ -->
+        <section class="screen active" data-screen="Join · participant">
+          <div class="px-6 pt-4 pb-32">
+            <div class="text-lime text-xs font-bold uppercase tracking-widest mb-1">You're invited</div>
+            <h1 class="text-3xl font-black leading-tight mb-1">Naidoo Family<br>World Cup '26</h1>
+            <p class="text-muted text-sm mb-6">Hosted by Priya · 2026 FIFA World Cup</p>
+
+            <div class="grid grid-cols-3 gap-2 mb-6">
+              <div class="bg-card rounded-2xl p-3 text-center">
+                <div class="text-2xl font-black text-lime">R150</div>
+                <div class="text-[10px] text-muted uppercase tracking-wide">Buy-in</div>
+              </div>
+              <div class="bg-card rounded-2xl p-3 text-center">
+                <div class="text-2xl font-black">R2 000</div>
+                <div class="text-[10px] text-muted uppercase tracking-wide">Pot</div>
+              </div>
+              <div class="bg-card rounded-2xl p-3 text-center">
+                <div class="text-2xl font-black">11</div>
+                <div class="text-[10px] text-muted uppercase tracking-wide">In so far</div>
+              </div>
+            </div>
+
+            <div class="bg-card rounded-3xl p-5 mb-6">
+              <div class="flex items-center justify-between mb-3">
+                <span class="font-bold">12 prizes up for grabs</span>
+                <span class="text-lime text-xs font-semibold">See all →</span>
+              </div>
+              <div class="flex flex-wrap gap-1.5 text-[11px]">
+                <span class="bg-lime/15 text-lime px-2.5 py-1 rounded-full font-semibold">🏆 Winner R500</span>
+                <span class="bg-white/5 px-2.5 py-1 rounded-full">🥈 Runner-up R260</span>
+                <span class="bg-white/5 px-2.5 py-1 rounded-full">⚽ Golden Boot</span>
+                <span class="bg-white/5 px-2.5 py-1 rounded-full">🟥 Dirtiest team</span>
+                <span class="bg-white/5 px-2.5 py-1 rounded-full">🛡️ Best defence</span>
+                <span class="text-muted px-1.5 py-1">+7 more</span>
+              </div>
+            </div>
+
+            <div class="flex -space-x-2 mb-2">
+              <div class="h-8 w-8 rounded-full bg-lime grid place-items-center text-ink text-xs font-bold border-2 border-ink">P</div>
+              <div class="h-8 w-8 rounded-full bg-emerald-400 grid place-items-center text-ink text-xs font-bold border-2 border-ink">K</div>
+              <div class="h-8 w-8 rounded-full bg-amber-300 grid place-items-center text-ink text-xs font-bold border-2 border-ink">R</div>
+              <div class="h-8 w-8 rounded-full bg-sky-300 grid place-items-center text-ink text-xs font-bold border-2 border-ink">A</div>
+              <div class="h-8 w-8 rounded-full bg-white/10 grid place-items-center text-xs font-bold border-2 border-ink">+7</div>
+            </div>
+            <p class="text-muted text-xs mb-6">Priya, Kim, Ravi & 8 others are in. Draw hasn't run yet.</p>
+          </div>
+
+          <!-- sticky join -->
+          <div class="absolute-fix"></div>
+          <div class="fixed-bar px-6 pb-6 pt-4 bg-gradient-to-t from-ink via-ink to-transparent" style="position:sticky;bottom:0">
+            <input placeholder="Your name" class="w-full bg-card border border-white/10 rounded-2xl px-4 py-3.5 mb-2 text-chalk placeholder:text-muted outline-none focus:border-lime">
+            <input placeholder="Email (optional — for updates)" class="w-full bg-card border border-white/10 rounded-2xl px-4 py-3 mb-3 text-sm text-chalk placeholder:text-muted outline-none focus:border-lime">
+            <button class="w-full bg-lime text-ink font-black py-4 rounded-2xl text-lg active:scale-[.98] transition">Join the KickStake →</button>
+            <p class="text-center text-muted text-[11px] mt-2">No account. No password. Pay Priya later 😉</p>
+          </div>
+        </section>
+
+        <!-- ============ ORGANISER DETAIL ============ -->
+        <section class="screen" data-screen="Organiser · detail">
+          <div class="px-6 pt-4 pb-10">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-bold uppercase tracking-widest text-amber-300 bg-amber-300/10 px-2 py-0.5 rounded-full">● Open</span>
+              <span class="text-muted text-xs">Created 2 Jun</span>
+            </div>
+            <h1 class="text-2xl font-black mb-4">Naidoo Family WC '26</h1>
+
+            <!-- pot meter -->
+            <div class="bg-card rounded-3xl p-5 mb-4">
+              <div class="flex items-end justify-between mb-2">
+                <div>
+                  <div class="text-muted text-xs uppercase tracking-wide">Pot collected</div>
+                  <div class="text-3xl font-black">R1 650 <span class="text-muted text-lg font-bold">/ R2 000</span></div>
+                </div>
+                <div class="text-right">
+                  <div class="text-lime font-bold text-lg">8 paid</div>
+                  <div class="text-muted text-xs">3 owe R150</div>
+                </div>
+              </div>
+              <div class="h-3 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-full bg-lime rounded-full" style="width:82%"></div>
+              </div>
+            </div>
+
+            <!-- share -->
+            <div class="bg-gradient-to-br from-lime/20 to-card rounded-3xl p-5 mb-4 border border-lime/20">
+              <div class="flex items-center gap-4">
+                <div class="h-16 w-16 rounded-xl bg-white grid place-items-center text-ink text-[8px] font-mono leading-none p-1">▣▣▢▣<br>▢▣▣▢<br>▣▢▣▣<br>▣▣▢▣</div>
+                <div class="flex-1">
+                  <div class="font-bold text-sm mb-1">Share link</div>
+                  <div class="text-lime text-xs font-mono mb-2">kickstake.app/j/naid26</div>
+                  <button class="bg-lime text-ink text-xs font-bold px-3 py-1.5 rounded-full">Copy & WhatsApp</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- participants -->
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold">Participants <span class="text-muted">(11)</span></span>
+              <span class="text-muted text-xs">Tap to toggle paid</span>
+            </div>
+            <div class="space-y-2 mb-6">
+              <div class="flex items-center justify-between bg-card rounded-2xl px-4 py-3">
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-lime grid place-items-center text-ink text-xs font-bold">P</div><span class="font-medium text-sm">Priya <span class="text-muted text-xs">(you)</span></span></div>
+                <span class="text-lime text-xs font-bold bg-lime/10 px-2.5 py-1 rounded-full">✓ Paid</span>
+              </div>
+              <div class="flex items-center justify-between bg-card rounded-2xl px-4 py-3">
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-emerald-400 grid place-items-center text-ink text-xs font-bold">K</div><span class="font-medium text-sm">Kim</span></div>
+                <span class="text-lime text-xs font-bold bg-lime/10 px-2.5 py-1 rounded-full">✓ Paid</span>
+              </div>
+              <div class="flex items-center justify-between bg-card rounded-2xl px-4 py-3">
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-amber-300 grid place-items-center text-ink text-xs font-bold">R</div><span class="font-medium text-sm">Ravi</span></div>
+                <span class="text-muted text-xs font-bold border border-white/10 px-2.5 py-1 rounded-full">Owes R150</span>
+              </div>
+              <div class="flex items-center justify-between bg-card rounded-2xl px-4 py-3">
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-sky-300 grid place-items-center text-ink text-xs font-bold">A</div><span class="font-medium text-sm">Aisha</span></div>
+                <span class="text-lime text-xs font-bold bg-lime/10 px-2.5 py-1 rounded-full">✓ Paid</span>
+              </div>
+            </div>
+
+            <div class="bg-card/50 border border-white/5 rounded-2xl p-4 mb-4 text-center">
+              <p class="text-muted text-xs mb-3">Final pot R1 650 differs from designed R2 000.</p>
+              <button class="text-lime text-xs font-bold underline">⤵ One-click rescale prizes to R1 650</button>
+            </div>
+
+            <button class="w-full bg-lime text-ink font-black py-4 rounded-2xl text-lg">⚡ Run the Draw</button>
+            <p class="text-center text-muted text-[11px] mt-2">Locks participants · assigns all 48 teams</p>
+          </div>
+        </section>
+
+        <!-- ============ PRIZE EDITOR ============ -->
+        <section class="screen" data-screen="Prize editor">
+          <div class="px-6 pt-4 pb-32">
+            <div class="text-muted text-xs mb-1">Step 3 of 4 · Create wizard</div>
+            <h1 class="text-2xl font-black mb-4">Design the prizes</h1>
+
+            <div class="bg-card rounded-2xl p-4 mb-4">
+              <div class="flex justify-between text-xs mb-2">
+                <span class="text-muted">Allocated</span>
+                <span class="font-bold text-lime">R2 000 / R2 000 ✓</span>
+              </div>
+              <div class="h-2.5 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-full bg-lime rounded-full" style="width:100%"></div>
+              </div>
+              <div class="text-[11px] text-muted mt-2">Balanced — ready to save. Edit any row and the bar updates live.</div>
+            </div>
+
+            <div class="space-y-1.5 mb-5">
+              <div class="flex items-center justify-between bg-card rounded-xl px-4 py-3">
+                <div><div class="font-semibold text-sm">🏆 Tournament Winner</div><div class="text-[11px] text-muted">25% of pot</div></div>
+                <div class="text-right"><span class="font-bold text-lime">R500</span></div>
+              </div>
+              <div class="flex items-center justify-between bg-card rounded-xl px-4 py-3">
+                <div><div class="font-semibold text-sm">🥈 Runner-up</div><div class="text-[11px] text-muted">13%</div></div>
+                <span class="font-bold">R260</span>
+              </div>
+              <div class="flex items-center justify-between bg-card rounded-xl px-4 py-3">
+                <div><div class="font-semibold text-sm">🥉 Bronze (3rd-place)</div><div class="text-[11px] text-muted">5%</div></div>
+                <span class="font-bold">R100</span>
+              </div>
+              <div class="flex items-center justify-between bg-card rounded-xl px-4 py-3 border border-lime/20">
+                <div><div class="font-semibold text-sm">⬆️ Top of group</div><div class="text-[11px] text-muted">15% · split ×12 = R25 each</div></div>
+                <span class="font-bold">R300</span>
+              </div>
+              <div class="flex items-center justify-between bg-card rounded-xl px-4 py-3 border border-lime/20">
+                <div><div class="font-semibold text-sm">⬇️ Bottom of group</div><div class="text-[11px] text-muted">12% · split ×12 = R20 each</div></div>
+                <span class="font-bold">R240</span>
+              </div>
+              <div class="flex items-center justify-between bg-card rounded-xl px-4 py-3 opacity-90">
+                <div><div class="font-semibold text-sm">⚽ Golden Boot</div><div class="text-[11px] text-muted">4%</div></div>
+                <span class="font-bold">R80</span>
+              </div>
+              <div class="flex items-center justify-between bg-card rounded-xl px-4 py-3">
+                <div class="flex items-center gap-2"><div><div class="font-semibold text-sm">🟥 Dirtiest team</div><div class="text-[11px] text-muted">comedy · 4%</div></div></div>
+                <div class="flex items-center gap-2"><span class="font-bold">R80</span><div class="h-5 w-9 rounded-full bg-lime relative"><div class="h-4 w-4 bg-ink rounded-full absolute top-0.5 right-0.5"></div></div></div>
+              </div>
+              <div class="flex items-center justify-between bg-card rounded-xl px-4 py-3 opacity-50">
+                <div><div class="font-semibold text-sm">🐢 Least possession</div><div class="text-[11px] text-muted">comedy · off</div></div>
+                <div class="flex items-center gap-2"><span class="font-bold">R0</span><div class="h-5 w-9 rounded-full bg-white/10 relative"><div class="h-4 w-4 bg-muted rounded-full absolute top-0.5 left-0.5"></div></div></div>
+              </div>
+            </div>
+            <p class="text-center text-muted text-xs">+5 more categories</p>
+          </div>
+          <div style="position:sticky;bottom:0" class="px-6 pb-6 pt-4 bg-gradient-to-t from-ink to-transparent flex gap-2">
+            <button class="flex-1 bg-card border border-white/10 font-bold py-3.5 rounded-2xl text-sm">Auto-balance</button>
+            <button class="flex-[2] bg-lime text-ink font-black py-3.5 rounded-2xl">Save prizes →</button>
+          </div>
+        </section>
+
+        <!-- ============ DRAW REVEAL ============ -->
+        <section class="screen" data-screen="Draw reveal">
+          <div class="px-6 pt-4 pb-10">
+            <div class="text-center mb-6">
+              <div class="text-lime text-xs font-bold uppercase tracking-widest mb-1">The draw is in</div>
+              <h1 class="text-3xl font-black">🎲 Teams assigned</h1>
+              <p class="text-muted text-sm mt-1">48 teams · 11 players · 4 each + 4 spread fairly</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-lime/20 to-card rounded-3xl p-5 mb-5 border border-lime/20">
+              <div class="text-xs text-muted uppercase tracking-wide mb-3">Your teams, Priya</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="bg-ink/60 rounded-xl px-3 py-2.5 flex items-center gap-2"><span class="text-xl">🇧🇷</span><span class="font-bold text-sm">Brazil</span></div>
+                <div class="bg-ink/60 rounded-xl px-3 py-2.5 flex items-center gap-2"><span class="text-xl">🇯🇵</span><span class="font-bold text-sm">Japan</span></div>
+                <div class="bg-ink/60 rounded-xl px-3 py-2.5 flex items-center gap-2"><span class="text-xl">🇲🇦</span><span class="font-bold text-sm">Morocco</span></div>
+                <div class="bg-ink/60 rounded-xl px-3 py-2.5 flex items-center gap-2"><span class="text-xl">🇶🇦</span><span class="font-bold text-sm">Qatar</span></div>
+              </div>
+            </div>
+
+            <div class="font-bold mb-2">Everyone's draw</div>
+            <div class="space-y-2 mb-5">
+              <div class="bg-card rounded-2xl px-4 py-3">
+                <div class="flex items-center justify-between mb-1.5"><span class="font-medium text-sm">Kim</span><span class="text-muted text-[11px]">4 teams</span></div>
+                <div class="text-lg tracking-wide">🇦🇷 🇩🇪 🇵🇹 🇸🇪</div>
+              </div>
+              <div class="bg-card rounded-2xl px-4 py-3">
+                <div class="flex items-center justify-between mb-1.5"><span class="font-medium text-sm">Ravi</span><span class="text-muted text-[11px]">4 teams</span></div>
+                <div class="text-lg tracking-wide">🇪🇸 🇫🇷 🇳🇱 🇭🇷</div>
+              </div>
+              <div class="bg-card rounded-2xl px-4 py-3">
+                <div class="flex items-center justify-between mb-1.5"><span class="font-medium text-sm">Aisha</span><span class="text-muted text-[11px]">4 teams</span></div>
+                <div class="text-lg tracking-wide">🏴󠁧󠁢󠁥󠁮󠁧󠁿 🇧🇪 🇺🇸 🇨🇦</div>
+              </div>
+              <div class="bg-white/5 rounded-2xl px-4 py-3 border border-dashed border-white/15">
+                <div class="flex items-center justify-between mb-1.5"><span class="font-medium text-sm text-muted">🫙 Pot (nobody)</span></div>
+                <div class="text-lg tracking-wide opacity-70">🇨🇼 🇭🇹 🇯🇴 🇳🇿</div>
+              </div>
+            </div>
+
+            <div class="bg-card/50 rounded-2xl p-4 text-center">
+              <div class="text-xs text-muted mb-1">Provably fair · seed <span class="font-mono text-chalk">a3f9-22c1</span></div>
+              <button class="text-lime text-xs font-bold underline">How the draw worked →</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ RESULTS CONSOLE ============ -->
+        <section class="screen" data-screen="Results console">
+          <div class="px-6 pt-4 pb-28">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-bold uppercase tracking-widest text-lime bg-lime/10 px-2 py-0.5 rounded-full">● Live</span>
+              <span class="text-muted text-xs">7 / 12 approved</span>
+            </div>
+            <h1 class="text-2xl font-black mb-4">Approve prizes</h1>
+
+            <div class="bg-amber-300/10 border border-amber-300/20 rounded-2xl p-4 mb-4">
+              <div class="text-amber-300 text-xs font-bold mb-1">⏳ Pending your approval</div>
+              <p class="text-muted text-xs">Suggestions are pre-filled from results. Nothing pays out until you approve. Override anything.</p>
+            </div>
+
+            <div class="space-y-2.5 mb-5">
+              <div class="bg-card rounded-2xl p-4 border-l-4 border-amber-300">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-sm">🏆 Tournament Winner</span>
+                  <span class="text-lime font-bold">R500</span>
+                </div>
+                <div class="flex items-center gap-2 mb-3 bg-ink/50 rounded-xl px-3 py-2">
+                  <span class="text-xl">🇦🇷</span>
+                  <div><div class="text-sm font-semibold">Argentina → Kim</div><div class="text-[11px] text-muted">Suggested from result</div></div>
+                </div>
+                <div class="flex gap-2">
+                  <button class="flex-1 bg-lime text-ink text-sm font-bold py-2 rounded-xl">✓ Approve</button>
+                  <button class="flex-1 bg-white/5 text-sm font-bold py-2 rounded-xl">Override</button>
+                </div>
+              </div>
+
+              <div class="bg-card rounded-2xl p-4 border-l-4 border-lime opacity-90">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-sm">⚽ Golden Boot</span>
+                  <span class="text-lime font-bold">R80</span>
+                </div>
+                <div class="flex items-center gap-2 mt-2 text-sm">
+                  <span class="text-xl">🇫🇷</span><span class="font-semibold">Mbappé (France) → Ravi</span>
+                  <span class="ml-auto text-lime text-xs font-bold bg-lime/10 px-2 py-0.5 rounded-full">Approved</span>
+                </div>
+              </div>
+
+              <div class="bg-card rounded-2xl p-4 border-l-4 border-amber-300">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-sm">🟥 Dirtiest team</span>
+                  <span class="text-lime font-bold">R80</span>
+                </div>
+                <div class="flex items-center gap-2 mb-3 bg-ink/50 rounded-xl px-3 py-2">
+                  <span class="text-xl">🇺🇾</span>
+                  <div><div class="text-sm font-semibold">Uruguay → Aisha</div><div class="text-[11px] text-muted">3 reds · 11 yellows = 65 pts</div></div>
+                </div>
+                <div class="flex gap-2">
+                  <button class="flex-1 bg-lime text-ink text-sm font-bold py-2 rounded-xl">✓ Approve</button>
+                  <button class="flex-1 bg-white/5 text-sm font-bold py-2 rounded-xl">Override</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="position:sticky;bottom:0" class="px-6 pb-6 pt-4 bg-gradient-to-t from-ink to-transparent">
+            <button class="w-full bg-lime text-ink font-black py-3.5 rounded-2xl">✓ Bulk-approve remaining (5)</button>
+          </div>
+        </section>
+
+        <!-- ============ SETTLEMENT ============ -->
+        <section class="screen" data-screen="Settlement">
+          <div class="px-6 pt-4 pb-10">
+            <div class="text-center mb-6">
+              <div class="text-lime text-xs font-bold uppercase tracking-widest mb-1">Full time</div>
+              <h1 class="text-3xl font-black">Settlement</h1>
+              <p class="text-muted text-sm">All 12 prizes approved · pot R2 000 paid out</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-lime/25 to-card rounded-3xl p-5 mb-5 text-center border border-lime/20">
+              <div class="text-5xl mb-1">🏆</div>
+              <div class="text-xs text-muted uppercase tracking-wide">Biggest winner</div>
+              <div class="text-2xl font-black">Kim · +R430</div>
+              <div class="text-xs text-muted">R580 won − R150 buy-in</div>
+            </div>
+
+            <div class="font-bold mb-2">Net per player</div>
+            <div class="space-y-2 mb-5">
+              <div class="flex items-center justify-between bg-card rounded-2xl px-4 py-3">
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-emerald-400 grid place-items-center text-ink text-xs font-bold">K</div><div><div class="font-medium text-sm">Kim</div><div class="text-[11px] text-muted">Won R580</div></div></div>
+                <span class="font-black text-lime">+R430</span>
+              </div>
+              <div class="flex items-center justify-between bg-card rounded-2xl px-4 py-3">
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-amber-300 grid place-items-center text-ink text-xs font-bold">R</div><div><div class="font-medium text-sm">Ravi</div><div class="text-[11px] text-muted">Won R340</div></div></div>
+                <span class="font-black text-lime">+R190</span>
+              </div>
+              <div class="flex items-center justify-between bg-card rounded-2xl px-4 py-3">
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-lime grid place-items-center text-ink text-xs font-bold">P</div><div><div class="font-medium text-sm">Priya (you)</div><div class="text-[11px] text-muted">Won R100</div></div></div>
+                <span class="font-black text-chalk">−R50</span>
+              </div>
+              <div class="flex items-center justify-between bg-card rounded-2xl px-4 py-3">
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-full bg-sky-300 grid place-items-center text-ink text-xs font-bold">A</div><div><div class="font-medium text-sm">Aisha</div><div class="text-[11px] text-muted">Won R80</div></div></div>
+                <span class="font-black text-chalk">−R70</span>
+              </div>
+            </div>
+
+            <button class="w-full bg-lime text-ink font-black py-4 rounded-2xl mb-2">📤 Share settlement to WhatsApp</button>
+            <p class="text-center text-muted text-[11px]">Pay-ups happen off-app. KickStake just keeps the books.</p>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const screens = [...document.querySelectorAll('.screen')];
+  const nav = document.getElementById('nav');
+  screens.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.textContent = s.dataset.screen;
+    b.className = 'text-xs font-semibold px-4 py-2 rounded-full transition ' + (i===0 ? 'pill-active' : 'bg-card text-muted hover:text-chalk');
+    b.onclick = () => {
+      screens.forEach(x => x.classList.remove('active'));
+      s.classList.add('active');
+      [...nav.children].forEach(c => c.className = 'text-xs font-semibold px-4 py-2 rounded-full transition bg-card text-muted hover:text-chalk');
+      b.className = 'text-xs font-semibold px-4 py-2 rounded-full transition pill-active';
+      s.closest('.h-\\[720px\\]').scrollTop = 0;
+    };
+    nav.appendChild(b);
+  });
+</script>
+</body>
+</html>

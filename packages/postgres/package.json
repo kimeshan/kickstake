@@ -1,0 +1,7 @@
+{
+  "name": "@kickstake/postgres",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -w run postgres:dev"
+  }
+}

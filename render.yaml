@@ -1,0 +1,127 @@
+# KickStake – Render Blueprint (API + Web + Postgres)
+# Test and Prod each get a Postgres DB, an API service, and a Web frontend.
+# After first deploy, set manual env vars in the Dashboard for each service
+# (BETTER_AUTH_URL, CORS_ORIGIN, and any results-provider keys).
+
+databases:
+  - name: kickstake-db-test
+    databaseName: kickstake_test
+    plan: free
+  - name: kickstake-db-prod
+    databaseName: kickstake_prod
+    plan: basic-256mb
+
+services:
+  # ---- Test environment ----
+  - type: web
+    name: kickstake-api-test
+    env: docker
+    runtime: docker
+    region: oregon
+    plan: free
+    branch: test
+    dockerfilePath: ./packages/api/Dockerfile
+    dockerContext: .
+    buildCommand: ""
+    startCommand: ""
+    buildFilter:
+      paths:
+        - packages/api/**
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - packages/postgres/**
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kickstake-db-test
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      - key: BETTER_AUTH_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+
+  - type: web
+    name: kickstake-web-test
+    env: docker
+    runtime: docker
+    region: oregon
+    plan: free
+    branch: test
+    dockerfilePath: ./packages/web/Dockerfile
+    dockerContext: .
+    buildCommand: ""
+    startCommand: ""
+    buildFilter:
+      paths:
+        - packages/web/**
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://kickstake-api-test.onrender.com
+      - key: NODE_ENV
+        value: production
+
+  # ---- Production environment ----
+  - type: web
+    name: kickstake-api-prod
+    env: docker
+    runtime: docker
+    region: oregon
+    plan: starter
+    branch: main
+    dockerfilePath: ./packages/api/Dockerfile
+    dockerContext: .
+    buildCommand: ""
+    startCommand: ""
+    buildFilter:
+      paths:
+        - packages/api/**
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - packages/postgres/**
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kickstake-db-prod
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      - key: BETTER_AUTH_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+
+  - type: web
+    name: kickstake-web-prod
+    env: docker
+    runtime: docker
+    region: oregon
+    plan: starter
+    branch: main
+    dockerfilePath: ./packages/web/Dockerfile
+    dockerContext: .
+    buildCommand: ""
+    startCommand: ""
+    buildFilter:
+      paths:
+        - packages/web/**
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://kickstake-api-prod.onrender.com
+      - key: NODE_ENV
+        value: production
