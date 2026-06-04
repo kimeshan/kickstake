@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+// Routes that require an organiser session. Everything else is public:
+// the landing page, and participant join pages (/j/:token) per spec §1.
+const PROTECTED_PREFIXES = ["/dashboard"];
+
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow auth pages and static assets
-  if (
-    pathname.startsWith("/login") ||
-    pathname.startsWith("/signup") ||
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/_next") ||
-    pathname.includes(".")
-  ) {
+  const isProtected = PROTECTED_PREFIXES.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
+  if (!isProtected) {
     return NextResponse.next();
   }
 
