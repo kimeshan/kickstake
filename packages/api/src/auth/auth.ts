@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { emailOTP } from "better-auth/plugins";
 import { db } from "../db";
+import { sendOtpEmail } from "../email/email";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -37,19 +38,8 @@ export const auth = betterAuth({
       otpLength: 6,
       expiresIn: 600, // 10 minutes
       async sendVerificationOTP({ email, otp, type }) {
-        // MVP: log the code. Fast-follow: send via Resend (spec §9).
-        if (isProduction) {
-          // TODO: integrate Resend here before launch.
-          console.warn(
-            `[email-otp] PRODUCTION code for ${email} (${type}) not emailed — wire up Resend.`,
-          );
-        }
-        console.log(
-          `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-            ` KickStake sign-in code for ${email}\n` +
-            ` ${type.toUpperCase()}:  ${otp}\n` +
-            `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`,
-        );
+        // Sends via Resend when RESEND_API_KEY is set; logs to console in dev.
+        await sendOtpEmail({ email, otp, type });
       },
     }),
   ],

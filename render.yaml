@@ -45,6 +45,10 @@ services:
         sync: false
       - key: CORS_ORIGIN
         sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
 
   - type: web
     name: kickstake-web-test
@@ -101,6 +105,10 @@ services:
       - key: BETTER_AUTH_URL
         sync: false
       - key: CORS_ORIGIN
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
         sync: false
 
   - type: web
