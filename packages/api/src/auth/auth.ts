@@ -19,6 +19,10 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
 // Organisers authenticate with an emailed one-time code or Google — no
 // passwords anywhere (spec §1). Participants need no account; they join a
 // sweepstake by token + display name via public endpoints.
+//
+// NOTE: nest emits JS only (declaration:false in tsconfig). That's required —
+// declaration emit fails with TS2742 because the plugin types reference zod
+// internals via a pnpm path. Do not flip declaration back on for this package.
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
   basePath: "/auth",

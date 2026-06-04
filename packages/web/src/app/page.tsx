@@ -19,7 +19,7 @@ export default function Home() {
           ⚽ 2026 FIFA World Cup — pre-loaded
         </span>
         <h1 className="font-display text-6xl text-balance sm:text-8xl">
-          The family sweepstake,
+          The group sweepstake,
           <br />
           <span className="text-primary">sorted.</span>
         </h1>

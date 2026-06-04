@@ -63,7 +63,7 @@ export default function LoginPage() {
           <p className="text-sm text-muted-foreground">
             Run the draw. Run the prizes.
             <br />
-            Run the family bragging rights.
+            Run the bragging rights.
           </p>
         </div>
 
