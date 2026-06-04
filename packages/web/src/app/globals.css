@@ -9,7 +9,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-display: var(--font-display);
+  --font-heading: var(--font-display);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,73 +49,75 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * KickStake — "Matchday" theme.
+ * Near-black pitch, electric lime, scoreboard energy. Dark only (forced in
+ * the root layout). Values mirror the v1 mockup in planning/mockups.
+ */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background: #0a0e0a;
+  --foreground: #e8efe0;
+  --card: #141a11;
+  --card-foreground: #e8efe0;
+  --popover: #11160f;
+  --popover-foreground: #e8efe0;
+  --primary: #c6f135;
+  --primary-foreground: #0a0e0a;
+  --secondary: #1b2417;
+  --secondary-foreground: #e8efe0;
+  --muted: #161c13;
+  --muted-foreground: #8a967e;
+  --accent: #1b2417;
+  --accent-foreground: #c6f135;
+  --destructive: #f0584e;
+  --border: rgb(255 255 255 / 8%);
+  --input: rgb(255 255 255 / 10%);
+  --ring: #c6f135;
+  --chart-1: #c6f135;
+  --chart-2: #9bbf2c;
+  --chart-3: #5fae6a;
+  --chart-4: #3a6b4a;
+  --chart-5: #243018;
+  --radius: 0.95rem;
+  --sidebar: #0d120c;
+  --sidebar-foreground: #e8efe0;
+  --sidebar-primary: #c6f135;
+  --sidebar-primary-foreground: #0a0e0a;
+  --sidebar-accent: #1b2417;
+  --sidebar-accent-foreground: #c6f135;
+  --sidebar-border: rgb(255 255 255 / 8%);
+  --sidebar-ring: #c6f135;
 }
 
+/* The whole app runs in this palette; .dark mirrors :root so shadcn's
+   dark-variant components stay on-theme. */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #0a0e0a;
+  --foreground: #e8efe0;
+  --card: #141a11;
+  --card-foreground: #e8efe0;
+  --popover: #11160f;
+  --popover-foreground: #e8efe0;
+  --primary: #c6f135;
+  --primary-foreground: #0a0e0a;
+  --secondary: #1b2417;
+  --secondary-foreground: #e8efe0;
+  --muted: #161c13;
+  --muted-foreground: #8a967e;
+  --accent: #1b2417;
+  --accent-foreground: #c6f135;
+  --destructive: #f0584e;
+  --border: rgb(255 255 255 / 8%);
+  --input: rgb(255 255 255 / 10%);
+  --ring: #c6f135;
+  --sidebar: #0d120c;
+  --sidebar-foreground: #e8efe0;
+  --sidebar-primary: #c6f135;
+  --sidebar-primary-foreground: #0a0e0a;
+  --sidebar-accent: #1b2417;
+  --sidebar-accent-foreground: #c6f135;
+  --sidebar-border: rgb(255 255 255 / 8%);
+  --sidebar-ring: #c6f135;
 }
 
 @layer base {
@@ -126,5 +129,31 @@
   }
   html {
     @apply font-sans;
+  }
+  /* Display type — Anton, the scoreboard headline. Tighten + flatten it. */
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+    line-height: 0.92;
+  }
+}
+
+@layer utilities {
+  /* Stadium-floodlight backdrop: a lime glow bleeding from the top edge. */
+  .bg-pitch {
+    background:
+      radial-gradient(120% 75% at 50% -15%, #1c2614 0%, transparent 55%),
+      #070906;
+  }
+  /* Fine horizontal scanlines — the broadcast/scoreboard texture. */
+  .grain {
+    background-image: repeating-linear-gradient(
+      0deg,
+      rgb(255 255 255 / 2.2%) 0 1px,
+      transparent 1px 3px
+    );
+  }
+  .text-balance {
+    text-wrap: balance;
   }
 }
