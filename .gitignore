@@ -33,3 +33,6 @@ coverage/
 
 # Docker
 postgres-data/
+
+# Local MCP config (contains API keys)
+.mcp.json
