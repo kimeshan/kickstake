@@ -171,10 +171,7 @@ function PhoneMockup() {
             </div>
           </div>
 
-          <button className="mt-4 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground">
-            {t("join")}
-          </button>
-          <div className="mt-2 text-center text-[10px] text-muted-foreground">
+          <div className="mt-4 text-center text-[10px] text-muted-foreground">
             {t("noAccount")}
           </div>
         </div>
