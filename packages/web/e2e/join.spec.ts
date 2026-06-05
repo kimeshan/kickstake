@@ -33,8 +33,9 @@ test("a shared join link works in a fresh browser with no account", async ({
   await ctx.close();
 });
 
-test("organiser runs a random draw once 2+ players have joined", async ({
+test("draw, then finalize reveals the teams to players", async ({
   page,
+  browser,
 }) => {
   await page.goto("/dashboard/new");
   await page.getByPlaceholder("Office World Cup '26").fill(`Draw ${Date.now()}`);
@@ -54,11 +55,23 @@ test("organiser runs a random draw once 2+ players have joined", async ({
   }
 
   await page.reload();
-  // With 2 players loaded, the draw panel offers Randomize.
   const randomize = page.getByRole("button", { name: /Randomize/i });
   await expect(randomize).toBeVisible();
   await randomize.click();
   await expect(page.getByText("Teams drawn")).toBeVisible();
+
+  // A player visiting the link can't see teams until finalized.
+  const ctx = await browser.newContext();
+  const p2 = await ctx.newPage();
+  await p2.goto(`http://localhost:3800/j/${token}`);
+  await expect(p2.getByText("The teams are in!")).toHaveCount(0);
+
+  await page.getByRole("button", { name: /Finalize & reveal/i }).click();
+  await expect(page.getByText(/Finalized/)).toBeVisible();
+
+  await p2.reload();
+  await expect(p2.getByText("The teams are in!")).toBeVisible();
+  await ctx.close();
 });
 
 test("prizes can be edited and must reconcile to the pot", async ({ page }) => {

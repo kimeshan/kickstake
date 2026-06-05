@@ -45,6 +45,8 @@ export interface Sweepstake {
   designedPot: number;
   joinToken: string;
   drawSeed: string | null;
+  joinClosed: boolean;
+  finalized: boolean;
   tournament?: { id: string; name: string; groupCount: number };
   prizeCategories?: Prize[];
   participants?: Participant[];

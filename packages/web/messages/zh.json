@@ -263,12 +263,19 @@
     "runDrawHint": "锁定参与者并分配所有球队。即将推出。",
     "loading": "加载中…",
     "notFound": "未找到竞猜。",
-    "currency": "货币"
+    "currency": "货币",
+    "joiningOpen": "报名进行中",
+    "joiningClosed": "报名已关闭",
+    "openJoining": "重新开放",
+    "closeJoining": "关闭报名",
+    "finalize": "确定并向玩家公布",
+    "finalized": "已确定 —— 玩家可看到球队",
+    "finalizeHint": "向玩家公布抽签结果。之后你仍可更改抽签。"
   },
   "join": {
     "invited": "你被邀请了",
     "buyIn": "入场费",
-    "pot": "奖池",
+    "pot": "奖池（未分配）",
     "players": "目前加入",
     "prizes": "{count} 个奖项等你来赢",
     "namePlaceholder": "你的名字",
@@ -284,7 +291,8 @@
     "error": "加入失败，请重试。",
     "loading": "加载中…",
     "whoIn": "已加入",
-    "perGroup": "× {count}"
+    "perGroup": "× {count}",
+    "drawnTitle": "球队已揭晓！"
   },
   "prizeEditor": {
     "edit": "管理奖项",

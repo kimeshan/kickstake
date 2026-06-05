@@ -297,5 +297,34 @@ describe("SweepstakesService (DB integration)", () => {
       expect(again.status).toBe("drawn");
       expect(again.assignments).toHaveLength(6);
     });
+
+    it("keeps joining open after the draw until the admin closes it", async () => {
+      const { s } = await withPlayers(2);
+      await svc.draw(organiserId, s.id, { mode: "random" });
+      // still joinable after drawing
+      await expect(
+        svc.join(s.joinToken, { displayName: "Latecomer" }),
+      ).resolves.toBeDefined();
+      // close it
+      await svc.update(organiserId, s.id, { joinClosed: true });
+      await expect(
+        svc.join(s.joinToken, { displayName: "TooLate" }),
+      ).rejects.toThrow(/closed/i);
+    });
+
+    it("only reveals the draw to players once finalized", async () => {
+      const { s } = await withPlayers(2);
+      await svc.draw(organiserId, s.id, { mode: "random" });
+      expect((await svc.publicView(s.joinToken)).draw).toBeNull();
+      await svc.update(organiserId, s.id, { finalized: true });
+      expect((await svc.publicView(s.joinToken)).draw).toHaveLength(6);
+    });
+
+    it("won't finalize before a draw has run", async () => {
+      const { s } = await withPlayers(2);
+      await expect(
+        svc.update(organiserId, s.id, { finalized: true }),
+      ).rejects.toThrow(/draw/i);
+    });
   });
 });

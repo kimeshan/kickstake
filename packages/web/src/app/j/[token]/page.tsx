@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { apiFetch } from "@/lib/api";
 import { formatMoney } from "@/lib/money";
 import { titleCaseName } from "@/lib/format";
+import { flagEmoji } from "@/lib/flag";
 import { Logo } from "@/components/brand";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,11 @@ interface JoinPrize {
   ruleType: string;
   amount: number;
   perGroup: boolean;
+}
+
+interface DrawEntry {
+  team: { name: string; flagCode: string | null; groupLabel: string };
+  participantName: string | null;
 }
 
 interface JoinView {
@@ -31,6 +37,28 @@ interface JoinView {
   prizeCount: number;
   participants: { displayName: string }[];
   participantCount: number;
+  joinClosed: boolean;
+  finalized: boolean;
+  draw: DrawEntry[] | null;
+}
+
+/** Groups draw entries by player, with the pot (unassigned) last. */
+function groupDraw(draw: DrawEntry[], potLabel: string) {
+  const map = new Map<
+    string,
+    { name: string; isPot: boolean; teams: DrawEntry["team"][] }
+  >();
+  for (const e of draw) {
+    const key = e.participantName ?? "__pot__";
+    if (!map.has(key))
+      map.set(key, {
+        name: e.participantName ?? potLabel,
+        isPot: e.participantName === null,
+        teams: [],
+      });
+    map.get(key)!.teams.push(e.team);
+  }
+  return [...map.values()].sort((a, b) => Number(a.isPot) - Number(b.isPot));
 }
 
 export default function JoinPage() {
@@ -54,7 +82,7 @@ export default function JoinPage() {
       .catch(() => setMissing(true));
   }, [token]);
 
-  const open = view?.status === "draft" || view?.status === "open";
+  const open = !!view && !view.joinClosed && view.status !== "settled";
   const groupCount = view?.tournament?.groupCount ?? 12;
 
   async function join(e: React.FormEvent) {
@@ -174,6 +202,34 @@ export default function JoinPage() {
                 ))}
               </ul>
             </details>
+
+            {/* The reveal — once the organiser finalizes */}
+            {view.finalized && view.draw && view.draw.length > 0 && (
+              <div className="mt-4 rounded-2xl border border-primary/30 bg-primary/[0.06] p-4">
+                <div className="mb-2 text-sm font-semibold">
+                  🎲 {t("drawnTitle")}
+                </div>
+                <ul className="space-y-2">
+                  {groupDraw(view.draw, t("pot")).map((row) => (
+                    <li key={row.name}>
+                      <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                        {row.isPot ? row.name : titleCaseName(row.name)}
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {row.teams.map((tm, i) => (
+                          <span
+                            key={`${tm.name}-${i}`}
+                            className="inline-flex items-center gap-1 rounded-full bg-secondary/50 px-2 py-0.5 text-xs"
+                          >
+                            {flagEmoji(tm.flagCode)} {tm.name}
+                          </span>
+                        ))}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {joined ? (
               <div className="mt-6 rounded-3xl border border-primary/30 bg-primary/[0.07] p-6 text-center">

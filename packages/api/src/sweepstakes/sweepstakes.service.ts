@@ -38,6 +38,8 @@ function fractionDigits(currency: string): number {
 export interface UpdateInput {
   currency?: string;
   name?: string;
+  joinClosed?: boolean;
+  finalized?: boolean;
 }
 
 export interface ParticipantInput {
@@ -171,6 +173,14 @@ export class SweepstakesService {
       const name = input.name.trim();
       if (!name) throw new BadRequestException("Name can't be empty.");
       patch.name = name;
+    }
+
+    if (input.joinClosed !== undefined) patch.joinClosed = !!input.joinClosed;
+
+    if (input.finalized !== undefined) {
+      if (input.finalized && s.assignments.length === 0)
+        throw new BadRequestException("Run the draw before finalizing.");
+      patch.finalized = !!input.finalized;
     }
 
     if (input.currency !== undefined) {
@@ -376,7 +386,12 @@ export class SweepstakesService {
   async publicView(token: string) {
     const s = await db.query.sweepstake.findFirst({
       where: eq(sweepstake.joinToken, token),
-      with: { tournament: true, prizeCategories: true, participants: true },
+      with: {
+        tournament: true,
+        prizeCategories: true,
+        participants: true,
+        assignments: { with: { team: true, participant: true } },
+      },
     });
     if (!s) throw new NotFoundException("Sweepstake not found.");
     return {
@@ -387,6 +402,19 @@ export class SweepstakesService {
       buyIn: s.buyIn,
       designedPot: s.designedPot,
       joinToken: s.joinToken,
+      joinClosed: s.joinClosed,
+      finalized: s.finalized,
+      // The reveal — only once the organiser finalizes.
+      draw: s.finalized
+        ? s.assignments.map((a) => ({
+            team: {
+              name: a.team.name,
+              flagCode: a.team.flagCode,
+              groupLabel: a.team.groupLabel,
+            },
+            participantName: a.participant?.displayName ?? null,
+          }))
+        : null,
       tournament: s.tournament
         ? {
             name: s.tournament.name,
@@ -415,9 +443,11 @@ export class SweepstakesService {
       where: eq(sweepstake.joinToken, token),
     });
     if (!s) throw new NotFoundException("Sweepstake not found.");
-    // Joinable before the draw only (spec §2 guardrail).
-    if (s.status !== "draft" && s.status !== "open")
-      throw new BadRequestException("This sweepstake is no longer open to join.");
+    // Joining is governed by the admin's joinClosed flag, not the draw — the
+    // organiser can keep it open after drawing (people drop in/out) and close
+    // it when ready.
+    if (s.joinClosed || s.status === "settled")
+      throw new BadRequestException("Joining is closed for this sweepstake.");
 
     const displayName = input.displayName?.trim();
     if (!displayName) throw new BadRequestException("Name is required.");

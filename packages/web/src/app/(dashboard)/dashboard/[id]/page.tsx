@@ -64,10 +64,10 @@ export default function SweepstakeDetailPage() {
     setTimeout(() => setCopied(false), 1500);
   }
 
-  async function changeCurrency(code: string) {
+  async function patch(body: Record<string, unknown>) {
     const r = await apiFetch(`/sweepstakes/${id}`, {
       method: "PATCH",
-      body: JSON.stringify({ currency: code }),
+      body: JSON.stringify(body),
     });
     setS(await r.json());
   }
@@ -90,7 +90,7 @@ export default function SweepstakeDetailPage() {
           {editable && (
             <select
               value={s.currency}
-              onChange={(e) => changeCurrency(e.target.value)}
+              onChange={(e) => patch({ currency: e.target.value })}
               aria-label={t("currency")}
               className="rounded-lg border border-border bg-secondary/40 px-2 py-1 text-xs text-foreground outline-none focus-visible:border-primary/60"
             >
@@ -133,6 +133,19 @@ export default function SweepstakeDetailPage() {
             {copied ? t("copied") : t("copy")}
           </button>
         </div>
+        {editable && (
+          <div className="mt-3 flex items-center justify-between border-t border-primary/15 pt-3">
+            <span className="text-xs text-muted-foreground">
+              {s.joinClosed ? t("joiningClosed") : t("joiningOpen")}
+            </span>
+            <button
+              onClick={() => patch({ joinClosed: !s.joinClosed })}
+              className="text-xs font-semibold text-primary transition hover:opacity-80"
+            >
+              {s.joinClosed ? t("openJoining") : t("closeJoining")}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Players */}
@@ -153,12 +166,27 @@ export default function SweepstakeDetailPage() {
             drawSeed={s.drawSeed}
           />
           {editable && (
-            <button
-              onClick={() => setRedrawing(true)}
-              className="w-full rounded-xl border border-border py-2.5 text-sm font-medium text-muted-foreground transition hover:text-foreground"
-            >
-              {td("redraw")}
-            </button>
+            <div className="space-y-2">
+              <button
+                onClick={() => patch({ finalized: !s.finalized })}
+                className={`w-full rounded-xl py-3 font-semibold transition active:scale-[.98] ${
+                  s.finalized
+                    ? "border border-primary/40 bg-primary/10 text-primary"
+                    : "bg-primary text-primary-foreground"
+                }`}
+              >
+                {s.finalized ? `✓ ${t("finalized")}` : t("finalize")}
+              </button>
+              <p className="text-center text-xs text-muted-foreground">
+                {t("finalizeHint")}
+              </p>
+              <button
+                onClick={() => setRedrawing(true)}
+                className="w-full rounded-xl border border-border py-2.5 text-sm font-medium text-muted-foreground transition hover:text-foreground"
+              >
+                {td("redraw")}
+              </button>
+            </div>
           )}
         </div>
       ) : (

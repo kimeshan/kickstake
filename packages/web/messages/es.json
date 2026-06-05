@@ -263,12 +263,19 @@
     "runDrawHint": "Bloquea a los jugadores y asigna todos los equipos. Próximamente.",
     "loading": "Cargando…",
     "notFound": "Porra no encontrada.",
-    "currency": "Moneda"
+    "currency": "Moneda",
+    "joiningOpen": "Las inscripciones están abiertas",
+    "joiningClosed": "Las inscripciones están cerradas",
+    "openJoining": "Reabrir",
+    "closeJoining": "Cerrar inscripciones",
+    "finalize": "Finalizar y mostrar a los jugadores",
+    "finalized": "Finalizado: los jugadores ven los equipos",
+    "finalizeHint": "Muestra los equipos sorteados a los jugadores. Aún puedes cambiar el sorteo después."
   },
   "join": {
     "invited": "Estás invitado",
     "buyIn": "Entrada",
-    "pot": "Bote",
+    "pot": "Bote (sin asignar)",
     "players": "Hasta ahora",
     "prizes": "{count} premios en juego",
     "namePlaceholder": "Tu nombre",
@@ -284,7 +291,8 @@
     "error": "No se pudo unir. Inténtalo de nuevo.",
     "loading": "Cargando…",
     "whoIn": "Quién participa",
-    "perGroup": "× {count}"
+    "perGroup": "× {count}",
+    "drawnTitle": "¡Ya están los equipos!"
   },
   "prizeEditor": {
     "edit": "Gestionar premios",

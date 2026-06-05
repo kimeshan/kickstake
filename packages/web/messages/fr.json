@@ -263,12 +263,19 @@
     "runDrawHint": "Verrouille les joueurs et attribue toutes les équipes. Bientôt disponible.",
     "loading": "Chargement…",
     "notFound": "Cagnotte introuvable.",
-    "currency": "Devise"
+    "currency": "Devise",
+    "joiningOpen": "Les inscriptions sont ouvertes",
+    "joiningClosed": "Les inscriptions sont fermées",
+    "openJoining": "Rouvrir",
+    "closeJoining": "Fermer les inscriptions",
+    "finalize": "Finaliser et révéler aux joueurs",
+    "finalized": "Finalisé — les joueurs voient les équipes",
+    "finalizeHint": "Révèle les équipes tirées aux joueurs. Tu peux encore modifier le tirage ensuite."
   },
   "join": {
     "invited": "Tu es invité",
     "buyIn": "Mise",
-    "pot": "Cagnotte",
+    "pot": "Cagnotte (non attribuées)",
     "players": "Pour l'instant",
     "prizes": "{count} prix à gagner",
     "namePlaceholder": "Ton nom",
@@ -284,7 +291,8 @@
     "error": "Impossible de rejoindre. Réessaie.",
     "loading": "Chargement…",
     "whoIn": "Qui participe",
-    "perGroup": "× {count}"
+    "perGroup": "× {count}",
+    "drawnTitle": "Les équipes sont là !"
   },
   "prizeEditor": {
     "edit": "Gérer les prix",

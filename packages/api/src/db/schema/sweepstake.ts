@@ -84,6 +84,11 @@ export const sweepstake = pgTable(
     remainderPolicy: remainderPolicyEnum("remainder_policy")
       .notNull()
       .default("spread_fairly"),
+    // Admin-controlled, independent of the draw (spec gives the organiser full
+    // control): join_closed stops new joiners; finalized reveals the drawn
+    // teams to players. The draw stays re-runnable either way.
+    joinClosed: boolean("join_closed").notNull().default(false),
+    finalized: boolean("finalized").notNull().default(false),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (s) => [

@@ -263,12 +263,19 @@
     "runDrawHint": "Trava os jogadores e distribui todos os times. Em breve.",
     "loading": "Carregando…",
     "notFound": "Bolão não encontrado.",
-    "currency": "Moeda"
+    "currency": "Moeda",
+    "joiningOpen": "As inscrições estão abertas",
+    "joiningClosed": "As inscrições estão fechadas",
+    "openJoining": "Reabrir",
+    "closeJoining": "Fechar inscrições",
+    "finalize": "Finalizar e revelar aos jogadores",
+    "finalized": "Finalizado — os jogadores veem os times",
+    "finalizeHint": "Revela os times sorteados aos jogadores. Você ainda pode alterar o sorteio depois."
   },
   "join": {
     "invited": "Você foi convidado",
     "buyIn": "Entrada",
-    "pot": "Prêmio",
+    "pot": "Pote (não atribuídos)",
     "players": "Até agora",
     "prizes": "{count} prêmios em jogo",
     "namePlaceholder": "Seu nome",
@@ -284,7 +291,8 @@
     "error": "Não foi possível entrar. Tente de novo.",
     "loading": "Carregando…",
     "whoIn": "Quem está dentro",
-    "perGroup": "× {count}"
+    "perGroup": "× {count}",
+    "drawnTitle": "Os times saíram!"
   },
   "prizeEditor": {
     "edit": "Gerenciar prêmios",

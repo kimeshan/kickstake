@@ -15,6 +15,13 @@
       "when": 1780666625698,
       "tag": "0001_cooing_slyde",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1780676021556,
+      "tag": "0002_volatile_the_fury",
+      "breakpoints": true
     }
   ]
 }
