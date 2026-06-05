@@ -6,6 +6,12 @@ import { sendOtpEmail } from "../email/email";
 
 const isProduction = process.env.NODE_ENV === "production";
 
+// When the API and web app share a parent domain (e.g. api.kickstake.app +
+// kickstake.app), scope the session cookie to that parent (".kickstake.app")
+// so it's shared across subdomains — required for Google SSO, whose callback
+// hits the API host directly. Unset locally (localhost), so leave it host-only.
+const cookieDomain = process.env.COOKIE_DOMAIN;
+
 // Google SSO is only wired up when credentials are present, so the API still
 // boots locally without them (email-code sign-in works on its own).
 const socialProviders: Record<string, { clientId: string; clientSecret: string }> =
@@ -49,6 +55,9 @@ export const auth = betterAuth({
   },
   advanced: {
     cookiePrefix: "better-auth",
+    ...(cookieDomain
+      ? { crossSubDomainCookies: { enabled: true, domain: cookieDomain } }
+      : {}),
     defaultCookieAttributes: {
       sameSite: "lax" as const,
       secure: isProduction,

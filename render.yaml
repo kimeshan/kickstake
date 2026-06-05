@@ -1,5 +1,10 @@
 # KickStake – Render Blueprint (API + Web + Postgres)
 # Test and Prod each get a Postgres DB, an API service, and a Web frontend.
+#
+# Custom domains (configure DNS at your registrar — see notes at bottom):
+#   Prod web  → kickstake.app (+ www)     Prod API  → api.kickstake.app
+#   Test web  → test.kickstake.app        Test API  → api-test.kickstake.app
+#
 # Non-secret env vars are set here; secrets (sync:false) are set per-service in
 # the Dashboard after first deploy: RESEND_API_KEY, GOOGLE_CLIENT_ID/SECRET.
 # (BETTER_AUTH_SECRET is auto-generated.)
@@ -21,6 +26,8 @@ services:
     region: oregon
     plan: free
     branch: test
+    domains:
+      - api-test.kickstake.app
     dockerfilePath: ./packages/api/Dockerfile
     dockerContext: .
     buildCommand: ""
@@ -43,11 +50,13 @@ services:
       - key: BETTER_AUTH_SECRET
         generateValue: true
       - key: BETTER_AUTH_URL
-        value: https://kickstake-api-test.onrender.com
+        value: https://api-test.kickstake.app
       - key: CORS_ORIGIN
-        value: https://kickstake-web-test.onrender.com
+        value: https://test.kickstake.app
       - key: APP_URL
-        value: https://kickstake-web-test.onrender.com
+        value: https://test.kickstake.app
+      - key: COOKIE_DOMAIN
+        value: .kickstake.app
       - key: EMAIL_FROM
         value: KickStake <hello@kickstake.app>
       - key: RESEND_API_KEY
@@ -64,6 +73,8 @@ services:
     region: oregon
     plan: free
     branch: test
+    domains:
+      - test.kickstake.app
     dockerfilePath: ./packages/web/Dockerfile
     dockerContext: .
     buildCommand: ""
@@ -76,9 +87,9 @@ services:
         - pnpm-workspace.yaml
     envVars:
       - key: NEXT_PUBLIC_API_URL
-        value: https://kickstake-api-test.onrender.com
+        value: https://api-test.kickstake.app
       - key: NEXT_PUBLIC_APP_URL
-        value: https://kickstake-web-test.onrender.com
+        value: https://test.kickstake.app
       - key: NODE_ENV
         value: production
 
@@ -90,6 +101,8 @@ services:
     region: oregon
     plan: starter
     branch: main
+    domains:
+      - api.kickstake.app
     dockerfilePath: ./packages/api/Dockerfile
     dockerContext: .
     buildCommand: ""
@@ -112,11 +125,13 @@ services:
       - key: BETTER_AUTH_SECRET
         generateValue: true
       - key: BETTER_AUTH_URL
-        value: https://kickstake-api-prod.onrender.com
+        value: https://api.kickstake.app
       - key: CORS_ORIGIN
         value: https://kickstake.app
       - key: APP_URL
         value: https://kickstake.app
+      - key: COOKIE_DOMAIN
+        value: .kickstake.app
       - key: EMAIL_FROM
         value: KickStake <hello@kickstake.app>
       - key: RESEND_API_KEY
@@ -133,6 +148,9 @@ services:
     region: oregon
     plan: starter
     branch: main
+    domains:
+      - kickstake.app
+      - www.kickstake.app
     dockerfilePath: ./packages/web/Dockerfile
     dockerContext: .
     buildCommand: ""
@@ -145,7 +163,7 @@ services:
         - pnpm-workspace.yaml
     envVars:
       - key: NEXT_PUBLIC_API_URL
-        value: https://kickstake-api-prod.onrender.com
+        value: https://api.kickstake.app
       - key: NEXT_PUBLIC_APP_URL
         value: https://kickstake.app
       - key: NODE_ENV
