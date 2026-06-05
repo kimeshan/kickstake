@@ -53,5 +53,14 @@ export default async function globalSetup() {
   if (!signIn.ok()) throw new Error(`sign-in ${signIn.status()}`);
 
   await ctx.storageState({ path: "e2e/.auth/organiser.json" });
+
+  // Warm Next dev's on-demand route compilation so parallel tests don't each
+  // pay a cold-compile cost (which can blow past per-test timeouts).
+  await Promise.all(
+    ["/", "/login", "/dashboard", "/dashboard/new", "/dashboard/warmup", "/j/warmup"].map(
+      (p) => ctx.get(p).catch(() => {}),
+    ),
+  );
+
   await ctx.dispose();
 }

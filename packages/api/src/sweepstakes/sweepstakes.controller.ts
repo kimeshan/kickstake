@@ -1,9 +1,21 @@
-import { Controller, Get, Post, Put, Body, Param } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Patch,
+  Delete,
+  Body,
+  Param,
+} from "@nestjs/common";
 import { CurrentUser } from "../auth/current-user.decorator";
 import {
   SweepstakesService,
   type CreateSweepstakeInput,
   type PrizeInput,
+  type UpdateInput,
+  type ParticipantInput,
+  type DrawInput,
 } from "./sweepstakes.service";
 
 interface AuthUser {
@@ -32,6 +44,15 @@ export class SweepstakesController {
     return this.sweepstakes.findOne(user.id, id);
   }
 
+  @Patch(":id")
+  update(
+    @CurrentUser() user: AuthUser,
+    @Param("id") id: string,
+    @Body() body: UpdateInput,
+  ) {
+    return this.sweepstakes.update(user.id, id, body);
+  }
+
   @Put(":id/prizes")
   savePrizes(
     @CurrentUser() user: AuthUser,
@@ -39,5 +60,33 @@ export class SweepstakesController {
     @Body() body: { prizes: PrizeInput[] },
   ) {
     return this.sweepstakes.savePrizes(user.id, id, body.prizes);
+  }
+
+  @Patch(":id/participants/:pid")
+  updateParticipant(
+    @CurrentUser() user: AuthUser,
+    @Param("id") id: string,
+    @Param("pid") pid: string,
+    @Body() body: ParticipantInput,
+  ) {
+    return this.sweepstakes.updateParticipant(user.id, id, pid, body);
+  }
+
+  @Delete(":id/participants/:pid")
+  removeParticipant(
+    @CurrentUser() user: AuthUser,
+    @Param("id") id: string,
+    @Param("pid") pid: string,
+  ) {
+    return this.sweepstakes.removeParticipant(user.id, id, pid);
+  }
+
+  @Post(":id/draw")
+  draw(
+    @CurrentUser() user: AuthUser,
+    @Param("id") id: string,
+    @Body() body: DrawInput,
+  ) {
+    return this.sweepstakes.draw(user.id, id, body);
   }
 }

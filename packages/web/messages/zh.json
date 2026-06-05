@@ -261,7 +261,8 @@
     "runDraw": "开始抽签",
     "runDrawHint": "锁定参与者并分配所有球队。即将推出。",
     "loading": "加载中…",
-    "notFound": "未找到竞猜。"
+    "notFound": "未找到竞猜。",
+    "currency": "货币"
   },
   "join": {
     "invited": "你被邀请了",
@@ -280,7 +281,9 @@
     "closed": "报名已截止 —— 抽签已经完成。",
     "notFound": "此 KickStake 不存在，或链接有误。",
     "error": "加入失败，请重试。",
-    "loading": "加载中…"
+    "loading": "加载中…",
+    "whoIn": "已加入",
+    "perGroup": "× {count}"
   },
   "prizeEditor": {
     "edit": "管理奖项",
@@ -300,5 +303,34 @@
     "autoBalance": "自动平衡",
     "remove": "移除",
     "saveError": "保存前奖项必须正好等于奖池。"
+  },
+  "players": {
+    "title": "玩家",
+    "empty": "还没有玩家 —— 分享链接来招募。",
+    "name": "名字",
+    "paid": "已付款",
+    "remove": "移除",
+    "confirmRemove": "移除？",
+    "cancel": "取消"
+  },
+  "draw": {
+    "title": "开始抽签",
+    "ready": "{count} 名玩家已加入。把每支球队分配给一名玩家。",
+    "needPlayers": "至少需要 2 名玩家才能抽签。",
+    "randomize": "随机",
+    "randomizing": "抽签中…",
+    "manual": "手动分配",
+    "manualIntro": "选择每支球队归谁。保留在“奖池”表示不分配。",
+    "pot": "奖池",
+    "confirmManual": "确认本次抽签",
+    "cancel": "取消",
+    "error": "无法抽签，请重试。",
+    "doneTitle": "球队已抽签",
+    "yourPot": "奖池（未分配）",
+    "teamsCount": "{count} 支球队",
+    "seedNote": "可验证 · 种子 {seed}",
+    "manualNote": "手动分配",
+    "redraw": "更改抽签",
+    "potWarning": "{count} 支球队未分配 —— 它们赢得的奖项将无人获得。"
   }
 }

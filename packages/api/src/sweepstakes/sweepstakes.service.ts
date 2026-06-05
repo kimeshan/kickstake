@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   BadRequestException,
 } from "@nestjs/common";
-import { eq, desc } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "../db";
 import {
@@ -12,8 +12,45 @@ import {
   prizeCategory,
   tournament,
   participant,
+  team,
+  teamAssignment,
 } from "../db/schema";
 import { generatePrizes, prizeTotal } from "./prize-generation";
+import {
+  runDraw,
+  DRAW_ALGO_VERSION,
+  type RemainderPolicy,
+  type Assignment,
+} from "./draw";
+
+/** Minor-unit exponent for a currency (2 for USD, 0 for JPY/KRW). */
+function fractionDigits(currency: string): number {
+  try {
+    return (
+      new Intl.NumberFormat("en", { style: "currency", currency }).resolvedOptions()
+        .maximumFractionDigits ?? 2
+    );
+  } catch {
+    return 2;
+  }
+}
+
+export interface UpdateInput {
+  currency?: string;
+  name?: string;
+}
+
+export interface ParticipantInput {
+  displayName?: string;
+  email?: string | null;
+  paid?: boolean;
+}
+
+export interface DrawInput {
+  mode: "random" | "manual";
+  remainderPolicy?: RemainderPolicy;
+  assignments?: Assignment[]; // required for manual
+}
 
 export interface JoinInput {
   displayName: string;
@@ -116,6 +153,7 @@ export class SweepstakesService {
         tournament: true,
         prizeCategories: true,
         participants: true,
+        assignments: { with: { team: true, participant: true } },
       },
     });
     if (!s) throw new NotFoundException("Sweepstake not found.");
@@ -124,14 +162,176 @@ export class SweepstakesService {
     return s;
   }
 
+  /** Update config — currency (re-denominated) and/or name. */
+  async update(organiserId: string, id: string, input: UpdateInput) {
+    const s = await this.findOne(organiserId, id);
+    const patch: Partial<typeof sweepstake.$inferInsert> = {};
+
+    if (input.name !== undefined) {
+      const name = input.name.trim();
+      if (!name) throw new BadRequestException("Name can't be empty.");
+      patch.name = name;
+    }
+
+    if (input.currency !== undefined) {
+      const code = input.currency.toUpperCase();
+      if (!/^[A-Z]{3}$/.test(code))
+        throw new BadRequestException("Invalid currency code.");
+      if (code !== s.currency) {
+        // Re-denominate so the human-readable amounts stay the same when the
+        // minor-unit exponent differs (e.g. USD/2dp → JPY/0dp).
+        const factor = 10 ** (fractionDigits(code) - fractionDigits(s.currency));
+        const scale = (v: number) => Math.round(v * factor);
+        patch.currency = code;
+        patch.buyIn = scale(s.buyIn);
+        patch.donation = scale(s.donation);
+        patch.designedPot = scale(s.designedPot);
+        if (factor !== 1) {
+          await db.transaction(async (tx) => {
+            for (const p of s.prizeCategories) {
+              await tx
+                .update(prizeCategory)
+                .set({ amount: scale(p.amount) })
+                .where(eq(prizeCategory.id, p.id));
+            }
+          });
+        }
+      }
+    }
+
+    if (Object.keys(patch).length)
+      await db.update(sweepstake).set(patch).where(eq(sweepstake.id, id));
+    return this.findOne(organiserId, id);
+  }
+
+  // --- Participant management (organiser) ----------------------------------
+
+  private async ownedParticipant(organiserId: string, id: string, pid: string) {
+    await this.findOne(organiserId, id); // ownership check
+    const p = await db.query.participant.findFirst({
+      where: and(eq(participant.id, pid), eq(participant.sweepstakeId, id)),
+    });
+    if (!p) throw new NotFoundException("Participant not found.");
+    return p;
+  }
+
+  async updateParticipant(
+    organiserId: string,
+    id: string,
+    pid: string,
+    input: ParticipantInput,
+  ) {
+    await this.ownedParticipant(organiserId, id, pid);
+    const patch: Partial<typeof participant.$inferInsert> = {};
+    if (input.displayName !== undefined) {
+      const name = input.displayName.trim();
+      if (!name) throw new BadRequestException("Name can't be empty.");
+      patch.displayName = name;
+    }
+    if (input.email !== undefined) patch.email = input.email?.trim() || null;
+    if (input.paid !== undefined) patch.paid = !!input.paid;
+    if (Object.keys(patch).length)
+      await db.update(participant).set(patch).where(eq(participant.id, pid));
+    return this.findOne(organiserId, id);
+  }
+
+  async removeParticipant(organiserId: string, id: string, pid: string) {
+    const s = await this.findOne(organiserId, id);
+    if (s.status === "settled")
+      throw new BadRequestException("This sweepstake is already settled.");
+    await this.ownedParticipant(organiserId, id, pid);
+    await db.delete(participant).where(eq(participant.id, pid));
+    return this.findOne(organiserId, id);
+  }
+
+  // --- The draw ------------------------------------------------------------
+
+  async draw(organiserId: string, id: string, input: DrawInput) {
+    const s = await this.findOne(organiserId, id);
+    // No lock-in: the organiser can re-run / re-assign the draw any time until
+    // the sweepstake is settled.
+    if (s.status === "settled")
+      throw new BadRequestException("This sweepstake is already settled.");
+    if (s.participants.length < 2)
+      throw new BadRequestException("Add at least 2 players before drawing.");
+
+    const teams = await db
+      .select({ id: team.id })
+      .from(team)
+      .where(eq(team.tournamentId, s.tournamentId));
+    const teamIds = teams.map((t) => t.id);
+    const participantIds = s.participants.map((p) => p.id);
+
+    let assignments: Assignment[];
+    let seed: string | null;
+    let algoVersion: number | null;
+
+    if (input.mode === "manual") {
+      assignments = this.validateManual(input.assignments ?? [], teamIds, participantIds);
+      seed = null;
+      algoVersion = null;
+    } else {
+      seed = nanoid(12);
+      const policy: RemainderPolicy = input.remainderPolicy ?? "spread_fairly";
+      assignments = runDraw(teamIds, participantIds, seed, policy);
+      algoVersion = DRAW_ALGO_VERSION;
+    }
+
+    await db.transaction(async (tx) => {
+      await tx
+        .delete(teamAssignment)
+        .where(eq(teamAssignment.sweepstakeId, id));
+      await tx.insert(teamAssignment).values(
+        assignments.map((a) => ({
+          sweepstakeId: id,
+          teamId: a.teamId,
+          participantId: a.participantId,
+        })),
+      );
+      await tx
+        .update(sweepstake)
+        .set({
+          status: "drawn",
+          drawSeed: seed,
+          drawAlgoVersion: algoVersion,
+          remainderPolicy: input.remainderPolicy ?? s.remainderPolicy,
+        })
+        .where(eq(sweepstake.id, id));
+    });
+
+    return this.findOne(organiserId, id);
+  }
+
+  private validateManual(
+    provided: Assignment[],
+    teamIds: string[],
+    participantIds: string[],
+  ): Assignment[] {
+    const teamSet = new Set(teamIds);
+    const partSet = new Set(participantIds);
+    const seen = new Set<string>();
+    for (const a of provided) {
+      if (!teamSet.has(a.teamId))
+        throw new BadRequestException("Assignment references an unknown team.");
+      if (seen.has(a.teamId))
+        throw new BadRequestException("A team was assigned more than once.");
+      if (a.participantId !== null && !partSet.has(a.participantId))
+        throw new BadRequestException("Assignment references an unknown player.");
+      seen.add(a.teamId);
+    }
+    if (seen.size !== teamIds.length)
+      throw new BadRequestException("Every team must be assigned (to a player or the pot).");
+    return provided;
+  }
+
   /**
    * Replaces the prize structure (spec §8: PUT prizes). Validates that enabled
    * prizes reconcile to exactly the designed pot before saving.
    */
   async savePrizes(organiserId: string, id: string, prizes: PrizeInput[]) {
     const s = await this.findOne(organiserId, id); // throws if not owner/found
-    if (s.status !== "draft" && s.status !== "open")
-      throw new BadRequestException("Prizes are locked once the draw has run.");
+    if (s.status === "settled")
+      throw new BadRequestException("This sweepstake is already settled.");
     if (!Array.isArray(prizes) || prizes.length === 0)
       throw new BadRequestException("At least one prize is required.");
 
@@ -195,6 +395,15 @@ export class SweepstakesService {
             groupCount: s.tournament.groupCount,
           }
         : null,
+      prizes: s.prizeCategories
+        .filter((p) => p.enabled)
+        .map((p) => ({
+          label: p.label,
+          description: p.description,
+          ruleType: p.ruleType,
+          amount: p.amount,
+          perGroup: p.perGroup,
+        })),
       prizeCount: s.prizeCategories.filter((p) => p.enabled).length,
       participants: s.participants.map((p) => ({ displayName: p.displayName })),
       participantCount: s.participants.length,

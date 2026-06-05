@@ -261,7 +261,8 @@
     "runDraw": "Fazer o sorteio",
     "runDrawHint": "Trava os jogadores e distribui todos os times. Em breve.",
     "loading": "Carregando…",
-    "notFound": "Bolão não encontrado."
+    "notFound": "Bolão não encontrado.",
+    "currency": "Moeda"
   },
   "join": {
     "invited": "Você foi convidado",
@@ -280,7 +281,9 @@
     "closed": "As inscrições estão encerradas — o sorteio já aconteceu.",
     "notFound": "Este KickStake não existe, ou o link está errado.",
     "error": "Não foi possível entrar. Tente de novo.",
-    "loading": "Carregando…"
+    "loading": "Carregando…",
+    "whoIn": "Quem está dentro",
+    "perGroup": "× {count}"
   },
   "prizeEditor": {
     "edit": "Gerenciar prêmios",
@@ -300,5 +303,34 @@
     "autoBalance": "Equilibrar",
     "remove": "Remover",
     "saveError": "Os prêmios devem somar exatamente o valor do prêmio antes de salvar."
+  },
+  "players": {
+    "title": "Jogadores",
+    "empty": "Ainda sem jogadores — compartilhe o link para preencher.",
+    "name": "Nome",
+    "paid": "Pago",
+    "remove": "Remover",
+    "confirmRemove": "Remover?",
+    "cancel": "Cancelar"
+  },
+  "draw": {
+    "title": "Fazer o sorteio",
+    "ready": "{count} jogadores dentro. Atribua cada time a um jogador.",
+    "needPlayers": "Adicione pelo menos 2 jogadores para sortear.",
+    "randomize": "Aleatório",
+    "randomizing": "Sorteando…",
+    "manual": "Atribuir manualmente",
+    "manualIntro": "Escolha quem fica com cada time. Deixe um time no Pote para não atribuir.",
+    "pot": "Pote",
+    "confirmManual": "Confirmar este sorteio",
+    "cancel": "Cancelar",
+    "error": "Não foi possível sortear. Tente de novo.",
+    "doneTitle": "Times sorteados",
+    "yourPot": "Pote (não atribuídos)",
+    "teamsCount": "{count} times",
+    "seedNote": "Verificável · semente {seed}",
+    "manualNote": "Atribuído manualmente",
+    "redraw": "Alterar o sorteio",
+    "potWarning": "{count} times não atribuídos — os prêmios que ganharem não irão para ninguém."
   }
 }

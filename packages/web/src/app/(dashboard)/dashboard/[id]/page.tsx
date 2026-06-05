@@ -5,17 +5,22 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { apiFetch } from "@/lib/api";
-import { formatMoney } from "@/lib/money";
+import { formatMoney, CURRENCIES } from "@/lib/money";
 import { joinUrl } from "@/lib/constants";
 import { StatusBadge, type Sweepstake, type Prize } from "../_components";
 import { PrizeEditor } from "./prize-editor";
+import { ParticipantsManager } from "./participants-manager";
+import { DrawPanel } from "./draw-panel";
+import { Assignments } from "./assignments";
 
 export default function SweepstakeDetailPage() {
   const t = useTranslations("detail");
+  const td = useTranslations("draw");
   const { id } = useParams<{ id: string }>();
   const [s, setS] = useState<Sweepstake | null>(null);
   const [missing, setMissing] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [redrawing, setRedrawing] = useState(false);
 
   useEffect(() => {
     apiFetch(`/sweepstakes/${id}`)
@@ -34,7 +39,6 @@ export default function SweepstakeDetailPage() {
       </div>
     );
   }
-
   if (!s) {
     return (
       <div className="grid place-items-center py-16">
@@ -44,6 +48,9 @@ export default function SweepstakeDetailPage() {
   }
 
   const groupCount = s.tournament?.groupCount ?? 12;
+  // No lock-in: everything stays editable until the sweepstake is settled.
+  const editable = s.status !== "settled";
+  const drawn = s.status === "drawn" || s.status === "live" || s.status === "settled";
   const link = joinUrl(s.joinToken);
   const stats: [string, string][] = [
     [t("pot"), formatMoney(s.designedPot, s.currency)],
@@ -55,6 +62,14 @@ export default function SweepstakeDetailPage() {
     await navigator.clipboard?.writeText(link);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
+  }
+
+  async function changeCurrency(code: string) {
+    const r = await apiFetch(`/sweepstakes/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ currency: code }),
+    });
+    setS(await r.json());
   }
 
   return (
@@ -70,7 +85,23 @@ export default function SweepstakeDetailPage() {
           <h1 className="font-display text-4xl">{s.name}</h1>
           <StatusBadge status={s.status} />
         </div>
-        <p className="mt-1 text-muted-foreground">{s.tournament?.name}</p>
+        <div className="mt-1 flex items-center gap-3">
+          <p className="text-muted-foreground">{s.tournament?.name}</p>
+          {editable && (
+            <select
+              value={s.currency}
+              onChange={(e) => changeCurrency(e.target.value)}
+              aria-label={t("currency")}
+              className="rounded-lg border border-border bg-secondary/40 px-2 py-1 text-xs text-foreground outline-none focus-visible:border-primary/60"
+            >
+              {CURRENCIES.map((c) => (
+                <option key={c.code} value={c.code} className="bg-card">
+                  {c.code}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
@@ -104,6 +135,44 @@ export default function SweepstakeDetailPage() {
         </div>
       </div>
 
+      {/* Players */}
+      <ParticipantsManager
+        sweepstakeId={s.id}
+        currency={s.currency}
+        participants={s.participants ?? []}
+        editable={editable}
+        onChange={setS}
+      />
+
+      {/* Draw / reveal — re-runnable any time until settled */}
+      {drawn && !redrawing ? (
+        <div className="space-y-3">
+          <Assignments
+            assignments={s.assignments ?? []}
+            participants={s.participants ?? []}
+            drawSeed={s.drawSeed}
+          />
+          {editable && (
+            <button
+              onClick={() => setRedrawing(true)}
+              className="w-full rounded-xl border border-border py-2.5 text-sm font-medium text-muted-foreground transition hover:text-foreground"
+            >
+              {td("redraw")}
+            </button>
+          )}
+        </div>
+      ) : (
+        <DrawPanel
+          sweepstakeId={s.id}
+          tournamentId={s.tournament?.id ?? ""}
+          participants={s.participants ?? []}
+          onDrawn={(ns) => {
+            setS(ns);
+            setRedrawing(false);
+          }}
+        />
+      )}
+
       {/* Prizes — view + manage */}
       <PrizeEditor
         sweepstakeId={s.id}
@@ -111,21 +180,9 @@ export default function SweepstakeDetailPage() {
         groupCount={groupCount}
         designedPot={s.designedPot}
         prizes={s.prizeCategories ?? []}
-        editable={s.status === "draft" || s.status === "open"}
+        editable={editable}
         onSaved={(prizes: Prize[]) => setS({ ...s, prizeCategories: prizes })}
       />
-
-      <div>
-        <button
-          disabled
-          className="w-full cursor-not-allowed rounded-xl bg-primary/40 py-3.5 font-semibold text-primary-foreground"
-        >
-          ⚡ {t("runDraw")}
-        </button>
-        <p className="mt-2 text-center text-xs text-muted-foreground">
-          {t("runDrawHint")}
-        </p>
-      </div>
     </div>
   );
 }

@@ -261,7 +261,8 @@
     "runDraw": "Hacer el sorteo",
     "runDrawHint": "Bloquea a los jugadores y asigna todos los equipos. Próximamente.",
     "loading": "Cargando…",
-    "notFound": "Porra no encontrada."
+    "notFound": "Porra no encontrada.",
+    "currency": "Moneda"
   },
   "join": {
     "invited": "Estás invitado",
@@ -280,7 +281,9 @@
     "closed": "Las inscripciones están cerradas: el sorteo ya se hizo.",
     "notFound": "Esta KickStake no existe o el enlace es incorrecto.",
     "error": "No se pudo unir. Inténtalo de nuevo.",
-    "loading": "Cargando…"
+    "loading": "Cargando…",
+    "whoIn": "Quién participa",
+    "perGroup": "× {count}"
   },
   "prizeEditor": {
     "edit": "Gestionar premios",
@@ -300,5 +303,34 @@
     "autoBalance": "Autoajustar",
     "remove": "Quitar",
     "saveError": "Los premios deben sumar exactamente el bote antes de guardar."
+  },
+  "players": {
+    "title": "Jugadores",
+    "empty": "Aún no hay jugadores: comparte el enlace para llenarlo.",
+    "name": "Nombre",
+    "paid": "Pagado",
+    "remove": "Quitar",
+    "confirmRemove": "¿Quitar?",
+    "cancel": "Cancelar"
+  },
+  "draw": {
+    "title": "Hacer el sorteo",
+    "ready": "{count} jugadores dentro. Asigna cada equipo a un jugador.",
+    "needPlayers": "Añade al menos 2 jugadores para sortear.",
+    "randomize": "Aleatorio",
+    "randomizing": "Sorteando…",
+    "manual": "Asignar manualmente",
+    "manualIntro": "Elige quién recibe cada equipo. Deja un equipo en Bote para no asignarlo.",
+    "pot": "Bote",
+    "confirmManual": "Confirmar este sorteo",
+    "cancel": "Cancelar",
+    "error": "No se pudo hacer el sorteo. Inténtalo de nuevo.",
+    "doneTitle": "Equipos sorteados",
+    "yourPot": "Bote (sin asignar)",
+    "teamsCount": "{count} equipos",
+    "seedNote": "Verificable · semilla {seed}",
+    "manualNote": "Asignado manualmente",
+    "redraw": "Cambiar el sorteo",
+    "potWarning": "{count} equipos sin asignar: los premios que ganen no irán a nadie."
   }
 }

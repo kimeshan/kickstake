@@ -249,6 +249,7 @@
   },
   "detail": {
     "back": "All KickStakes",
+    "currency": "Currency",
     "pot": "Pot",
     "buyIn": "Buy-in",
     "players": "Players",
@@ -268,6 +269,8 @@
     "buyIn": "Buy-in",
     "pot": "Pot",
     "players": "In so far",
+    "whoIn": "Who's in",
+    "perGroup": "× {count}",
     "prizes": "{count} prizes up for grabs",
     "namePlaceholder": "Your name",
     "emailPlaceholder": "Email (optional, for updates)",
@@ -300,5 +303,34 @@
     "autoBalance": "Auto-balance",
     "remove": "Remove",
     "saveError": "Prizes must add up to the pot exactly before saving."
+  },
+  "players": {
+    "title": "Players",
+    "empty": "No players yet — share the link to fill it up.",
+    "name": "Name",
+    "paid": "Paid",
+    "remove": "Remove",
+    "confirmRemove": "Remove?",
+    "cancel": "Cancel"
+  },
+  "draw": {
+    "title": "Run the draw",
+    "redraw": "Change the draw",
+    "potWarning": "{count} teams are unassigned — any prizes they win go to nobody.",
+    "ready": "{count} players in. Assign every team to a player.",
+    "needPlayers": "Add at least 2 players to run the draw.",
+    "randomize": "Randomize",
+    "randomizing": "Drawing…",
+    "manual": "Assign manually",
+    "manualIntro": "Pick who gets each team. Leave a team on Pot to keep it unassigned.",
+    "pot": "Pot",
+    "confirmManual": "Lock in this draw",
+    "cancel": "Cancel",
+    "error": "Couldn't run the draw. Try again.",
+    "doneTitle": "Teams drawn",
+    "yourPot": "Pot (unassigned)",
+    "teamsCount": "{count} teams",
+    "seedNote": "Provably fair · seed {seed}",
+    "manualNote": "Manually assigned"
   }
 }

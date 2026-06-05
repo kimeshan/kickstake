@@ -261,7 +261,8 @@
     "runDraw": "Lancer le tirage",
     "runDrawHint": "Verrouille les joueurs et attribue toutes les équipes. Bientôt disponible.",
     "loading": "Chargement…",
-    "notFound": "Cagnotte introuvable."
+    "notFound": "Cagnotte introuvable.",
+    "currency": "Devise"
   },
   "join": {
     "invited": "Tu es invité",
@@ -280,7 +281,9 @@
     "closed": "Les inscriptions sont closes — le tirage a déjà eu lieu.",
     "notFound": "Ce KickStake n'existe pas, ou le lien est erroné.",
     "error": "Impossible de rejoindre. Réessaie.",
-    "loading": "Chargement…"
+    "loading": "Chargement…",
+    "whoIn": "Qui participe",
+    "perGroup": "× {count}"
   },
   "prizeEditor": {
     "edit": "Gérer les prix",
@@ -300,5 +303,34 @@
     "autoBalance": "Équilibrer",
     "remove": "Retirer",
     "saveError": "Les prix doivent égaler exactement la cagnotte avant d'enregistrer."
+  },
+  "players": {
+    "title": "Joueurs",
+    "empty": "Pas encore de joueurs — partage le lien pour le remplir.",
+    "name": "Nom",
+    "paid": "Payé",
+    "remove": "Retirer",
+    "confirmRemove": "Retirer ?",
+    "cancel": "Annuler"
+  },
+  "draw": {
+    "title": "Lancer le tirage",
+    "ready": "{count} joueurs inscrits. Attribue chaque équipe à un joueur.",
+    "needPlayers": "Ajoute au moins 2 joueurs pour tirer.",
+    "randomize": "Aléatoire",
+    "randomizing": "Tirage…",
+    "manual": "Attribuer manuellement",
+    "manualIntro": "Choisis qui reçoit chaque équipe. Laisse une équipe sur Cagnotte pour ne pas l'attribuer.",
+    "pot": "Cagnotte",
+    "confirmManual": "Valider ce tirage",
+    "cancel": "Annuler",
+    "error": "Impossible de lancer le tirage. Réessaie.",
+    "doneTitle": "Équipes tirées",
+    "yourPot": "Cagnotte (non attribuées)",
+    "teamsCount": "{count} équipes",
+    "seedNote": "Vérifiable · graine {seed}",
+    "manualNote": "Attribué manuellement",
+    "redraw": "Modifier le tirage",
+    "potWarning": "{count} équipes non attribuées — les prix qu'elles gagnent n'iront à personne."
   }
 }

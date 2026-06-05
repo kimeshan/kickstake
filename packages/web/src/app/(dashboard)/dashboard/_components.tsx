@@ -12,6 +12,29 @@ export interface Prize {
   enabled: boolean;
 }
 
+export interface Participant {
+  id: string;
+  displayName: string;
+  email: string | null;
+  paid: boolean;
+  amountDue: number;
+}
+
+export interface Team {
+  id: string;
+  name: string;
+  groupLabel: string;
+  flagCode: string | null;
+}
+
+export interface Assignment {
+  id: string;
+  teamId: string;
+  participantId: string | null;
+  team: Team;
+  participant: Participant | null;
+}
+
 export interface Sweepstake {
   id: string;
   name: string;
@@ -21,9 +44,11 @@ export interface Sweepstake {
   donation: number;
   designedPot: number;
   joinToken: string;
-  tournament?: { name: string; groupCount: number };
+  drawSeed: string | null;
+  tournament?: { id: string; name: string; groupCount: number };
   prizeCategories?: Prize[];
-  participants?: { id: string }[];
+  participants?: Participant[];
+  assignments?: Assignment[];
 }
 
 const STATUS_STYLES: Record<string, string> = {

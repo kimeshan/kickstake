@@ -6,9 +6,18 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { apiFetch } from "@/lib/api";
 import { formatMoney } from "@/lib/money";
+import { titleCaseName } from "@/lib/format";
 import { Logo } from "@/components/brand";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Input } from "@/components/ui/input";
+
+interface JoinPrize {
+  label: string;
+  description: string | null;
+  ruleType: string;
+  amount: number;
+  perGroup: boolean;
+}
 
 interface JoinView {
   id: string;
@@ -17,8 +26,10 @@ interface JoinView {
   currency: string;
   buyIn: number;
   designedPot: number;
-  tournament: { name: string; teamCount: number } | null;
+  tournament: { name: string; teamCount: number; groupCount: number } | null;
+  prizes: JoinPrize[];
   prizeCount: number;
+  participants: { displayName: string }[];
   participantCount: number;
 }
 
@@ -41,6 +52,7 @@ export default function JoinPage() {
   }, [token]);
 
   const open = view?.status === "draft" || view?.status === "open";
+  const groupCount = view?.tournament?.groupCount ?? 12;
 
   async function join(e: React.FormEvent) {
     e.preventDefault();
@@ -111,9 +123,54 @@ export default function JoinPage() {
               ))}
             </div>
 
-            <div className="mt-3 rounded-2xl bg-card p-3 text-center text-sm font-semibold">
-              🏆 {t("prizes", { count: view.prizeCount })}
-            </div>
+            {/* Who's in */}
+            {view.participants.length > 0 && (
+              <div className="mt-3">
+                <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  {t("whoIn")}
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {view.participants.map((p, i) => (
+                    <span
+                      key={`${p.displayName}-${i}`}
+                      className="rounded-full bg-secondary/50 px-2.5 py-1 text-xs"
+                    >
+                      {titleCaseName(p.displayName)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Expandable prizes */}
+            <details className="group mt-3 rounded-2xl bg-card">
+              <summary className="flex cursor-pointer list-none items-center justify-between p-3 text-sm font-semibold">
+                <span>🏆 {t("prizes", { count: view.prizeCount })}</span>
+                <span className="text-primary transition group-open:rotate-180">
+                  ⌄
+                </span>
+              </summary>
+              <ul className="divide-y divide-border border-t border-border">
+                {view.prizes.map((p, i) => (
+                  <li
+                    key={`${p.ruleType}-${i}`}
+                    className="flex items-start justify-between gap-2 px-3 py-2"
+                  >
+                    <div className="min-w-0">
+                      <div className="text-sm">{p.label}</div>
+                      {p.perGroup && (
+                        <div className="text-[11px] text-primary/80">
+                          {t("perGroup", { count: groupCount })}
+                        </div>
+                      )}
+                    </div>
+                    <span className="shrink-0 text-sm font-semibold">
+                      {formatMoney(p.amount, view.currency)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </details>
 
             {joined ? (
               <div className="mt-6 rounded-3xl border border-primary/30 bg-primary/[0.07] p-6 text-center">

@@ -1,5 +1,6 @@
+import { eq } from "drizzle-orm";
 import { db, pool } from "../db";
-import { user, tournament } from "../db/schema";
+import { user, tournament, team, participant } from "../db/schema";
 import { SweepstakesService } from "./sweepstakes.service";
 import { prizeTotal } from "./prize-generation";
 
@@ -138,6 +139,163 @@ describe("SweepstakesService (DB integration)", () => {
         { label: "Off", ruleType: "custom", amount: 999, perGroup: false, enabled: false },
       ]);
       expect(prizeTotal(updated.prizeCategories, 12)).toBe(60000);
+    });
+  });
+
+  describe("update (currency)", () => {
+    it("relabels without changing amounts between same-decimal currencies", async () => {
+      const s = await svc.create(organiserId, {
+        tournamentId,
+        name: "Cur",
+        currency: "USD",
+        buyIn: 1000,
+        expectedParticipants: 5,
+      });
+      const u = await svc.update(organiserId, s.id, { currency: "EUR" });
+      expect(u.currency).toBe("EUR");
+      expect(u.buyIn).toBe(1000); // USD & EUR both 2dp → unchanged
+    });
+
+    it("re-denominates when the decimal places differ (USD → JPY)", async () => {
+      const s = await svc.create(organiserId, {
+        tournamentId,
+        name: "Cur2",
+        currency: "USD",
+        buyIn: 1500, // $15.00
+        expectedParticipants: 4,
+      });
+      const u = await svc.update(organiserId, s.id, { currency: "JPY" });
+      expect(u.currency).toBe("JPY");
+      expect(u.buyIn).toBe(15); // ¥15, major value preserved
+    });
+  });
+
+  describe("participant management", () => {
+    async function withPlayers(n: number) {
+      const s = await svc.create(organiserId, {
+        tournamentId,
+        name: "Players",
+        buyIn: 1000,
+        expectedParticipants: Math.max(2, n),
+      });
+      await db.insert(participant).values(
+        Array.from({ length: n }, (_, i) => ({
+          sweepstakeId: s.id,
+          displayName: `P${i}`,
+          amountDue: 1000,
+        })),
+      );
+      return s;
+    }
+
+    it("edits a player's name and paid flag", async () => {
+      const s = await withPlayers(2);
+      const p = (await db.select().from(participant).where(eq(participant.sweepstakeId, s.id)))[0];
+      const u = await svc.updateParticipant(organiserId, s.id, p.id, {
+        displayName: "Renamed",
+        paid: true,
+      });
+      const edited = u.participants.find((x) => x.id === p.id)!;
+      expect(edited.displayName).toBe("Renamed");
+      expect(edited.paid).toBe(true);
+    });
+
+    it("removes a player before the draw", async () => {
+      const s = await withPlayers(3);
+      const p = (await db.select().from(participant).where(eq(participant.sweepstakeId, s.id)))[0];
+      const u = await svc.removeParticipant(organiserId, s.id, p.id);
+      expect(u.participants).toHaveLength(2);
+    });
+  });
+
+  describe("draw", () => {
+    let drawTid: string;
+    let teamIds: string[];
+
+    beforeAll(async () => {
+      const [dt] = await db
+        .insert(tournament)
+        .values({ name: "Draw Cup", year: 2032, groupCount: 2, teamCount: 6 })
+        .returning();
+      drawTid = dt.id;
+      const rows = await db
+        .insert(team)
+        .values(
+          Array.from({ length: 6 }, (_, i) => ({
+            tournamentId: dt.id,
+            name: `Team ${i}`,
+            groupLabel: i < 3 ? "A" : "B",
+          })),
+        )
+        .returning();
+      teamIds = rows.map((r) => r.id);
+    });
+
+    async function withPlayers(n: number) {
+      const s = await svc.create(organiserId, {
+        tournamentId: drawTid,
+        name: "DrawStake",
+        buyIn: 1000,
+        expectedParticipants: Math.max(2, n),
+      });
+      await db.insert(participant).values(
+        Array.from({ length: n }, (_, i) => ({
+          sweepstakeId: s.id,
+          displayName: `D${i}`,
+          amountDue: 1000,
+        })),
+      );
+      const parts = await db
+        .select()
+        .from(participant)
+        .where(eq(participant.sweepstakeId, s.id));
+      return { s, parts };
+    }
+
+    it("blocks the draw with fewer than 2 players", async () => {
+      const { s } = await withPlayers(1);
+      await expect(svc.draw(organiserId, s.id, { mode: "random" })).rejects.toThrow(
+        /2 players/i,
+      );
+    });
+
+    it("randomly assigns every team and locks the sweepstake", async () => {
+      const { s } = await withPlayers(3);
+      const d = await svc.draw(organiserId, s.id, { mode: "random" });
+      expect(d.status).toBe("drawn");
+      expect(d.assignments).toHaveLength(6);
+      expect(new Set(d.assignments.map((a) => a.teamId)).size).toBe(6);
+      expect(d.drawSeed).toBeTruthy();
+    });
+
+    it("accepts a complete manual assignment", async () => {
+      const { s, parts } = await withPlayers(2);
+      const manual = teamIds.map((tid, i) => ({
+        teamId: tid,
+        participantId: parts[i % parts.length].id,
+      }));
+      const d = await svc.draw(organiserId, s.id, { mode: "manual", assignments: manual });
+      expect(d.status).toBe("drawn");
+      expect(d.drawSeed).toBeNull();
+      expect(d.assignments).toHaveLength(6);
+    });
+
+    it("rejects an incomplete manual assignment", async () => {
+      const { s, parts } = await withPlayers(2);
+      await expect(
+        svc.draw(organiserId, s.id, {
+          mode: "manual",
+          assignments: [{ teamId: teamIds[0], participantId: parts[0].id }],
+        }),
+      ).rejects.toThrow(/every team/i);
+    });
+
+    it("can be re-run (no lock-in) — assignments are replaced, still 6", async () => {
+      const { s } = await withPlayers(2);
+      await svc.draw(organiserId, s.id, { mode: "random" });
+      const again = await svc.draw(organiserId, s.id, { mode: "random" });
+      expect(again.status).toBe("drawn");
+      expect(again.assignments).toHaveLength(6);
     });
   });
 });

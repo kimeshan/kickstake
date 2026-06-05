@@ -28,9 +28,37 @@ test("a shared join link works in a fresh browser with no account", async ({
   await expect(p2.getByRole("heading", { name })).toBeVisible();
   await p2.getByPlaceholder("Your name").fill("Thandi");
   await p2.getByRole("button", { name: /Join the KickStake/i }).click();
-  await expect(p2.getByText(/You're in/i)).toBeVisible();
+  await expect(p2.getByText(/You're in!/)).toBeVisible();
 
   await ctx.close();
+});
+
+test("organiser runs a random draw once 2+ players have joined", async ({
+  page,
+}) => {
+  await page.goto("/dashboard/new");
+  await page.getByPlaceholder("Office World Cup '26").fill(`Draw ${Date.now()}`);
+  await page.getByRole("button", { name: "Create KickStake" }).click();
+  await expect(page).toHaveURL(/\/dashboard\/[0-9a-f-]{36}/);
+
+  const linkText = await page.getByText(/\/j\//).first().innerText();
+  const token = linkText.split("/j/")[1].trim();
+
+  // Two participants join via the public API.
+  for (const displayName of ["alice", "BOB"]) {
+    const r = await page.request.post(
+      `http://localhost:3800/api/j/${token}/participants`,
+      { data: { displayName } },
+    );
+    expect(r.ok()).toBeTruthy();
+  }
+
+  await page.reload();
+  // With 2 players loaded, the draw panel offers Randomize.
+  const randomize = page.getByRole("button", { name: /Randomize/i });
+  await expect(randomize).toBeVisible();
+  await randomize.click();
+  await expect(page.getByText("Teams drawn")).toBeVisible();
 });
 
 test("prizes can be edited and must reconcile to the pot", async ({ page }) => {
