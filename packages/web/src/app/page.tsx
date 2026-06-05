@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand";
+import { EMAIL } from "@/lib/constants";
 
 /* ------------------------------------------------------------------ *
  *  KickStake — landing page. "Matchday" aesthetic: near-black pitch,
@@ -522,7 +523,15 @@ function Footer() {
       <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 text-sm text-muted-foreground sm:flex-row">
         <Logo />
         <p>Tracking-only. KickStake never processes payments.</p>
-        <p>© 2026 KickStake</p>
+        <div className="flex items-center gap-4">
+          <a
+            href={`mailto:${EMAIL.contact}`}
+            className="transition hover:text-foreground"
+          >
+            {EMAIL.contact}
+          </a>
+          <span>© 2026 KickStake</span>
+        </div>
       </div>
     </footer>
   );

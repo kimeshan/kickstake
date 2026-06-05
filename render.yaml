@@ -1,7 +1,8 @@
 # KickStake – Render Blueprint (API + Web + Postgres)
 # Test and Prod each get a Postgres DB, an API service, and a Web frontend.
-# After first deploy, set manual env vars in the Dashboard for each service
-# (BETTER_AUTH_URL, CORS_ORIGIN, and any results-provider keys).
+# Non-secret env vars are set here; secrets (sync:false) are set per-service in
+# the Dashboard after first deploy: RESEND_API_KEY, GOOGLE_CLIENT_ID/SECRET.
+# (BETTER_AUTH_SECRET is auto-generated.)
 
 databases:
   - name: kickstake-db-test
@@ -42,12 +43,18 @@ services:
       - key: BETTER_AUTH_SECRET
         generateValue: true
       - key: BETTER_AUTH_URL
-        sync: false
+        value: https://kickstake-api-test.onrender.com
       - key: CORS_ORIGIN
-        sync: false
+        value: https://kickstake-web-test.onrender.com
+      - key: APP_URL
+        value: https://kickstake-web-test.onrender.com
+      - key: EMAIL_FROM
+        value: KickStake <hello@kickstake.app>
       - key: RESEND_API_KEY
         sync: false
-      - key: EMAIL_FROM
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
         sync: false
 
   - type: web
@@ -70,6 +77,8 @@ services:
     envVars:
       - key: NEXT_PUBLIC_API_URL
         value: https://kickstake-api-test.onrender.com
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://kickstake-web-test.onrender.com
       - key: NODE_ENV
         value: production
 
@@ -103,12 +112,18 @@ services:
       - key: BETTER_AUTH_SECRET
         generateValue: true
       - key: BETTER_AUTH_URL
-        sync: false
+        value: https://kickstake-api-prod.onrender.com
       - key: CORS_ORIGIN
-        sync: false
+        value: https://kickstake.app
+      - key: APP_URL
+        value: https://kickstake.app
+      - key: EMAIL_FROM
+        value: KickStake <hello@kickstake.app>
       - key: RESEND_API_KEY
         sync: false
-      - key: EMAIL_FROM
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
         sync: false
 
   - type: web
@@ -131,5 +146,7 @@ services:
     envVars:
       - key: NEXT_PUBLIC_API_URL
         value: https://kickstake-api-prod.onrender.com
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://kickstake.app
       - key: NODE_ENV
         value: production

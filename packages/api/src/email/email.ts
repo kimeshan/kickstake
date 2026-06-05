@@ -1,9 +1,11 @@
 import { Resend } from "resend";
+import { CONTACT_EMAIL, DEFAULT_EMAIL_FROM } from "../constants";
 
 const apiKey = process.env.RESEND_API_KEY;
-// Must be a verified Resend domain in production. resend.dev only delivers to
-// the Resend account owner, which is fine for early testing.
-const from = process.env.EMAIL_FROM ?? "KickStake <onboarding@resend.dev>";
+// Must be a verified Resend domain in production (kickstake.app). For quick
+// tests before verifying, set EMAIL_FROM to "KickStake <onboarding@resend.dev>"
+// — resend.dev only delivers to the Resend account owner.
+const from = process.env.EMAIL_FROM ?? DEFAULT_EMAIL_FROM;
 
 const resend = apiKey ? new Resend(apiKey) : null;
 
@@ -95,7 +97,7 @@ function otpHtml({ otp, lead }: { otp: string; lead: string }) {
             This code expires in 10 minutes. If you didn't request it, you can safely ignore this email.
           </td></tr>
         </table>
-        <div style="color:#5a6452;font-size:12px;margin-top:20px;">Tracking-only. KickStake never processes payments.</div>
+        <div style="color:#5a6452;font-size:12px;margin-top:20px;">Questions? <a href="mailto:${CONTACT_EMAIL}" style="color:#8a967e;">${CONTACT_EMAIL}</a> · Tracking-only. KickStake never processes payments.</div>
       </td></tr>
     </table>
   </body>
