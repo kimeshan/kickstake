@@ -22,6 +22,18 @@ test("no internal link on the landing page 404s", async ({ page, request }) => {
   }
 });
 
+test("footer links to Privacy and Terms, and the pages render", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: "Privacy" }).click();
+  await expect(page).toHaveURL(/\/privacy/);
+  await expect(page.getByRole("heading", { name: "Privacy Policy" })).toBeVisible();
+
+  await page.goto("/terms");
+  await expect(page.getByRole("heading", { name: "Terms of Service" })).toBeVisible();
+});
+
 test("unauthenticated /dashboard redirects to /login", async ({ page }) => {
   await page.goto("/dashboard");
   await expect(page).toHaveURL(/\/login/);

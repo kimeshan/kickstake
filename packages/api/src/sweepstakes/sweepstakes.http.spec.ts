@@ -113,4 +113,15 @@ describe("Sweepstakes HTTP (auth + endpoints)", () => {
     // Unknown token 404s cleanly.
     await request(server).get("/j/does-not-exist").expect(404);
   });
+
+  it("accepts a public tournament request, rejects an empty one", async () => {
+    await request(server)
+      .post("/support/tournament-request")
+      .send({ tournamentName: "Euro 2028", email: "fan@example.com" })
+      .expect(201);
+    await request(server)
+      .post("/support/tournament-request")
+      .send({})
+      .expect(400);
+  });
 });

@@ -13,6 +13,7 @@ import {
   DEFAULT_CURRENCY,
 } from "@/lib/money";
 import { Input } from "@/components/ui/input";
+import { RequestTournament } from "@/components/request-tournament";
 
 interface Tournament {
   id: string;
@@ -102,6 +103,9 @@ export default function NewSweepstakePage() {
               </option>
             ))}
           </select>
+          <div className="mt-2">
+            <RequestTournament />
+          </div>
         </Field>
 
         <Field label={t("name")}>

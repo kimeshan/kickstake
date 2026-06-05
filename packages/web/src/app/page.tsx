@@ -3,7 +3,8 @@ import { useTranslations } from "next-intl";
 import { Logo } from "@/components/brand";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { LandingNav } from "@/components/landing-nav";
-import { EMAIL } from "@/lib/constants";
+import { RequestTournament } from "@/components/request-tournament";
+import { EMAIL, GITHUB_URL, MAKER } from "@/lib/constants";
 
 /* ------------------------------------------------------------------ *
  *  KickStake — landing page. "Matchday" aesthetic: near-black pitch,
@@ -394,18 +395,57 @@ function Footer() {
   const t = useTranslations("footer");
   return (
     <footer className="border-t border-border">
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 text-sm text-muted-foreground sm:flex-row">
-        <Logo />
-        <p>{t("tracking")}</p>
-        <div className="flex items-center gap-4">
-          <LanguageSwitcher />
-          <a
-            href={`mailto:${EMAIL.contact}`}
-            className="transition hover:text-foreground"
-          >
-            {EMAIL.contact}
-          </a>
-          <span>{t("copyright")}</span>
+      <div className="mx-auto w-full max-w-6xl px-5 py-10">
+        <div className="flex flex-col gap-8 sm:flex-row sm:justify-between">
+          <div className="space-y-3">
+            <Logo />
+            <p className="max-w-xs text-sm text-muted-foreground">
+              {t("tracking")}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {t("openSource")}{" "}
+              <a
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="text-primary underline"
+              >
+                {t("github")}
+              </a>
+            </p>
+          </div>
+          <div className="flex flex-col items-start gap-2 text-sm text-muted-foreground">
+            <Link href="/privacy" className="transition hover:text-foreground">
+              {t("privacy")}
+            </Link>
+            <Link href="/terms" className="transition hover:text-foreground">
+              {t("terms")}
+            </Link>
+            <a
+              href={`mailto:${EMAIL.contact}`}
+              className="transition hover:text-foreground"
+            >
+              {EMAIL.contact}
+            </a>
+            <RequestTournament />
+          </div>
+        </div>
+        <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-sm text-muted-foreground sm:flex-row">
+          <p>
+            {t("madeBy")}{" "}
+            <a
+              href={MAKER.url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-foreground underline"
+            >
+              {MAKER.name}
+            </a>
+          </p>
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher />
+            <span>{t("copyright")}</span>
+          </div>
         </div>
       </div>
     </footer>

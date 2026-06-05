@@ -170,7 +170,12 @@
   },
   "footer": {
     "tracking": "仅做记录。KickStake 绝不处理付款。",
-    "copyright": "© 2026 KickStake"
+    "copyright": "© 2026 KickStake",
+    "openSource": "免费且开源 ❤️",
+    "github": "在 GitHub 查看",
+    "privacy": "隐私",
+    "terms": "条款",
+    "madeBy": "作者"
   },
   "auth": {
     "tagline1": "负责抽签。负责奖项。",
@@ -391,5 +396,17 @@
       "label": "单场最大失利",
       "description": "在一场比赛中遭遇最惨失利的球队。"
     }
+  },
+  "support": {
+    "cantFind": "没有你的赛事？申请添加 →",
+    "title": "申请一个赛事",
+    "namePlaceholder": "哪个赛事？（如 2028 欧洲杯）",
+    "emailPlaceholder": "你的邮箱（可选，方便回复）",
+    "notePlaceholder": "还有什么？（可选）",
+    "submit": "发送申请",
+    "sending": "发送中…",
+    "cancel": "取消",
+    "success": "谢谢！我们会联系你。🎉",
+    "error": "发送失败，请重试。"
   }
 }

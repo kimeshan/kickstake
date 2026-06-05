@@ -84,6 +84,36 @@ export async function sendOtpEmail({
   }
 }
 
+/**
+ * Sends a support / "request a tournament" message to the KickStake inbox.
+ * Logs in dev (no key) and is a no-op in tests.
+ */
+export async function sendSupportEmail({
+  subject,
+  body,
+  replyTo,
+}: {
+  subject: string;
+  body: string;
+  replyTo?: string;
+}) {
+  if (process.env.NODE_ENV === "test") return;
+  if (!resend) {
+    console.log(
+      `\n[support] → ${CONTACT_EMAIL}\nSubject: ${subject}\nReply-To: ${replyTo ?? "—"}\n${body}\n`,
+    );
+    return;
+  }
+  const { error } = await resend.emails.send({
+    from,
+    to: CONTACT_EMAIL,
+    subject,
+    text: body,
+    replyTo,
+  });
+  if (error) throw new Error(`Resend: ${error.message}`);
+}
+
 function otpHtml({ otp, lead }: { otp: string; lead: string }) {
   return `<!doctype html>
 <html>

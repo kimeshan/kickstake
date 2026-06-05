@@ -170,7 +170,12 @@
   },
   "footer": {
     "tracking": "Apenas registro. O KickStake nunca processa pagamentos.",
-    "copyright": "© 2026 KickStake"
+    "copyright": "© 2026 KickStake",
+    "openSource": "Grátis e de código aberto ❤️",
+    "github": "Ver no GitHub",
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "madeBy": "Feito por"
   },
   "auth": {
     "tagline1": "Faça o sorteio. Distribua os prêmios.",
@@ -391,5 +396,17 @@
       "label": "Maior derrota em uma partida",
       "description": "Time que sofre a derrota mais pesada em uma única partida."
     }
+  },
+  "support": {
+    "cantFind": "Não vê seu torneio? Solicite um →",
+    "title": "Solicitar um torneio",
+    "namePlaceholder": "Qual torneio? (ex. Euro 2028)",
+    "emailPlaceholder": "Seu e-mail (opcional, para responder)",
+    "notePlaceholder": "Mais algo? (opcional)",
+    "submit": "Enviar solicitação",
+    "sending": "Enviando…",
+    "cancel": "Cancelar",
+    "success": "Obrigado! Entraremos em contato. 🎉",
+    "error": "Não foi possível enviar. Tente de novo."
   }
 }

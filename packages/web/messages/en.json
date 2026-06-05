@@ -170,7 +170,24 @@
   },
   "footer": {
     "tracking": "Tracking-only. KickStake never processes payments.",
-    "copyright": "© 2026 KickStake"
+    "copyright": "© 2026 KickStake",
+    "openSource": "Free & open source ❤️",
+    "github": "View on GitHub",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "madeBy": "Made by"
+  },
+  "support": {
+    "cantFind": "Don't see your tournament? Request one →",
+    "title": "Request a tournament",
+    "namePlaceholder": "Which tournament? (e.g. Euro 2028)",
+    "emailPlaceholder": "Your email (optional, so we can reply)",
+    "notePlaceholder": "Anything else? (optional)",
+    "submit": "Send request",
+    "sending": "Sending…",
+    "cancel": "Cancel",
+    "success": "Thanks! We'll be in touch. 🎉",
+    "error": "Couldn't send. Please try again."
   },
   "auth": {
     "tagline1": "Run the draw. Run the prizes.",

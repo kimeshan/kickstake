@@ -170,7 +170,12 @@
   },
   "footer": {
     "tracking": "تتبّع فقط. لا يعالج KickStake المدفوعات أبدًا.",
-    "copyright": "© 2026 KickStake"
+    "copyright": "© 2026 KickStake",
+    "openSource": "مجاني ومفتوح المصدر ❤️",
+    "github": "عرض على GitHub",
+    "privacy": "الخصوصية",
+    "terms": "الشروط",
+    "madeBy": "صنعه"
   },
   "auth": {
     "tagline1": "أجرِ السحب. وزّع الجوائز.",
@@ -391,5 +396,17 @@
       "label": "أكبر خسارة في مباراة",
       "description": "الفريق الذي يتلقّى أثقل خسارة في مباراة واحدة."
     }
+  },
+  "support": {
+    "cantFind": "لا ترى بطولتك؟ اطلبها →",
+    "title": "اطلب بطولة",
+    "namePlaceholder": "أي بطولة؟ (مثل يورو 2028)",
+    "emailPlaceholder": "بريدك (اختياري، لنرد عليك)",
+    "notePlaceholder": "أي شيء آخر؟ (اختياري)",
+    "submit": "إرسال الطلب",
+    "sending": "جارٍ الإرسال…",
+    "cancel": "إلغاء",
+    "success": "شكرًا! سنتواصل معك. 🎉",
+    "error": "تعذّر الإرسال. حاول مجددًا."
   }
 }

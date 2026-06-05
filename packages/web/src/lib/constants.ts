@@ -24,3 +24,10 @@ export const EMAIL = {
 
 /** Participant join link, e.g. https://kickstake.app/j/abc123 (spec §3.2). */
 export const joinUrl = (token: string) => `${APP_URL}/j/${token}`;
+
+/** Open-source repo + maker (free & open source ❤️). */
+export const GITHUB_URL = "https://github.com/kimeshan/kickstake";
+export const MAKER = {
+  name: "Kimeshan Naidoo",
+  url: "https://github.com/kimeshan",
+};

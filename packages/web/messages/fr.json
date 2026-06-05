@@ -170,7 +170,12 @@
   },
   "footer": {
     "tracking": "Suivi uniquement. KickStake ne traite jamais les paiements.",
-    "copyright": "© 2026 KickStake"
+    "copyright": "© 2026 KickStake",
+    "openSource": "Gratuit et open source ❤️",
+    "github": "Voir sur GitHub",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "madeBy": "Créé par"
   },
   "auth": {
     "tagline1": "Fais le tirage. Distribue les prix.",
@@ -391,5 +396,17 @@
       "label": "Plus lourde défaite sur un match",
       "description": "Équipe qui subit la plus lourde défaite en un match."
     }
+  },
+  "support": {
+    "cantFind": "Ton tournoi n'est pas là ? Demande-le →",
+    "title": "Demander un tournoi",
+    "namePlaceholder": "Quel tournoi ? (ex. Euro 2028)",
+    "emailPlaceholder": "Ton e-mail (facultatif, pour te répondre)",
+    "notePlaceholder": "Autre chose ? (facultatif)",
+    "submit": "Envoyer la demande",
+    "sending": "Envoi…",
+    "cancel": "Annuler",
+    "success": "Merci ! On te recontacte. 🎉",
+    "error": "Échec de l'envoi. Réessaie."
   }
 }

@@ -170,7 +170,12 @@
   },
   "footer": {
     "tracking": "Solo seguimiento. KickStake nunca procesa pagos.",
-    "copyright": "© 2026 KickStake"
+    "copyright": "© 2026 KickStake",
+    "openSource": "Gratis y de código abierto ❤️",
+    "github": "Ver en GitHub",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "madeBy": "Hecho por"
   },
   "auth": {
     "tagline1": "Haz el sorteo. Reparte los premios.",
@@ -391,5 +396,17 @@
       "label": "Mayor derrota en un partido",
       "description": "Equipo que sufre la derrota más abultada en un solo partido."
     }
+  },
+  "support": {
+    "cantFind": "¿No ves tu torneo? Solicítalo →",
+    "title": "Solicitar un torneo",
+    "namePlaceholder": "¿Qué torneo? (p. ej. Eurocopa 2028)",
+    "emailPlaceholder": "Tu email (opcional, para responderte)",
+    "notePlaceholder": "¿Algo más? (opcional)",
+    "submit": "Enviar solicitud",
+    "sending": "Enviando…",
+    "cancel": "Cancelar",
+    "success": "¡Gracias! Te contactaremos. 🎉",
+    "error": "No se pudo enviar. Inténtalo de nuevo."
   }
 }

@@ -13,6 +13,7 @@ type Step = "email" | "code";
 
 export default function LoginPage() {
   const t = useTranslations("auth");
+  const tf = useTranslations("footer");
   const router = useRouter();
   // Already signed in? Don't show the form again — go straight to the dashboard.
   const { data: session } = useSession();
@@ -217,6 +218,15 @@ export default function LoginPage() {
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
           {t("footer")}
+        </p>
+        <p className="mt-2 text-center text-[11px] text-muted-foreground">
+          <Link href="/terms" className="underline transition hover:text-foreground">
+            {tf("terms")}
+          </Link>{" "}
+          ·{" "}
+          <Link href="/privacy" className="underline transition hover:text-foreground">
+            {tf("privacy")}
+          </Link>
         </p>
       </div>
     </main>
