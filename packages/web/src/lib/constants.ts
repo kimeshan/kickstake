@@ -27,6 +27,7 @@ export const joinUrl = (token: string) => `${APP_URL}/j/${token}`;
 
 /** Open-source repo + maker (free & open source ❤️). */
 export const GITHUB_URL = "https://github.com/kimeshan/kickstake";
+export const CONTRIBUTE_URL = "https://buy.stripe.com/aEU16EgQ80ivaUE288";
 export const MAKER = {
   name: "Kimeshan Naidoo",
   url: "https://github.com/kimeshan",

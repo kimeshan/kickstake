@@ -4,7 +4,7 @@ import { Logo } from "@/components/brand";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { LandingNav } from "@/components/landing-nav";
 import { RequestTournament } from "@/components/request-tournament";
-import { EMAIL, GITHUB_URL, MAKER } from "@/lib/constants";
+import { EMAIL, GITHUB_URL, CONTRIBUTE_URL, MAKER } from "@/lib/constants";
 
 /* ------------------------------------------------------------------ *
  *  KickStake — landing page. "Matchday" aesthetic: near-black pitch,
@@ -413,6 +413,14 @@ function Footer() {
                 {t("github")}
               </a>
             </p>
+            <a
+              href={CONTRIBUTE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-block text-sm font-medium text-primary transition hover:opacity-80"
+            >
+              {t("contribute")}
+            </a>
           </div>
           <div className="flex flex-col items-start gap-2 text-sm text-muted-foreground">
             <Link href="/privacy" className="transition hover:text-foreground">
