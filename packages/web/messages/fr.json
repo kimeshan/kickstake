@@ -1,0 +1,224 @@
+{
+  "meta": {
+    "title": "KickStake",
+    "description": "Crée une cagnotte sur un tournoi de foot, partage un lien, et laisse KickStake gérer le tirage au sort et les prix pour toi."
+  },
+  "nav": {
+    "howItWorks": "Comment ça marche",
+    "features": "Fonctionnalités",
+    "faq": "FAQ",
+    "signIn": "Se connecter",
+    "startFree": "Commencer gratuitement"
+  },
+  "language": {
+    "label": "Langue"
+  },
+  "hero": {
+    "badge": "⚽ Coupe du Monde FIFA 2026 — déjà chargée",
+    "titleLine1": "La cagnotte du groupe,",
+    "titleAccent": "réglée.",
+    "subtitle": "Lance une cagnotte sur un tournoi, partage un seul lien dans la conversation de groupe, et KickStake fait le tirage au sort, répartit la cagnotte, suit qui a payé et règle les comptes à la fin.",
+    "subtitleEmphasis": "Sans tableur. Sans disputes.",
+    "ctaPrimary": "Créer un KickStake →",
+    "ctaSecondary": "Voir comment ça marche",
+    "microcopy": "Gratuit pour commencer · les joueurs rejoignent sans compte · ~60 secondes pour tout configurer"
+  },
+  "phone": {
+    "invited": "Tu es invité",
+    "hostedBy": "Organisé par {name} · Coupe du Monde FIFA 2026",
+    "buyIn": "Mise",
+    "pot": "Cagnotte",
+    "in": "Inscrits",
+    "prizesTitle": "12 prix à gagner",
+    "join": "Rejoindre le KickStake →",
+    "noAccount": "Sans compte. Sans mot de passe."
+  },
+  "trust": {
+    "fair": "🎲 Tirages vérifiables",
+    "tracking": "🔒 Suivi uniquement — on ne touche jamais à ton argent",
+    "noInstall": "📲 Aucune appli à installer",
+    "free": "🆓 Gratuit pour commencer"
+  },
+  "oldWay": {
+    "eyebrow": "Pourquoi s'embêter",
+    "title": "La fin de la paperasse des cagnottes",
+    "sub": "Si tu en as déjà organisé une, tu connais la galère. KickStake s'occupe des corvées qui fâchent à ta place.",
+    "oldLabel": "À l'ancienne",
+    "newLabel": "Avec KickStake",
+    "old": [
+      "Monter un tableur que personne ne comprend",
+      "Tirer les équipes d'un vrai chapeau",
+      "Calculer la répartition des prix à la main",
+      "Courir après tout le monde pour récupérer la mise",
+      "Se disputer sur qui a gagné quel prix"
+    ],
+    "new": [
+      "Cagnotte de prix générée, équilibrée au centime",
+      "Tirage en un clic — avec graine et vérifiable",
+      "Gagnants suggérés automatiquement, tu valides",
+      "Suivi des paiements + un récap de règlement clair",
+      "Chacun voit ses équipes et ses gains en direct"
+    ]
+  },
+  "how": {
+    "eyebrow": "Comment ça marche",
+    "title": "De l'idée au coup d'envoi en quatre étapes",
+    "steps": [
+      {
+        "title": "Créer",
+        "desc": "Choisis le tournoi, fixe la mise. KickStake génère une cagnotte de 12 prix que tu peux ajuster."
+      },
+      {
+        "title": "Partager",
+        "desc": "Envoie un lien dans la conversation de groupe. Chacun rejoint avec juste un nom, sans compte."
+      },
+      {
+        "title": "Tirer",
+        "desc": "Lance le tirage. Les 48 équipes sont réparties équitablement et verrouillées, avec une graine enregistrée."
+      },
+      {
+        "title": "Régler",
+        "desc": "Valide les gagnants suggérés. Vois les gains en direct et qui doit quoi à qui."
+      }
+    ]
+  },
+  "features": {
+    "eyebrow": "Fonctionnalités",
+    "title": "Tout ce que l'organisateur déteste, automatisé",
+    "items": [
+      {
+        "title": "Tirages vérifiables",
+        "desc": "Chaque tirage enregistre une graine aléatoire. Relance-le et obtiens exactement le même résultat — avec une explication « comment le tirage a marché » pour les sceptiques."
+      },
+      {
+        "title": "Cagnotte de prix automatique",
+        "desc": "Fixe la mise et KickStake crée une structure de prix équilibrée, juste au centime. Modifie n'importe quel montant, tout se réajuste en direct."
+      },
+      {
+        "title": "12 catégories de prix",
+        "desc": "Vainqueur, finaliste et bronze, plus des prix par groupe et des catégories fun comme le Soulier d'Or, l'Équipe la plus rugueuse et la Meilleure défense."
+      },
+      {
+        "title": "Rejoindre via un lien",
+        "desc": "Les joueurs touchent ton lien, tapent un nom, et c'est fait. Sans compte, sans mot de passe, rien à installer. Pensé pour la conversation de groupe."
+      },
+      {
+        "title": "Tu gardes le contrôle",
+        "desc": "Les résultats sont suggérés automatiquement depuis le tournoi, mais rien n'est versé tant que tu n'as pas validé. Change n'importe quel gagnant, quand tu veux."
+      },
+      {
+        "title": "Le règlement, réglé",
+        "desc": "Le net de chaque joueur — gains moins mise — et qui doit quoi à qui. L'argent circule hors de l'appli ; KickStake tient juste les comptes."
+      }
+    ]
+  },
+  "prizes": {
+    "eyebrow": "La cagnotte",
+    "title": "Plus de façons de gagner que juste deviner les champions",
+    "sub": "La répartition par défaut s'inspire de cagnottes réelles et éprouvées, et fait toujours exactement le total de la cagnotte. Active ou désactive chaque prix.",
+    "winner": "Vainqueur",
+    "runnerUp": "Finaliste",
+    "bronze": "Bronze",
+    "topOfGroup": "Premier du groupe",
+    "bottomOfGroup": "Dernier du groupe",
+    "goldenBoot": "Soulier d'Or",
+    "playerOfTournament": "Meilleur joueur du tournoi",
+    "dirtiestTeam": "Équipe la plus rugueuse",
+    "bestDefence": "Meilleure défense",
+    "mostPossession": "Plus de possession",
+    "biggestLoss": "Plus lourde défaite sur un match"
+  },
+  "stats": {
+    "labels": [
+      "pour configurer",
+      "équipes tirées en un clic",
+      "prix calculés automatiquement",
+      "tableurs nécessaires"
+    ]
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Les questions que se pose tout organisateur",
+    "items": [
+      {
+        "q": "KickStake gère-t-il l'argent ?",
+        "a": "Non — c'est du suivi uniquement. Tu enregistres la mise et coches qui a payé ; le paiement réel se fait comme ton groupe le fait déjà (virement, espèces, peu importe). À la fin, KickStake génère un récap de règlement pour que personne n'ait à faire les calculs."
+      },
+      {
+        "q": "Le tirage est-il vraiment équitable ?",
+        "a": "Oui. Chaque tirage est généré à partir d'une graine aléatoire enregistrée et est entièrement reproductible. Tout le monde peut voir chaque attribution d'équipe, plus une explication « comment le tirage a marché ». Pas de chapeau truqué."
+      },
+      {
+        "q": "Les joueurs doivent-ils s'inscrire ?",
+        "a": "Non. Les organisateurs se connectent avec un code à usage unique par e-mail ou avec Google. Les joueurs ouvrent juste le lien et saisissent un nom : sans compte, sans mot de passe, sans appli."
+      },
+      {
+        "q": "Quels tournois sont pris en charge ?",
+        "a": "La Coupe du Monde FIFA 2026 est déjà chargée — les 48 équipes réparties en 12 groupes. D'autres tournois arrivent."
+      },
+      {
+        "q": "Combien ça coûte ?",
+        "a": "Gratuit pour commencer. Crée une cagnotte, lance le tirage et règle les comptes sans frais."
+      }
+    ]
+  },
+  "finalCta": {
+    "title": "Prêt pour le coup d'envoi ?",
+    "subtitle": "Ton groupe débat déjà de qui va gagner. Donne-leur quelque chose pour quoi jouer vraiment.",
+    "button": "Créer un KickStake — gratuit →"
+  },
+  "footer": {
+    "tracking": "Suivi uniquement. KickStake ne traite jamais les paiements.",
+    "copyright": "© 2026 KickStake"
+  },
+  "auth": {
+    "tagline1": "Fais le tirage. Distribue les prix.",
+    "tagline2": "Distribue le droit de frimer.",
+    "emailTitle": "Lance ton KickStake",
+    "emailSub": "Saisis ton e-mail et on t'envoie un code à 6 chiffres. Jamais de mot de passe.",
+    "emailPlaceholder": "toi@email.com",
+    "sendCode": "M'envoyer un code",
+    "sending": "Envoi…",
+    "or": "OU",
+    "google": "Continuer avec Google",
+    "googleRedirecting": "Redirection…",
+    "codeTitle": "Regarde ta boîte mail",
+    "codeSub": "On a envoyé un code à 6 chiffres à <strong>{email}</strong>.",
+    "verify": "Vérifier et continuer",
+    "verifying": "Vérification…",
+    "useDifferent": "← Utiliser un autre e-mail",
+    "resend": "Renvoyer le code",
+    "footer": "Suivi uniquement — KickStake ne touche jamais à ton argent.",
+    "errSend": "Impossible d'envoyer le code.",
+    "errVerify": "Ce code n'a pas fonctionné.",
+    "errGoogle": "La connexion Google n'est pas disponible."
+  },
+  "dashboard": {
+    "organiser": "Organisateur",
+    "title": "Tes KickStakes",
+    "start": "+ Créer un KickStake",
+    "signOut": "Se déconnecter",
+    "emptyTitle": "Pas encore de KickStake",
+    "emptyBody": "Lance ta première cagnotte pour la Coupe du Monde FIFA 2026 — ça prend environ une minute.",
+    "emptyCta": "Créer un KickStake",
+    "howTitle": "Comment ça marche",
+    "steps": [
+      {
+        "title": "Créer",
+        "desc": "Choisis le tournoi, fixe la mise, génère la cagnotte de prix."
+      },
+      {
+        "title": "Partager",
+        "desc": "Mets le lien dans la conversation de groupe. Chacun rejoint avec juste un nom."
+      },
+      {
+        "title": "Tirer",
+        "desc": "Un clic répartit les 48 équipes. Équitable et vérifiable."
+      },
+      {
+        "title": "Régler",
+        "desc": "Valide les gagnants, vois qui doit quoi à qui. KickStake tient les comptes."
+      }
+    ]
+  }
+}

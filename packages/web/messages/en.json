@@ -1,0 +1,224 @@
+{
+  "meta": {
+    "title": "KickStake",
+    "description": "Create a football tournament sweepstake, share a link, and let KickStake run the draw and the prizes for you."
+  },
+  "nav": {
+    "howItWorks": "How it works",
+    "features": "Features",
+    "faq": "FAQ",
+    "signIn": "Sign in",
+    "startFree": "Start free"
+  },
+  "language": {
+    "label": "Language"
+  },
+  "hero": {
+    "badge": "⚽ 2026 FIFA World Cup — pre-loaded",
+    "titleLine1": "The group sweepstake,",
+    "titleAccent": "sorted.",
+    "subtitle": "Spin up a tournament sweepstake, drop one link in the group chat, and KickStake runs the random draw, splits the prize pot, tracks who's paid, and settles up at the end.",
+    "subtitleEmphasis": "No spreadsheets. No arguments.",
+    "ctaPrimary": "Start a KickStake →",
+    "ctaSecondary": "See how it works",
+    "microcopy": "Free to start · players join with no account · ~60 seconds to set up"
+  },
+  "phone": {
+    "invited": "You're invited",
+    "hostedBy": "Hosted by {name} · 2026 FIFA World Cup",
+    "buyIn": "Buy-in",
+    "pot": "Pot",
+    "in": "In",
+    "prizesTitle": "12 prizes up for grabs",
+    "join": "Join the KickStake →",
+    "noAccount": "No account. No password."
+  },
+  "trust": {
+    "fair": "🎲 Provably-fair draws",
+    "tracking": "🔒 Tracking-only — we never touch your money",
+    "noInstall": "📲 No app to install",
+    "free": "🆓 Free to start"
+  },
+  "oldWay": {
+    "eyebrow": "Why bother",
+    "title": "The end of sweepstake admin",
+    "sub": "If you've ever organised one, you know the pain. KickStake does the boring, argument-starting parts for you.",
+    "oldLabel": "The old way",
+    "newLabel": "With KickStake",
+    "old": [
+      "Build a spreadsheet nobody understands",
+      "Draw team names out of an actual hat",
+      "Work out the prize splits by hand",
+      "Chase everyone in the chat for the buy-in",
+      "Argue about who won which prize"
+    ],
+    "new": [
+      "Prize pot auto-built, balanced to the cent",
+      "One-tap draw — seeded and provably fair",
+      "Winners auto-suggested, you just approve",
+      "Paid tracking + a clean settlement summary",
+      "Everyone sees their teams & live winnings"
+    ]
+  },
+  "how": {
+    "eyebrow": "How it works",
+    "title": "From idea to kickoff in four steps",
+    "steps": [
+      {
+        "title": "Create",
+        "desc": "Pick the tournament, set the buy-in. KickStake auto-builds a 12-prize pot you can tweak."
+      },
+      {
+        "title": "Share",
+        "desc": "Send one link to the group chat. Everyone joins with just a name — no account."
+      },
+      {
+        "title": "Draw",
+        "desc": "Hit Run Draw. All 48 teams are assigned fairly and locked, with a stored seed."
+      },
+      {
+        "title": "Settle",
+        "desc": "Approve the auto-suggested winners. See live winnings and who owes who."
+      }
+    ]
+  },
+  "features": {
+    "eyebrow": "Features",
+    "title": "Everything the organiser hates, automated",
+    "items": [
+      {
+        "title": "Provably-fair draws",
+        "desc": "Every draw stores a random seed. Re-run it and get the exact same result — with a 'how the draw worked' explainer for the sceptics."
+      },
+      {
+        "title": "Auto prize pot",
+        "desc": "Set the buy-in and KickStake builds a balanced prize structure that reconciles to the cent. Edit any amount — it rebalances live."
+      },
+      {
+        "title": "12 prize categories",
+        "desc": "Winner, runner-up and bronze, plus per-group prizes and comedy categories like Golden Boot, Dirtiest Team and Best Defence."
+      },
+      {
+        "title": "Join with a link",
+        "desc": "Players tap your link, type a name, and they're in. No account, no password, nothing to install. Built for the group chat."
+      },
+      {
+        "title": "You stay in control",
+        "desc": "Results are auto-suggested from the tournament, but nothing pays out until you approve it. Override any winner, any time."
+      },
+      {
+        "title": "Settlement, done",
+        "desc": "Each player's net — winnings minus buy-in — plus who owes who. Money moves off-app; KickStake just keeps the books straight."
+      }
+    ]
+  },
+  "prizes": {
+    "eyebrow": "The prize pot",
+    "title": "More ways to win than just picking the champions",
+    "sub": "The default split is drawn from real, battle-tested sweepstakes and always adds up to exactly the pot. Toggle any prize on or off.",
+    "winner": "Winner",
+    "runnerUp": "Runner-up",
+    "bronze": "Bronze",
+    "topOfGroup": "Top of group",
+    "bottomOfGroup": "Bottom of group",
+    "goldenBoot": "Golden Boot",
+    "playerOfTournament": "Player of the Tournament",
+    "dirtiestTeam": "Dirtiest team",
+    "bestDefence": "Best defence",
+    "mostPossession": "Most possession",
+    "biggestLoss": "Biggest single-game loss"
+  },
+  "stats": {
+    "labels": [
+      "to set up",
+      "teams drawn in one tap",
+      "prizes auto-calculated",
+      "spreadsheets required"
+    ]
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "The questions every organiser asks",
+    "items": [
+      {
+        "q": "Does KickStake handle the money?",
+        "a": "No — it's tracking-only. You record the buy-in and tick off who's paid; the actual payment happens however your group already does it (bank transfer, cash, whatever). At the end KickStake produces a settlement summary so nobody has to do the maths."
+      },
+      {
+        "q": "Is the draw actually fair?",
+        "a": "Yes. Every draw is generated from a stored random seed and is fully reproducible. Everyone can see every team assignment, plus a 'how the draw worked' explainer. No rigged hats."
+      },
+      {
+        "q": "Do players need to sign up?",
+        "a": "No. Organisers sign in with a one-time email code or Google. Players just open the share link and enter a name — no account, no password, no app."
+      },
+      {
+        "q": "Which tournaments are supported?",
+        "a": "The 2026 FIFA World Cup is pre-loaded — all 48 teams across 12 groups. More tournaments are on the way."
+      },
+      {
+        "q": "What does it cost?",
+        "a": "Free to start. Set up a sweepstake, run the draw, and settle up at no cost."
+      }
+    ]
+  },
+  "finalCta": {
+    "title": "Ready to kick off?",
+    "subtitle": "Your group is already arguing about who'll win. Give them something to actually play for.",
+    "button": "Start a KickStake — free →"
+  },
+  "footer": {
+    "tracking": "Tracking-only. KickStake never processes payments.",
+    "copyright": "© 2026 KickStake"
+  },
+  "auth": {
+    "tagline1": "Run the draw. Run the prizes.",
+    "tagline2": "Run the bragging rights.",
+    "emailTitle": "Kick off your KickStake",
+    "emailSub": "Enter your email and we'll send a 6-digit code. No passwords, ever.",
+    "emailPlaceholder": "you@email.com",
+    "sendCode": "Send me a code",
+    "sending": "Sending…",
+    "or": "OR",
+    "google": "Continue with Google",
+    "googleRedirecting": "Redirecting…",
+    "codeTitle": "Check your inbox",
+    "codeSub": "We sent a 6-digit code to <strong>{email}</strong>.",
+    "verify": "Verify & continue",
+    "verifying": "Verifying…",
+    "useDifferent": "← Use a different email",
+    "resend": "Resend code",
+    "footer": "Tracking-only — KickStake never touches your money.",
+    "errSend": "Couldn't send the code.",
+    "errVerify": "That code didn't work.",
+    "errGoogle": "Google sign-in isn't available."
+  },
+  "dashboard": {
+    "organiser": "Organiser",
+    "title": "Your KickStakes",
+    "start": "+ Start a KickStake",
+    "signOut": "Sign out",
+    "emptyTitle": "No KickStakes yet",
+    "emptyBody": "Spin up your first sweepstake for the 2026 FIFA World Cup — it takes about a minute.",
+    "emptyCta": "Start a KickStake",
+    "howTitle": "How it works",
+    "steps": [
+      {
+        "title": "Create",
+        "desc": "Pick the tournament, set the buy-in, auto-build the prize pot."
+      },
+      {
+        "title": "Share",
+        "desc": "Drop the link in the group chat. Everyone joins with just a name."
+      },
+      {
+        "title": "Draw",
+        "desc": "One tap assigns all 48 teams. Provably fair, fully auditable."
+      },
+      {
+        "title": "Settle",
+        "desc": "Approve the winners, see who owes who. KickStake keeps the books."
+      }
+    ]
+  }
+}

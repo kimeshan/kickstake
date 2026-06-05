@@ -1,0 +1,224 @@
+{
+  "meta": {
+    "title": "KickStake",
+    "description": "Crie um bolão de um torneio de futebol, compartilhe um link e deixe o KickStake cuidar do sorteio e dos prêmios para você."
+  },
+  "nav": {
+    "howItWorks": "Como funciona",
+    "features": "Recursos",
+    "faq": "Perguntas",
+    "signIn": "Entrar",
+    "startFree": "Comece grátis"
+  },
+  "language": {
+    "label": "Idioma"
+  },
+  "hero": {
+    "badge": "⚽ Copa do Mundo FIFA 2026 — já carregada",
+    "titleLine1": "O bolão do grupo,",
+    "titleAccent": "resolvido.",
+    "subtitle": "Crie um bolão de um torneio, compartilhe um link no grupo e o KickStake faz o sorteio aleatório, divide o prêmio, controla quem pagou e acerta as contas no final.",
+    "subtitleEmphasis": "Sem planilhas. Sem discussões.",
+    "ctaPrimary": "Criar um KickStake →",
+    "ctaSecondary": "Veja como funciona",
+    "microcopy": "Grátis para começar · os jogadores entram sem conta · ~60 segundos para configurar"
+  },
+  "phone": {
+    "invited": "Você foi convidado",
+    "hostedBy": "Organizado por {name} · Copa do Mundo FIFA 2026",
+    "buyIn": "Entrada",
+    "pot": "Prêmio",
+    "in": "Dentro",
+    "prizesTitle": "12 prêmios em jogo",
+    "join": "Entrar no KickStake →",
+    "noAccount": "Sem conta. Sem senha."
+  },
+  "trust": {
+    "fair": "🎲 Sorteios verificáveis",
+    "tracking": "🔒 Apenas registro — nunca tocamos no seu dinheiro",
+    "noInstall": "📲 Nenhum app para instalar",
+    "free": "🆓 Grátis para começar"
+  },
+  "oldWay": {
+    "eyebrow": "Por que usar",
+    "title": "O fim da burocracia do bolão",
+    "sub": "Se você já organizou um, conhece a dor. O KickStake faz por você as partes chatas e que geram discussão.",
+    "oldLabel": "Do jeito antigo",
+    "newLabel": "Com o KickStake",
+    "old": [
+      "Montar uma planilha que ninguém entende",
+      "Sortear os times de um chapéu de verdade",
+      "Calcular a divisão dos prêmios na mão",
+      "Correr atrás de todo mundo no grupo pela entrada",
+      "Discutir sobre quem ganhou qual prêmio"
+    ],
+    "new": [
+      "Prêmio montado automaticamente, certinho até o centavo",
+      "Sorteio com um toque — com semente e verificável",
+      "Vencedores sugeridos sozinhos, você só aprova",
+      "Controle de pagamentos + um resumo de acerto claro",
+      "Todos veem seus times e ganhos ao vivo"
+    ]
+  },
+  "how": {
+    "eyebrow": "Como funciona",
+    "title": "Da ideia ao apito inicial em quatro passos",
+    "steps": [
+      {
+        "title": "Criar",
+        "desc": "Escolha o torneio, defina a entrada. O KickStake monta automaticamente um prêmio de 12 categorias que você pode ajustar."
+      },
+      {
+        "title": "Compartilhar",
+        "desc": "Envie um link no grupo. Todos entram só com um nome — sem conta."
+      },
+      {
+        "title": "Sortear",
+        "desc": "Toque em Sortear. Todos os 48 times são distribuídos de forma justa e travados, com uma semente salva."
+      },
+      {
+        "title": "Acertar",
+        "desc": "Aprove os vencedores sugeridos. Veja os ganhos ao vivo e quem deve a quem."
+      }
+    ]
+  },
+  "features": {
+    "eyebrow": "Recursos",
+    "title": "Tudo o que o organizador odeia, automatizado",
+    "items": [
+      {
+        "title": "Sorteios verificáveis",
+        "desc": "Cada sorteio salva uma semente aleatória. Rode de novo e obtenha exatamente o mesmo resultado — com uma explicação de «como o sorteio funcionou» para os céticos."
+      },
+      {
+        "title": "Prêmio automático",
+        "desc": "Defina a entrada e o KickStake monta uma estrutura de prêmios equilibrada, certinha até o centavo. Edite qualquer valor — ele se reequilibra na hora."
+      },
+      {
+        "title": "12 categorias de prêmios",
+        "desc": "Campeão, vice e bronze, além de prêmios por grupo e categorias divertidas como Chuteira de Ouro, Time Mais Sujo e Melhor Defesa."
+      },
+      {
+        "title": "Entre com um link",
+        "desc": "Os jogadores tocam no seu link, digitam um nome e pronto. Sem conta, sem senha, nada para instalar. Feito para o grupo."
+      },
+      {
+        "title": "Você no controle",
+        "desc": "Os resultados são sugeridos automaticamente pelo torneio, mas nada é pago até você aprovar. Troque qualquer vencedor quando quiser."
+      },
+      {
+        "title": "Acerto, pronto",
+        "desc": "O líquido de cada jogador — ganhos menos a entrada — e quem deve a quem. O dinheiro corre fora do app; o KickStake só mantém as contas em dia."
+      }
+    ]
+  },
+  "prizes": {
+    "eyebrow": "O prêmio",
+    "title": "Mais formas de ganhar do que só acertar os campeões",
+    "sub": "A divisão padrão vem de bolões reais e testados, e sempre soma exatamente o valor do prêmio. Ative ou desative qualquer prêmio.",
+    "winner": "Campeão",
+    "runnerUp": "Vice-campeão",
+    "bronze": "Bronze",
+    "topOfGroup": "Primeiro do grupo",
+    "bottomOfGroup": "Último do grupo",
+    "goldenBoot": "Chuteira de Ouro",
+    "playerOfTournament": "Melhor jogador do torneio",
+    "dirtiestTeam": "Time mais sujo",
+    "bestDefence": "Melhor defesa",
+    "mostPossession": "Maior posse de bola",
+    "biggestLoss": "Maior derrota em uma partida"
+  },
+  "stats": {
+    "labels": [
+      "para configurar",
+      "times sorteados com um toque",
+      "prêmios calculados sozinhos",
+      "planilhas necessárias"
+    ]
+  },
+  "faq": {
+    "eyebrow": "Perguntas",
+    "title": "As perguntas que todo organizador faz",
+    "items": [
+      {
+        "q": "O KickStake cuida do dinheiro?",
+        "a": "Não — ele só faz o registro. Você anota a entrada e marca quem pagou; o pagamento de fato acontece como o seu grupo já faz (Pix, transferência, dinheiro, o que for). No final, o KickStake gera um resumo de acerto para ninguém ter que fazer conta."
+      },
+      {
+        "q": "O sorteio é mesmo justo?",
+        "a": "Sim. Cada sorteio é gerado a partir de uma semente aleatória salva e é totalmente reproduzível. Todos podem ver cada distribuição de times, além de uma explicação de «como o sorteio funcionou». Sem chapéu manipulado."
+      },
+      {
+        "q": "Os jogadores precisam se cadastrar?",
+        "a": "Não. Os organizadores entram com um código de uso único por e-mail ou com o Google. Os jogadores só abrem o link e digitam um nome — sem conta, sem senha, sem app."
+      },
+      {
+        "q": "Quais torneios são suportados?",
+        "a": "A Copa do Mundo FIFA 2026 já está carregada — todos os 48 times em 12 grupos. Mais torneios estão a caminho."
+      },
+      {
+        "q": "Quanto custa?",
+        "a": "Grátis para começar. Crie um bolão, faça o sorteio e acerte as contas sem custo."
+      }
+    ]
+  },
+  "finalCta": {
+    "title": "Pronto para o apito inicial?",
+    "subtitle": "Seu grupo já está discutindo quem vai ganhar. Dê a eles algo pelo que realmente jogar.",
+    "button": "Criar um KickStake — grátis →"
+  },
+  "footer": {
+    "tracking": "Apenas registro. O KickStake nunca processa pagamentos.",
+    "copyright": "© 2026 KickStake"
+  },
+  "auth": {
+    "tagline1": "Faça o sorteio. Distribua os prêmios.",
+    "tagline2": "Distribua o direito de se gabar.",
+    "emailTitle": "Comece o seu KickStake",
+    "emailSub": "Digite seu e-mail e enviaremos um código de 6 dígitos. Sem senhas, nunca.",
+    "emailPlaceholder": "voce@email.com",
+    "sendCode": "Enviar um código",
+    "sending": "Enviando…",
+    "or": "OU",
+    "google": "Continuar com o Google",
+    "googleRedirecting": "Redirecionando…",
+    "codeTitle": "Veja seu e-mail",
+    "codeSub": "Enviamos um código de 6 dígitos para <strong>{email}</strong>.",
+    "verify": "Verificar e continuar",
+    "verifying": "Verificando…",
+    "useDifferent": "← Usar outro e-mail",
+    "resend": "Reenviar código",
+    "footer": "Apenas registro — o KickStake nunca toca no seu dinheiro.",
+    "errSend": "Não foi possível enviar o código.",
+    "errVerify": "Esse código não funcionou.",
+    "errGoogle": "O login com o Google não está disponível."
+  },
+  "dashboard": {
+    "organiser": "Organizador",
+    "title": "Seus KickStakes",
+    "start": "+ Criar um KickStake",
+    "signOut": "Sair",
+    "emptyTitle": "Nenhum KickStake ainda",
+    "emptyBody": "Crie seu primeiro bolão para a Copa do Mundo FIFA 2026 — leva cerca de um minuto.",
+    "emptyCta": "Criar um KickStake",
+    "howTitle": "Como funciona",
+    "steps": [
+      {
+        "title": "Criar",
+        "desc": "Escolha o torneio, defina a entrada e monte o prêmio."
+      },
+      {
+        "title": "Compartilhar",
+        "desc": "Mande o link no grupo. Todos entram só com um nome."
+      },
+      {
+        "title": "Sortear",
+        "desc": "Um toque distribui os 48 times. Justo e auditável."
+      },
+      {
+        "title": "Acertar",
+        "desc": "Aprove os vencedores e veja quem deve a quem. O KickStake mantém as contas."
+      }
+    ]
+  }
+}

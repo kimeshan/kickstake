@@ -2,15 +2,18 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useSession, signOut } from "@/lib/auth-client";
 import { Logo } from "@/components/brand";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = useTranslations("dashboard");
   const router = useRouter();
   const { data: session, isPending } = useSession();
 
@@ -38,6 +41,7 @@ export default function DashboardLayout({
             <Logo />
           </Link>
           <div className="flex items-center gap-3">
+            <LanguageSwitcher className="hidden sm:inline-flex" />
             <span className="hidden text-sm text-muted-foreground sm:inline">
               {session.user.email}
             </span>
@@ -52,7 +56,7 @@ export default function DashboardLayout({
               }
               className="rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:text-foreground"
             >
-              Sign out
+              {t("signOut")}
             </button>
           </div>
         </div>

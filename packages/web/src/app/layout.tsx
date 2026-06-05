@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Anton, Hanken_Grotesk, Geist_Mono } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getTranslations } from "next-intl/server";
+import { rtlLocales, type Locale } from "@/i18n/config";
 import "./globals.css";
 
 // Scoreboard display face for headlines + big numbers.
@@ -20,24 +23,29 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "KickStake",
-  description:
-    "Create a football tournament sweepstake, share a link, and let the app run the draw and the prizes for you.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+  return { title: t("title"), description: t("description") };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const dir = rtlLocales.includes(locale as Locale) ? "rtl" : "ltr";
+
   return (
     <html
-      lang="en"
+      lang={locale}
+      dir={dir}
       // Matchday is dark-only; force the palette regardless of OS setting.
       className={`dark ${anton.variable} ${hanken.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="bg-pitch min-h-full flex flex-col">{children}</body>
+      <body className="bg-pitch min-h-full flex flex-col">
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+      </body>
     </html>
   );
 }

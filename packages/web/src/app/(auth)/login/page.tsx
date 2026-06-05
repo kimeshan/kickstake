@@ -2,13 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { signIn, emailOtp } from "@/lib/auth-client";
 import { Logo, GoogleIcon } from "@/components/brand";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { Input } from "@/components/ui/input";
 
 type Step = "email" | "code";
 
 export default function LoginPage() {
+  const t = useTranslations("auth");
   const router = useRouter();
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
@@ -26,7 +29,7 @@ export default function LoginPage() {
       type: "sign-in",
     });
     setLoading(false);
-    if (error) return setError(error.message ?? "Couldn't send the code.");
+    if (error) return setError(error.message ?? t("errSend"));
     setCode("");
     setStep("code");
   }
@@ -37,7 +40,7 @@ export default function LoginPage() {
     setLoading(true);
     const { error } = await signIn.emailOtp({ email: email.trim(), otp: code });
     setLoading(false);
-    if (error) return setError(error.message ?? "That code didn't work.");
+    if (error) return setError(error.message ?? t("errVerify"));
     router.push("/dashboard");
     router.refresh();
   }
@@ -51,24 +54,26 @@ export default function LoginPage() {
     });
     if (error) {
       setGoogleLoading(false);
-      setError(error.message ?? "Google sign-in isn't available.");
+      setError(error.message ?? t("errGoogle"));
     }
   }
 
   return (
     <main className="grain flex min-h-screen flex-col items-center justify-center px-5 py-12">
+      <div className="absolute right-5 top-5">
+        <LanguageSwitcher />
+      </div>
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center gap-4 text-center duration-700 animate-in fade-in slide-in-from-bottom-3">
           <Logo />
           <p className="text-sm text-muted-foreground">
-            Run the draw. Run the prizes.
+            {t("tagline1")}
             <br />
-            Run the bragging rights.
+            {t("tagline2")}
           </p>
         </div>
 
         <div className="relative rounded-3xl border border-border bg-card/80 p-6 shadow-2xl backdrop-blur-sm duration-700 animate-in fade-in slide-in-from-bottom-4">
-          {/* floodlight glow */}
           <div
             aria-hidden
             className="pointer-events-none absolute -top-16 left-1/2 size-40 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl"
@@ -77,11 +82,10 @@ export default function LoginPage() {
           {step === "email" ? (
             <>
               <h1 className="font-display text-3xl text-balance">
-                Kick off your KickStake
+                {t("emailTitle")}
               </h1>
               <p className="mt-2 text-sm text-muted-foreground">
-                Enter your email and we&apos;ll send a 6-digit code. No
-                passwords, ever.
+                {t("emailSub")}
               </p>
 
               <form onSubmit={sendCode} className="mt-6 space-y-3">
@@ -91,7 +95,7 @@ export default function LoginPage() {
                   autoComplete="email"
                   autoFocus
                   required
-                  placeholder="you@email.com"
+                  placeholder={t("emailPlaceholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -100,13 +104,13 @@ export default function LoginPage() {
                   disabled={loading || !email}
                   className="h-12 w-full rounded-xl bg-primary font-semibold text-primary-foreground transition active:scale-[.98] disabled:opacity-50"
                 >
-                  {loading ? "Sending…" : "Send me a code"}
+                  {loading ? t("sending") : t("sendCode")}
                 </button>
               </form>
 
               <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
                 <span className="h-px flex-1 bg-border" />
-                OR
+                {t("or")}
                 <span className="h-px flex-1 bg-border" />
               </div>
 
@@ -116,17 +120,23 @@ export default function LoginPage() {
                 className="flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-border bg-secondary/40 font-medium text-foreground transition hover:bg-secondary/70 active:scale-[.98] disabled:opacity-50"
               >
                 <GoogleIcon className="size-5" />
-                {googleLoading ? "Redirecting…" : "Continue with Google"}
+                {googleLoading ? t("googleRedirecting") : t("google")}
               </button>
             </>
           ) : (
             <>
               <h1 className="font-display text-3xl text-balance">
-                Check your inbox
+                {t("codeTitle")}
               </h1>
               <p className="mt-2 text-sm text-muted-foreground">
-                We sent a 6-digit code to{" "}
-                <span className="font-medium text-foreground">{email}</span>.
+                {t.rich("codeSub", {
+                  email,
+                  strong: (chunks) => (
+                    <span className="font-medium text-foreground">
+                      {chunks}
+                    </span>
+                  ),
+                })}
               </p>
 
               <form onSubmit={verify} className="mt-6 space-y-3">
@@ -148,7 +158,7 @@ export default function LoginPage() {
                   disabled={loading || code.length < 6}
                   className="h-12 w-full rounded-xl bg-primary font-semibold text-primary-foreground transition active:scale-[.98] disabled:opacity-50"
                 >
-                  {loading ? "Verifying…" : "Verify & continue"}
+                  {loading ? t("verifying") : t("verify")}
                 </button>
               </form>
 
@@ -160,14 +170,16 @@ export default function LoginPage() {
                   }}
                   className="text-muted-foreground transition hover:text-foreground"
                 >
-                  ← Use a different email
+                  {t("useDifferent")}
                 </button>
                 <button
-                  onClick={() => sendCode({ preventDefault() {} } as React.FormEvent)}
+                  onClick={() =>
+                    sendCode({ preventDefault() {} } as React.FormEvent)
+                  }
                   disabled={loading}
                   className="font-medium text-primary transition hover:opacity-80 disabled:opacity-50"
                 >
-                  Resend code
+                  {t("resend")}
                 </button>
               </div>
             </>
@@ -181,7 +193,7 @@ export default function LoginPage() {
         </div>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          Tracking-only — KickStake never touches your money.
+          {t("footer")}
         </p>
       </div>
     </main>
