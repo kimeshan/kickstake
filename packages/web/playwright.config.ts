@@ -24,7 +24,7 @@ export default defineConfig({
     },
     {
       name: "authed",
-      testMatch: /create\.spec\.ts/,
+      testMatch: /(create|join)\.spec\.ts/,
       use: {
         ...devices["Desktop Chrome"],
         storageState: "e2e/.auth/organiser.json",

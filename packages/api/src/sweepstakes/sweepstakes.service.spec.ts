@@ -90,4 +90,54 @@ describe("SweepstakesService (DB integration)", () => {
       }),
     ).rejects.toThrow(/tournament/i);
   });
+
+  describe("savePrizes", () => {
+    async function fresh(pot = 60000) {
+      // pot = buyIn * players; pick buyIn so buyIn*players = pot
+      return svc.create(organiserId, {
+        tournamentId,
+        name: "Editable",
+        buyIn: pot / 6,
+        expectedParticipants: 6,
+      });
+    }
+
+    it("saves a structure that reconciles to the pot, replacing the old one", async () => {
+      const s = await fresh(60000);
+      const updated = await svc.savePrizes(organiserId, s.id, [
+        { label: "Winner takes most", ruleType: "winner", amount: 50000, perGroup: false, enabled: true },
+        { label: "Wooden spoon", ruleType: "custom", amount: 10000, perGroup: false, enabled: true },
+      ]);
+      expect(updated.prizeCategories).toHaveLength(2);
+      expect(prizeTotal(updated.prizeCategories, 12)).toBe(60000);
+      expect(updated.prizeCategories.some((p) => p.ruleType === "custom")).toBe(true);
+    });
+
+    it("counts per-group prizes × group count when reconciling", async () => {
+      const s = await fresh(60000);
+      // 5000 per group × 12 = 60000
+      const updated = await svc.savePrizes(organiserId, s.id, [
+        { label: "Top of group", ruleType: "group_top", amount: 5000, perGroup: true, enabled: true },
+      ]);
+      expect(prizeTotal(updated.prizeCategories, 12)).toBe(60000);
+    });
+
+    it("rejects a structure that doesn't total the pot", async () => {
+      const s = await fresh(60000);
+      await expect(
+        svc.savePrizes(organiserId, s.id, [
+          { label: "Short", ruleType: "winner", amount: 40000, perGroup: false, enabled: true },
+        ]),
+      ).rejects.toThrow(/pot/i);
+    });
+
+    it("ignores disabled prizes in the reconciliation", async () => {
+      const s = await fresh(60000);
+      const updated = await svc.savePrizes(organiserId, s.id, [
+        { label: "Winner", ruleType: "winner", amount: 60000, perGroup: false, enabled: true },
+        { label: "Off", ruleType: "custom", amount: 999, perGroup: false, enabled: false },
+      ]);
+      expect(prizeTotal(updated.prizeCategories, 12)).toBe(60000);
+    });
+  });
 });

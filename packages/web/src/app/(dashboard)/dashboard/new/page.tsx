@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { apiFetch } from "@/lib/api";
-import { formatMoney, toMinor } from "@/lib/money";
+import {
+  formatMoney,
+  toMinor,
+  currencySymbol,
+  CURRENCIES,
+  DEFAULT_CURRENCY,
+} from "@/lib/money";
 import { Input } from "@/components/ui/input";
 
 interface Tournament {
@@ -22,7 +28,8 @@ export default function NewSweepstakePage() {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [tournamentId, setTournamentId] = useState("");
   const [name, setName] = useState("");
-  const [buyIn, setBuyIn] = useState(150);
+  const [currency, setCurrency] = useState(DEFAULT_CURRENCY);
+  const [buyIn, setBuyIn] = useState(10);
   const [players, setPlayers] = useState(12);
   const [donation, setDonation] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -38,8 +45,8 @@ export default function NewSweepstakePage() {
       .catch(() => setError(t("error")));
   }, [t]);
 
-  const currency = "ZAR";
-  const pot = toMinor(buyIn) * (players || 0) + toMinor(donation);
+  const pot =
+    toMinor(buyIn, currency) * (players || 0) + toMinor(donation, currency);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -52,8 +59,8 @@ export default function NewSweepstakePage() {
           tournamentId,
           name: name.trim(),
           currency,
-          buyIn: toMinor(buyIn),
-          donation: toMinor(donation),
+          buyIn: toMinor(buyIn, currency),
+          donation: toMinor(donation, currency),
           expectedParticipants: players,
         }),
       });
@@ -106,14 +113,26 @@ export default function NewSweepstakePage() {
           />
         </Field>
 
+        <Field label={t("currency")}>
+          <select
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            className="h-12 w-full rounded-xl border border-input bg-secondary/40 px-4 text-foreground outline-none focus-visible:border-primary/60 focus-visible:ring-4 focus-visible:ring-primary/15"
+          >
+            {CURRENCIES.map((c) => (
+              <option key={c.code} value={c.code} className="bg-card">
+                {c.code} · {c.name} ({currencySymbol(c.code)})
+              </option>
+            ))}
+          </select>
+        </Field>
+
         <div className="grid grid-cols-2 gap-4">
           <Field label={t("buyIn")}>
-            <Input
-              type="number"
-              min={0}
-              inputMode="numeric"
+            <MoneyInput
+              symbol={currencySymbol(currency)}
               value={buyIn}
-              onChange={(e) => setBuyIn(Number(e.target.value))}
+              onChange={setBuyIn}
             />
           </Field>
           <Field label={t("players")}>
@@ -128,12 +147,10 @@ export default function NewSweepstakePage() {
         </div>
 
         <Field label={t("donation")}>
-          <Input
-            type="number"
-            min={0}
-            inputMode="numeric"
+          <MoneyInput
+            symbol={currencySymbol(currency)}
             value={donation}
-            onChange={(e) => setDonation(Number(e.target.value))}
+            onChange={setDonation}
           />
         </Field>
 
@@ -169,6 +186,32 @@ export default function NewSweepstakePage() {
           </button>
         </div>
       </form>
+    </div>
+  );
+}
+
+function MoneyInput({
+  symbol,
+  value,
+  onChange,
+}: {
+  symbol: string;
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <div className="relative">
+      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground">
+        {symbol}
+      </span>
+      <Input
+        type="number"
+        min={0}
+        inputMode="decimal"
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="pl-9"
+      />
     </div>
   );
 }

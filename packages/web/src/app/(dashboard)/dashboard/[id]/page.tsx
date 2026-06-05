@@ -7,7 +7,8 @@ import { useTranslations } from "next-intl";
 import { apiFetch } from "@/lib/api";
 import { formatMoney } from "@/lib/money";
 import { joinUrl } from "@/lib/constants";
-import { StatusBadge, type Sweepstake } from "../_components";
+import { StatusBadge, type Sweepstake, type Prize } from "../_components";
+import { PrizeEditor } from "./prize-editor";
 
 export default function SweepstakeDetailPage() {
   const t = useTranslations("detail");
@@ -103,34 +104,16 @@ export default function SweepstakeDetailPage() {
         </div>
       </div>
 
-      {/* Prizes */}
-      <div>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-          {t("prizes")}
-        </h2>
-        <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card/40">
-          {(s.prizeCategories ?? [])
-            .filter((p) => p.enabled)
-            .map((p) => (
-              <li
-                key={p.id}
-                className="flex items-center justify-between gap-3 px-4 py-3"
-              >
-                <div className="min-w-0">
-                  <div className="truncate text-sm font-medium">{p.label}</div>
-                  {p.perGroup && (
-                    <div className="text-xs text-muted-foreground">
-                      {t("perGroup", { count: groupCount })}
-                    </div>
-                  )}
-                </div>
-                <span className="shrink-0 font-display text-lg">
-                  {formatMoney(p.amount, s.currency)}
-                </span>
-              </li>
-            ))}
-        </ul>
-      </div>
+      {/* Prizes — view + manage */}
+      <PrizeEditor
+        sweepstakeId={s.id}
+        currency={s.currency}
+        groupCount={groupCount}
+        designedPot={s.designedPot}
+        prizes={s.prizeCategories ?? []}
+        editable={s.status === "draft" || s.status === "open"}
+        onSaved={(prizes: Prize[]) => setS({ ...s, prizeCategories: prizes })}
+      />
 
       <div>
         <button

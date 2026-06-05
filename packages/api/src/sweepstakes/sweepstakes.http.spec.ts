@@ -77,4 +77,40 @@ describe("Sweepstakes HTTP (auth + endpoints)", () => {
     // Owner can fetch detail
     await agent.get(`/sweepstakes/${created.body.id}`).expect(200);
   });
+
+  it("lets anyone view + join via the public token, no account", async () => {
+    // Organiser creates a sweepstake.
+    const agent = request.agent(server);
+    const email = "http-host@kickstake.dev";
+    await agent
+      .post("/auth/email-otp/send-verification-otp")
+      .send({ email, type: "sign-in" })
+      .expect(200);
+    await agent
+      .post("/auth/sign-in/email-otp")
+      .send({ email, otp: testOtpStore.get(email) })
+      .expect(200);
+    const created = await agent
+      .post("/sweepstakes")
+      .send({ tournamentId, name: "Joinable", buyIn: 1000, expectedParticipants: 6 })
+      .expect(201);
+    const token = created.body.joinToken;
+    expect(token).toHaveLength(8);
+
+    // Public view — NO auth cookie. This is the /j/:token the 404 came from.
+    const view = await request(server).get(`/j/${token}`).expect(200);
+    expect(view.body.name).toBe("Joinable");
+    expect(view.body.participantCount).toBe(0);
+    expect(view.body).not.toHaveProperty("organiserId");
+
+    // Join — NO auth cookie.
+    const joined = await request(server)
+      .post(`/j/${token}/participants`)
+      .send({ displayName: "Sipho" })
+      .expect(201);
+    expect(joined.body.participantCount).toBe(1);
+
+    // Unknown token 404s cleanly.
+    await request(server).get("/j/does-not-exist").expect(404);
+  });
 });

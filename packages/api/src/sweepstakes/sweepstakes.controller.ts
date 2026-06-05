@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Param } from "@nestjs/common";
+import { Controller, Get, Post, Put, Body, Param } from "@nestjs/common";
 import { CurrentUser } from "../auth/current-user.decorator";
 import {
   SweepstakesService,
   type CreateSweepstakeInput,
+  type PrizeInput,
 } from "./sweepstakes.service";
 
 interface AuthUser {
@@ -29,5 +30,14 @@ export class SweepstakesController {
   @Get(":id")
   findOne(@CurrentUser() user: AuthUser, @Param("id") id: string) {
     return this.sweepstakes.findOne(user.id, id);
+  }
+
+  @Put(":id/prizes")
+  savePrizes(
+    @CurrentUser() user: AuthUser,
+    @Param("id") id: string,
+    @Body() body: { prizes: PrizeInput[] },
+  ) {
+    return this.sweepstakes.savePrizes(user.id, id, body.prizes);
   }
 }
