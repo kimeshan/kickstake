@@ -8,7 +8,8 @@
     "features": "功能",
     "faq": "常见问题",
     "signIn": "登录",
-    "startFree": "免费开始"
+    "startFree": "免费开始",
+    "dashboard": "控制台"
   },
   "language": {
     "label": "语言"
@@ -332,5 +333,55 @@
     "manualNote": "手动分配",
     "redraw": "更改抽签",
     "potWarning": "{count} 支球队未分配 —— 它们赢得的奖项将无人获得。"
+  },
+  "prizeTypes": {
+    "winner": {
+      "label": "赛事冠军",
+      "description": "夺冠球队的拥有者。"
+    },
+    "runner_up": {
+      "label": "亚军",
+      "description": "在决赛中落败球队的拥有者。"
+    },
+    "third_place": {
+      "label": "季军",
+      "description": "赢得三四名决赛球队的拥有者。"
+    },
+    "group_top": {
+      "label": "小组第一",
+      "description": "每组第一名球队的拥有者 —— 在各小组间分配。"
+    },
+    "group_bottom": {
+      "label": "小组垫底",
+      "description": "每组垫底球队的拥有者 —— 在各小组间分配。"
+    },
+    "player_of_tournament": {
+      "label": "赛事最佳球员",
+      "description": "球员荣获官方最佳的那支球队的拥有者。"
+    },
+    "golden_boot": {
+      "label": "金靴奖",
+      "description": "拥有赛事最佳射手的球队的拥有者。"
+    },
+    "most_cards": {
+      "label": "最脏球队",
+      "description": "纪律分最高 —— 每张红牌15分、黄牌10分。"
+    },
+    "least_conceded": {
+      "label": "最佳防守",
+      "description": "场均失球最少的球队。"
+    },
+    "most_possession": {
+      "label": "控球最多",
+      "description": "场均控球率最高的球队。"
+    },
+    "least_possession": {
+      "label": "控球最少",
+      "description": "场均控球率最低的球队。"
+    },
+    "biggest_loss": {
+      "label": "单场最大失利",
+      "description": "在一场比赛中遭遇最惨失利的球队。"
+    }
   }
 }

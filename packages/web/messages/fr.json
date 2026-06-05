@@ -8,7 +8,8 @@
     "features": "Fonctionnalités",
     "faq": "FAQ",
     "signIn": "Se connecter",
-    "startFree": "Commencer gratuitement"
+    "startFree": "Commencer gratuitement",
+    "dashboard": "Tableau de bord"
   },
   "language": {
     "label": "Langue"
@@ -332,5 +333,55 @@
     "manualNote": "Attribué manuellement",
     "redraw": "Modifier le tirage",
     "potWarning": "{count} équipes non attribuées — les prix qu'elles gagnent n'iront à personne."
+  },
+  "prizeTypes": {
+    "winner": {
+      "label": "Vainqueur du tournoi",
+      "description": "Propriétaire de l'équipe qui soulève le trophée."
+    },
+    "runner_up": {
+      "label": "Finaliste",
+      "description": "Propriétaire de l'équipe qui perd la finale."
+    },
+    "third_place": {
+      "label": "Bronze",
+      "description": "Propriétaire de l'équipe qui gagne la petite finale."
+    },
+    "group_top": {
+      "label": "Premier du groupe",
+      "description": "Propriétaire de l'équipe 1re de chaque groupe — réparti sur tous les groupes."
+    },
+    "group_bottom": {
+      "label": "Dernier du groupe",
+      "description": "Propriétaire de l'équipe dernière de chaque groupe — réparti sur tous les groupes."
+    },
+    "player_of_tournament": {
+      "label": "Meilleur joueur du tournoi",
+      "description": "Propriétaire de l'équipe dont le joueur remporte le prix officiel."
+    },
+    "golden_boot": {
+      "label": "Soulier d'Or",
+      "description": "Propriétaire de l'équipe du meilleur buteur du tournoi."
+    },
+    "most_cards": {
+      "label": "Équipe la plus rugueuse",
+      "description": "Plus de points de discipline — 15 par rouge, 10 par jaune."
+    },
+    "least_conceded": {
+      "label": "Meilleure défense",
+      "description": "Équipe avec la moyenne de buts encaissés la plus faible."
+    },
+    "most_possession": {
+      "label": "Plus de possession",
+      "description": "Équipe avec la possession moyenne la plus élevée."
+    },
+    "least_possession": {
+      "label": "Moins de possession",
+      "description": "Équipe avec la possession moyenne la plus faible."
+    },
+    "biggest_loss": {
+      "label": "Plus lourde défaite sur un match",
+      "description": "Équipe qui subit la plus lourde défaite en un match."
+    }
   }
 }

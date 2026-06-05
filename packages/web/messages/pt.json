@@ -8,7 +8,8 @@
     "features": "Recursos",
     "faq": "Perguntas",
     "signIn": "Entrar",
-    "startFree": "Comece grátis"
+    "startFree": "Comece grátis",
+    "dashboard": "Painel"
   },
   "language": {
     "label": "Idioma"
@@ -332,5 +333,55 @@
     "manualNote": "Atribuído manualmente",
     "redraw": "Alterar o sorteio",
     "potWarning": "{count} times não atribuídos — os prêmios que ganharem não irão para ninguém."
+  },
+  "prizeTypes": {
+    "winner": {
+      "label": "Campeão do torneio",
+      "description": "Dono do time que levanta a taça."
+    },
+    "runner_up": {
+      "label": "Vice-campeão",
+      "description": "Dono do time que perde a final."
+    },
+    "third_place": {
+      "label": "Bronze",
+      "description": "Dono do time que vence a disputa de 3.º lugar."
+    },
+    "group_top": {
+      "label": "Primeiro do grupo",
+      "description": "Dono do time que termina em 1.º em cada grupo — dividido entre todos os grupos."
+    },
+    "group_bottom": {
+      "label": "Último do grupo",
+      "description": "Dono do time que termina em último em cada grupo — dividido entre todos os grupos."
+    },
+    "player_of_tournament": {
+      "label": "Melhor jogador do torneio",
+      "description": "Dono do time cujo jogador ganha o prêmio oficial."
+    },
+    "golden_boot": {
+      "label": "Chuteira de Ouro",
+      "description": "Dono do time com o artilheiro do torneio."
+    },
+    "most_cards": {
+      "label": "Time mais sujo",
+      "description": "Mais pontos disciplinares — 15 por vermelho, 10 por amarelo."
+    },
+    "least_conceded": {
+      "label": "Melhor defesa",
+      "description": "Time com a menor média de gols sofridos."
+    },
+    "most_possession": {
+      "label": "Maior posse de bola",
+      "description": "Time com a maior posse de bola média."
+    },
+    "least_possession": {
+      "label": "Menor posse de bola",
+      "description": "Time com a menor posse de bola média."
+    },
+    "biggest_loss": {
+      "label": "Maior derrota em uma partida",
+      "description": "Time que sofre a derrota mais pesada em uma única partida."
+    }
   }
 }

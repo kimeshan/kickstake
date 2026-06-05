@@ -35,6 +35,9 @@ interface JoinView {
 
 export default function JoinPage() {
   const t = useTranslations("join");
+  const pt = useTranslations("prizeTypes");
+  const prizeLabel = (p: JoinPrize) =>
+    p.ruleType === "custom" ? p.label : pt(`${p.ruleType}.label`);
   const { token } = useParams<{ token: string }>();
   const [view, setView] = useState<JoinView | null>(null);
   const [missing, setMissing] = useState(false);
@@ -157,7 +160,7 @@ export default function JoinPage() {
                     className="flex items-start justify-between gap-2 px-3 py-2"
                   >
                     <div className="min-w-0">
-                      <div className="text-sm">{p.label}</div>
+                      <div className="text-sm">{prizeLabel(p)}</div>
                       {p.perGroup && (
                         <div className="text-[11px] text-primary/80">
                           {t("perGroup", { count: groupCount })}

@@ -8,7 +8,8 @@
     "features": "Funciones",
     "faq": "Preguntas",
     "signIn": "Iniciar sesión",
-    "startFree": "Empieza gratis"
+    "startFree": "Empieza gratis",
+    "dashboard": "Panel"
   },
   "language": {
     "label": "Idioma"
@@ -332,5 +333,55 @@
     "manualNote": "Asignado manualmente",
     "redraw": "Cambiar el sorteo",
     "potWarning": "{count} equipos sin asignar: los premios que ganen no irán a nadie."
+  },
+  "prizeTypes": {
+    "winner": {
+      "label": "Ganador del torneo",
+      "description": "Dueño del equipo que levanta el trofeo."
+    },
+    "runner_up": {
+      "label": "Subcampeón",
+      "description": "Dueño del equipo que pierde la final."
+    },
+    "third_place": {
+      "label": "Bronce",
+      "description": "Dueño del equipo que gana el partido por el 3.º puesto."
+    },
+    "group_top": {
+      "label": "Primero de grupo",
+      "description": "Dueño del equipo que queda 1.º en cada grupo — repartido entre todos los grupos."
+    },
+    "group_bottom": {
+      "label": "Último de grupo",
+      "description": "Dueño del equipo que queda último en cada grupo — repartido entre todos los grupos."
+    },
+    "player_of_tournament": {
+      "label": "Mejor jugador del torneo",
+      "description": "Dueño del equipo cuyo jugador gana el premio oficial."
+    },
+    "golden_boot": {
+      "label": "Bota de Oro",
+      "description": "Dueño del equipo con el máximo goleador del torneo."
+    },
+    "most_cards": {
+      "label": "Equipo más sucio",
+      "description": "Más puntos disciplinarios: 15 por roja, 10 por amarilla."
+    },
+    "least_conceded": {
+      "label": "Mejor defensa",
+      "description": "Equipo con menos goles encajados de media."
+    },
+    "most_possession": {
+      "label": "Más posesión",
+      "description": "Equipo con mayor posesión media."
+    },
+    "least_possession": {
+      "label": "Menos posesión",
+      "description": "Equipo con menor posesión media."
+    },
+    "biggest_loss": {
+      "label": "Mayor derrota en un partido",
+      "description": "Equipo que sufre la derrota más abultada en un solo partido."
+    }
   }
 }

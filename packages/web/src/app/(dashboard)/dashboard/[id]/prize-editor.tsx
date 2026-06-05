@@ -38,6 +38,13 @@ export function PrizeEditor({
 }: Props) {
   const t = useTranslations("prizeEditor");
   const td = useTranslations("detail");
+  const pt = useTranslations("prizeTypes");
+  // Standard prizes are translated by rule type; custom prizes use the
+  // organiser's own text.
+  const labelOf = (p: { ruleType: string; label: string }) =>
+    p.ruleType === "custom" ? p.label : pt(`${p.ruleType}.label`);
+  const descOf = (p: { ruleType: string; description: string | null }) =>
+    p.ruleType === "custom" ? p.description : pt(`${p.ruleType}.description`);
   const [editing, setEditing] = useState(false);
   const [rows, setRows] = useState<Row[]>(prizes);
   const [saving, setSaving] = useState(false);
@@ -128,10 +135,10 @@ export function PrizeEditor({
             .map((p) => (
               <li key={p.id} className="flex items-start justify-between gap-3 px-4 py-3">
                 <div className="min-w-0">
-                  <div className="text-sm font-medium">{p.label}</div>
-                  {p.description && (
+                  <div className="text-sm font-medium">{labelOf(p)}</div>
+                  {descOf(p) && (
                     <div className="text-xs text-muted-foreground">
-                      {p.description}
+                      {descOf(p)}
                     </div>
                   )}
                   {p.perGroup && (
@@ -215,12 +222,18 @@ export function PrizeEditor({
                 className="size-4 accent-[var(--color-primary)]"
                 aria-label="enabled"
               />
-              <Input
-                value={r.label}
-                onChange={(e) => update(i, { label: e.target.value })}
-                placeholder={t("namePlaceholder")}
-                className="h-9 flex-1"
-              />
+              {r.ruleType === "custom" ? (
+                <Input
+                  value={r.label}
+                  onChange={(e) => update(i, { label: e.target.value })}
+                  placeholder={t("namePlaceholder")}
+                  className="h-9 flex-1"
+                />
+              ) : (
+                <span className="flex h-9 min-w-0 flex-1 items-center truncate px-1 text-sm font-medium">
+                  {labelOf(r)}
+                </span>
+              )}
               <div className="relative w-28 shrink-0">
                 <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
                   {symbol}
@@ -244,12 +257,20 @@ export function PrizeEditor({
                 ✕
               </button>
             </div>
-            <Input
-              value={r.description ?? ""}
-              onChange={(e) => update(i, { description: e.target.value })}
-              placeholder={t("descPlaceholder")}
-              className="mt-2 h-8 text-xs"
-            />
+            {r.ruleType === "custom" ? (
+              <Input
+                value={r.description ?? ""}
+                onChange={(e) => update(i, { description: e.target.value })}
+                placeholder={t("descPlaceholder")}
+                className="mt-2 h-8 text-xs"
+              />
+            ) : (
+              descOf(r) && (
+                <p className="mt-1.5 px-1 text-xs text-muted-foreground">
+                  {descOf(r)}
+                </p>
+              )
+            )}
             <div className="mt-1 flex gap-3 text-xs text-muted-foreground">
               {r.perGroup && <span>{t("perGroup", { count: groupCount })}</span>}
               {r.ruleType === "custom" && <span>{t("manual")}</span>}
