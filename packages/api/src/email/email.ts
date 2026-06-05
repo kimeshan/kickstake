@@ -15,6 +15,11 @@ type OtpType =
   | "forget-password"
   | "change-email";
 
+// Test seam: under NODE_ENV=test the last OTP per email is captured here so
+// integration tests can complete the real sign-in flow in-process. Never
+// populated in dev or production.
+export const testOtpStore = new Map<string, string>();
+
 const COPY: Record<OtpType, { subject: string; lead: string }> = {
   "sign-in": {
     subject: "Your KickStake sign-in code",
@@ -48,6 +53,11 @@ export async function sendOtpEmail({
   type: OtpType;
 }) {
   const { subject, lead } = COPY[type] ?? COPY["sign-in"];
+
+  if (process.env.NODE_ENV === "test") {
+    testOtpStore.set(email, otp);
+    return;
+  }
 
   if (!resend) {
     console.log(

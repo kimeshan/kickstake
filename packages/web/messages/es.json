@@ -198,6 +198,7 @@
     "title": "Tus KickStakes",
     "start": "+ Crear una KickStake",
     "signOut": "Cerrar sesión",
+    "loading": "Cargando…",
     "emptyTitle": "Aún no hay KickStakes",
     "emptyBody": "Crea tu primera porra para el Mundial FIFA 2026 — se tarda alrededor de un minuto.",
     "emptyCta": "Crear una KickStake",
@@ -220,5 +221,44 @@
         "desc": "Aprueba los ganadores y ve quién debe a quién. KickStake lleva las cuentas."
       }
     ]
+  },
+  "status": {
+    "draft": "Borrador",
+    "open": "Abierta",
+    "drawn": "Sorteada",
+    "live": "En vivo",
+    "settled": "Liquidada"
+  },
+  "create": {
+    "title": "Crear una KickStake",
+    "subtitle": "Configúrala en menos de un minuto. Puedes editar todo antes de compartir.",
+    "tournament": "Torneo",
+    "name": "Nombre de la porra",
+    "namePlaceholder": "Mundial de la oficina '26",
+    "buyIn": "Entrada por persona",
+    "players": "Jugadores previstos",
+    "donation": "Donación extra al bote (opcional)",
+    "pot": "Bote previsto",
+    "potHint": "Entrada × jugadores, más cualquier donación. Puedes reajustar luego si cambia el número.",
+    "submit": "Crear KickStake",
+    "creating": "Creando…",
+    "cancel": "Cancelar",
+    "error": "No se pudo crear la porra. Revisa los datos e inténtalo de nuevo."
+  },
+  "detail": {
+    "back": "Todas las KickStakes",
+    "pot": "Bote",
+    "buyIn": "Entrada",
+    "players": "Jugadores",
+    "share": "Comparte para unirse",
+    "shareHint": "Cualquiera con el enlace se une solo con un nombre, sin cuenta.",
+    "copy": "Copiar enlace",
+    "copied": "¡Copiado!",
+    "prizes": "Bote de premios",
+    "perGroup": "por grupo × {count}",
+    "runDraw": "Hacer el sorteo",
+    "runDrawHint": "Bloquea a los jugadores y asigna todos los equipos. Próximamente.",
+    "loading": "Cargando…",
+    "notFound": "Porra no encontrada."
   }
 }

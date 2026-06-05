@@ -4,9 +4,10 @@ import { ConfigModule } from "@nestjs/config";
 import { AppController } from "./app.controller";
 import { AuthModule } from "./auth/auth.module";
 import { AuthGuard } from "./auth/auth.guard";
+import { SweepstakesModule } from "./sweepstakes/sweepstakes.module";
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, SweepstakesModule],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
 })

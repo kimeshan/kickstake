@@ -37,6 +37,21 @@ mockups.
   Locale is cookie-based (`NEXT_LOCALE`), no `[locale]` route segment. Add a key
   to **every** locale file (en is the source of truth) and keep keys in sync.
 
+## Testing
+
+- **API**: Jest integration tests against a throwaway `kickstake_test` DB
+  (`packages/api`, `pnpm --filter @kickstake/api test`). Prefer real DB +
+  HTTP (supertest via `createApp()`) over mocks. Auth in tests: `NODE_ENV=test`
+  makes `email.ts` capture the OTP in `testOtpStore` so the real sign-in flow
+  can be driven in-process.
+- **E2E**: Playwright (`packages/web/e2e`, `pnpm --filter @kickstake/web test:e2e`).
+  Needs Postgres up + seeded and both servers (the config boots them if absent).
+  `global-setup.ts` authenticates by reading the OTP straight from the
+  `verification` table (better-auth stores it as `"<otp>:<attempts>"`).
+- **Always cover new routes/flows** with an E2E test, and keep the dead-link
+  crawler in `public.spec.ts` — a linked-but-missing page must fail CI, not ship.
+- Both run in CI (`.github/workflows/test.yml`).
+
 ## Guardrails
 
 - Keep `declaration: false` in `packages/api/tsconfig.json`. Declaration emit

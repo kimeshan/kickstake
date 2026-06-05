@@ -198,6 +198,7 @@
     "title": "Your KickStakes",
     "start": "+ Start a KickStake",
     "signOut": "Sign out",
+    "loading": "Loading…",
     "emptyTitle": "No KickStakes yet",
     "emptyBody": "Spin up your first sweepstake for the 2026 FIFA World Cup — it takes about a minute.",
     "emptyCta": "Start a KickStake",
@@ -220,5 +221,44 @@
         "desc": "Approve the winners, see who owes who. KickStake keeps the books."
       }
     ]
+  },
+  "status": {
+    "draft": "Draft",
+    "open": "Open",
+    "drawn": "Drawn",
+    "live": "Live",
+    "settled": "Settled"
+  },
+  "create": {
+    "title": "Create a KickStake",
+    "subtitle": "Set it up in under a minute. You can edit everything before you share.",
+    "tournament": "Tournament",
+    "name": "Sweepstake name",
+    "namePlaceholder": "Office World Cup '26",
+    "buyIn": "Buy-in per person",
+    "players": "Expected players",
+    "donation": "Extra pot donation (optional)",
+    "pot": "Designed pot",
+    "potHint": "Buy-in × players, plus any donation. You can rescale later if the count changes.",
+    "submit": "Create KickStake",
+    "creating": "Creating…",
+    "cancel": "Cancel",
+    "error": "Couldn't create the sweepstake. Check the details and try again."
+  },
+  "detail": {
+    "back": "All KickStakes",
+    "pot": "Pot",
+    "buyIn": "Buy-in",
+    "players": "Players",
+    "share": "Share to join",
+    "shareHint": "Anyone with the link joins with just a name — no account.",
+    "copy": "Copy link",
+    "copied": "Copied!",
+    "prizes": "Prize pot",
+    "perGroup": "per group × {count}",
+    "runDraw": "Run the draw",
+    "runDrawHint": "Locks players and assigns all teams. Coming soon.",
+    "loading": "Loading…",
+    "notFound": "Sweepstake not found."
   }
 }

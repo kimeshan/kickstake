@@ -198,6 +198,7 @@
     "title": "Seus KickStakes",
     "start": "+ Criar um KickStake",
     "signOut": "Sair",
+    "loading": "Carregando…",
     "emptyTitle": "Nenhum KickStake ainda",
     "emptyBody": "Crie seu primeiro bolão para a Copa do Mundo FIFA 2026 — leva cerca de um minuto.",
     "emptyCta": "Criar um KickStake",
@@ -220,5 +221,44 @@
         "desc": "Aprove os vencedores e veja quem deve a quem. O KickStake mantém as contas."
       }
     ]
+  },
+  "status": {
+    "draft": "Rascunho",
+    "open": "Aberto",
+    "drawn": "Sorteado",
+    "live": "Ao vivo",
+    "settled": "Acertado"
+  },
+  "create": {
+    "title": "Criar um KickStake",
+    "subtitle": "Configure em menos de um minuto. Você pode editar tudo antes de compartilhar.",
+    "tournament": "Torneio",
+    "name": "Nome do bolão",
+    "namePlaceholder": "Copa do escritório '26",
+    "buyIn": "Entrada por pessoa",
+    "players": "Jogadores previstos",
+    "donation": "Doação extra ao prêmio (opcional)",
+    "pot": "Prêmio previsto",
+    "potHint": "Entrada × jogadores, mais qualquer doação. Você pode reajustar depois se o número mudar.",
+    "submit": "Criar KickStake",
+    "creating": "Criando…",
+    "cancel": "Cancelar",
+    "error": "Não foi possível criar o bolão. Verifique os dados e tente de novo."
+  },
+  "detail": {
+    "back": "Todos os KickStakes",
+    "pot": "Prêmio",
+    "buyIn": "Entrada",
+    "players": "Jogadores",
+    "share": "Compartilhar para entrar",
+    "shareHint": "Qualquer pessoa com o link entra só com um nome, sem conta.",
+    "copy": "Copiar link",
+    "copied": "Copiado!",
+    "prizes": "Prêmio",
+    "perGroup": "por grupo × {count}",
+    "runDraw": "Fazer o sorteio",
+    "runDrawHint": "Trava os jogadores e distribui todos os times. Em breve.",
+    "loading": "Carregando…",
+    "notFound": "Bolão não encontrado."
   }
 }

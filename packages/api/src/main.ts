@@ -1,24 +1,8 @@
-import { NestFactory } from "@nestjs/core";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
-import { toNodeHandler } from "better-auth/node";
-import { AppModule } from "./app.module";
-import { auth } from "./auth/auth";
+import { createApp } from "./create-app";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { bodyParser: false });
-
-  // CORS must be before auth handler so preflight OPTIONS requests get headers
-  app.enableCors({
-    origin: process.env.CORS_ORIGIN?.split(",") ?? ["http://localhost:3800"],
-    credentials: true,
-  });
-
-  // Mount better-auth before NestJS routes (handles /auth/* with all sub-paths)
-  const authHandler = toNodeHandler(auth);
-  app.use("/auth", authHandler);
-
-  // Re-add JSON parser for NestJS routes
-  app.use(require("express").json({ limit: "10mb" }));
+  const app = await createApp();
 
   // Swagger
   const config = new DocumentBuilder()

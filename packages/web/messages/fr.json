@@ -198,6 +198,7 @@
     "title": "Tes KickStakes",
     "start": "+ Créer un KickStake",
     "signOut": "Se déconnecter",
+    "loading": "Chargement…",
     "emptyTitle": "Pas encore de KickStake",
     "emptyBody": "Lance ta première cagnotte pour la Coupe du Monde FIFA 2026 — ça prend environ une minute.",
     "emptyCta": "Créer un KickStake",
@@ -220,5 +221,44 @@
         "desc": "Valide les gagnants, vois qui doit quoi à qui. KickStake tient les comptes."
       }
     ]
+  },
+  "status": {
+    "draft": "Brouillon",
+    "open": "Ouverte",
+    "drawn": "Tirée",
+    "live": "En direct",
+    "settled": "Réglée"
+  },
+  "create": {
+    "title": "Créer un KickStake",
+    "subtitle": "Configure-le en moins d'une minute. Tu peux tout modifier avant de partager.",
+    "tournament": "Tournoi",
+    "name": "Nom de la cagnotte",
+    "namePlaceholder": "Coupe du Monde du bureau '26",
+    "buyIn": "Mise par personne",
+    "players": "Joueurs attendus",
+    "donation": "Don supplémentaire à la cagnotte (facultatif)",
+    "pot": "Cagnotte prévue",
+    "potHint": "Mise × joueurs, plus tout don. Tu peux réajuster plus tard si le nombre change.",
+    "submit": "Créer le KickStake",
+    "creating": "Création…",
+    "cancel": "Annuler",
+    "error": "Impossible de créer la cagnotte. Vérifie les détails et réessaie."
+  },
+  "detail": {
+    "back": "Tous les KickStakes",
+    "pot": "Cagnotte",
+    "buyIn": "Mise",
+    "players": "Joueurs",
+    "share": "Partager pour rejoindre",
+    "shareHint": "Toute personne avec le lien rejoint avec juste un nom, sans compte.",
+    "copy": "Copier le lien",
+    "copied": "Copié !",
+    "prizes": "Cagnotte",
+    "perGroup": "par groupe × {count}",
+    "runDraw": "Lancer le tirage",
+    "runDrawHint": "Verrouille les joueurs et attribue toutes les équipes. Bientôt disponible.",
+    "loading": "Chargement…",
+    "notFound": "Cagnotte introuvable."
   }
 }

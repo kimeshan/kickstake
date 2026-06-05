@@ -198,6 +198,7 @@
     "title": "你的 KickStake",
     "start": "+ 创建 KickStake",
     "signOut": "退出登录",
+    "loading": "加载中…",
     "emptyTitle": "还没有 KickStake",
     "emptyBody": "为 2026 国际足联世界杯创建你的第一个竞猜 — 大约只需一分钟。",
     "emptyCta": "创建 KickStake",
@@ -220,5 +221,44 @@
         "desc": "确认获奖者，查看谁欠谁。KickStake 负责记账。"
       }
     ]
+  },
+  "status": {
+    "draft": "草稿",
+    "open": "开放中",
+    "drawn": "已抽签",
+    "live": "进行中",
+    "settled": "已结算"
+  },
+  "create": {
+    "title": "创建 KickStake",
+    "subtitle": "一分钟内即可设置。分享前你可以随意修改。",
+    "tournament": "赛事",
+    "name": "竞猜名称",
+    "namePlaceholder": "办公室世界杯 '26",
+    "buyIn": "每人入场费",
+    "players": "预计人数",
+    "donation": "额外奖池捐赠（可选）",
+    "pot": "预设奖池",
+    "potHint": "入场费 × 人数，加上任何捐赠。人数变化后可随时重新调整。",
+    "submit": "创建 KickStake",
+    "creating": "创建中…",
+    "cancel": "取消",
+    "error": "无法创建竞猜。请检查信息后重试。"
+  },
+  "detail": {
+    "back": "全部 KickStake",
+    "pot": "奖池",
+    "buyIn": "入场费",
+    "players": "人数",
+    "share": "分享以加入",
+    "shareHint": "任何人凭链接只需输入名字即可加入，无需账户。",
+    "copy": "复制链接",
+    "copied": "已复制！",
+    "prizes": "奖池",
+    "perGroup": "每组 × {count}",
+    "runDraw": "开始抽签",
+    "runDrawHint": "锁定参与者并分配所有球队。即将推出。",
+    "loading": "加载中…",
+    "notFound": "未找到竞猜。"
   }
 }

@@ -1,9 +1,22 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { apiFetch } from "@/lib/api";
+import { formatMoney } from "@/lib/money";
+import { StatusBadge, type Sweepstake } from "./_components";
 
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
-  const steps = t.raw("steps") as { title: string; desc: string }[];
+  const [stakes, setStakes] = useState<Sweepstake[] | null>(null);
+
+  useEffect(() => {
+    apiFetch("/sweepstakes")
+      .then((r) => r.json())
+      .then(setStakes)
+      .catch(() => setStakes([]));
+  }, []);
 
   return (
     <div className="space-y-8 duration-500 animate-in fade-in">
@@ -22,7 +35,46 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      {/* Empty state */}
+      {stakes === null ? (
+        <div className="grid place-items-center py-16">
+          <div className="size-7 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+        </div>
+      ) : stakes.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <ul className="space-y-3">
+          {stakes.map((s) => (
+            <li key={s.id}>
+              <Link
+                href={`/dashboard/${s.id}`}
+                className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-card/50 px-5 py-4 transition hover:-translate-y-0.5 hover:border-primary/40"
+              >
+                <div className="min-w-0">
+                  <div className="truncate font-semibold">{s.name}</div>
+                  <div className="truncate text-sm text-muted-foreground">
+                    {s.tournament?.name}
+                  </div>
+                </div>
+                <div className="flex shrink-0 items-center gap-4">
+                  <span className="font-display text-xl text-primary">
+                    {formatMoney(s.designedPot, s.currency)}
+                  </span>
+                  <StatusBadge status={s.status} />
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function EmptyState() {
+  const t = useTranslations("dashboard");
+  const steps = t.raw("steps") as { title: string; desc: string }[];
+  return (
+    <>
       <div className="relative overflow-hidden rounded-3xl border border-border bg-card/60 px-6 py-14 text-center">
         <div
           aria-hidden
@@ -41,7 +93,6 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      {/* How it works */}
       <div>
         <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
           {t("howTitle")}
@@ -61,6 +112,6 @@ export default function DashboardPage() {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
