@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { signIn, emailOtp, useSession } from "@/lib/auth-client";
-import { Logo, GoogleIcon } from "@/components/brand";
+import { Logo } from "@/components/brand";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Input } from "@/components/ui/input";
 
@@ -24,7 +24,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function sendCode(e: React.FormEvent) {
@@ -50,19 +49,6 @@ export default function LoginPage() {
     if (error) return setError(error.message ?? t("errVerify"));
     router.push("/dashboard");
     router.refresh();
-  }
-
-  async function google() {
-    setError(null);
-    setGoogleLoading(true);
-    const { error } = await signIn.social({
-      provider: "google",
-      callbackURL: `${window.location.origin}/dashboard`,
-    });
-    if (error) {
-      setGoogleLoading(false);
-      setError(error.message ?? t("errGoogle"));
-    }
   }
 
   // Signed in — show a brief redirecting state instead of the form.
@@ -131,21 +117,6 @@ export default function LoginPage() {
                   {loading ? t("sending") : t("sendCode")}
                 </button>
               </form>
-
-              <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
-                <span className="h-px flex-1 bg-border" />
-                {t("or")}
-                <span className="h-px flex-1 bg-border" />
-              </div>
-
-              <button
-                onClick={google}
-                disabled={googleLoading}
-                className="flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-border bg-secondary/40 font-medium text-foreground transition hover:bg-secondary/70 active:scale-[.98] disabled:opacity-50"
-              >
-                <GoogleIcon className="size-5" />
-                {googleLoading ? t("googleRedirecting") : t("google")}
-              </button>
             </>
           ) : (
             <>
