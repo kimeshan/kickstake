@@ -1,14 +1,18 @@
 /**
  * Seeds the 2026 FIFA World Cup (spec Appendix A): 48 teams across 12 groups.
- * Idempotent — re-running replaces the existing WC2026 tournament + teams.
  *
- *   pnpm db:seed
+ * Idempotent — upserts the tournament (by name+year) and each team (by
+ * tournament+name). Safe to run on every deploy, like migrations: it never
+ * deletes, so existing sweepstakes that reference the tournament are untouched.
+ *
+ *   pnpm db:seed          (local, via tsx)
+ *   node dist/db/seed.js  (deploy, after migrations — see packages/api/Dockerfile)
  *
  * NOTE: verify against the official FIFA source at build time; this is the
  * post-draw seed as of the spec.
  */
 import "dotenv/config";
-import { eq, and } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { db, pool } from "./index";
 import { tournament, team } from "./schema";
 
@@ -32,15 +36,7 @@ const GROUPS: Record<string, [string, string][]> = {
 };
 
 async function seed() {
-  // Clear any prior copy so the seed is repeatable.
-  const existing = await db
-    .select({ id: tournament.id })
-    .from(tournament)
-    .where(and(eq(tournament.name, NAME), eq(tournament.year, YEAR)));
-  for (const t of existing) {
-    await db.delete(tournament).where(eq(tournament.id, t.id)); // teams cascade
-  }
-
+  // Upsert the tournament by (name, year).
   const [t] = await db
     .insert(tournament)
     .values({
@@ -51,8 +47,13 @@ async function seed() {
       format: "international_cup",
       status: "upcoming",
     })
+    .onConflictDoUpdate({
+      target: [tournament.name, tournament.year],
+      set: { groupCount: 12, teamCount: 48 },
+    })
     .returning();
 
+  // Upsert teams by (tournament_id, name); corrects group/flag if changed.
   const rows = Object.entries(GROUPS).flatMap(([groupLabel, teams]) =>
     teams.map(([name, flagCode]) => ({
       tournamentId: t.id,
@@ -61,7 +62,16 @@ async function seed() {
       flagCode,
     })),
   );
-  await db.insert(team).values(rows);
+  await db
+    .insert(team)
+    .values(rows)
+    .onConflictDoUpdate({
+      target: [team.tournamentId, team.name],
+      set: {
+        groupLabel: sql`excluded.group_label`,
+        flagCode: sql`excluded.flag_code`,
+      },
+    });
 
   console.log(`Seeded "${NAME}" — ${rows.length} teams across 12 groups.`);
 }

@@ -6,6 +6,7 @@ import {
   timestamp,
   uuid,
   index,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -32,7 +33,10 @@ export const tournament = pgTable("tournament", {
   dataSourceId: text("data_source_id"),
   status: tournamentStatusEnum("status").notNull().default("upcoming"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (t) => [
+  // A tournament is unique by name + year — lets the seed upsert idempotently.
+  uniqueIndex("tournament_name_year_idx").on(t.name, t.year),
+]);
 
 export const team = pgTable(
   "team",
@@ -46,7 +50,11 @@ export const team = pgTable(
     // ISO-3166 alpha-2 (lowercase) for flag rendering, e.g. "br", "gb-eng".
     flagCode: text("flag_code"),
   },
-  (t) => [index("team_tournament_idx").on(t.tournamentId)],
+  (t) => [
+    index("team_tournament_idx").on(t.tournamentId),
+    // Unique per tournament — lets the seed upsert teams idempotently.
+    uniqueIndex("team_tournament_name_idx").on(t.tournamentId, t.name),
+  ],
 );
 
 export const tournamentRelations = relations(tournament, ({ many }) => ({

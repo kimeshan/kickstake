@@ -40,5 +40,7 @@ USER nestjs
 
 EXPOSE 10000
 
-# Migrate then start. Log clearly so Render logs show where it failed (migrate vs app).
-CMD ["sh", "-c", "echo 'Checking DATABASE_URL...' && if [ -z \"$DATABASE_URL\" ]; then echo 'Fatal: DATABASE_URL is not set. Add it in Render service Environment.'; exit 1; fi && echo 'Running migrations...' && ./node_modules/.bin/drizzle-kit migrate --config=drizzle.config.migrate.cjs || { echo 'Migration failed (see above).'; exit 1; } && echo 'Starting API...' && exec node dist/main.js"]
+# Migrate → seed (idempotent) → start. Log clearly so Render logs show where it
+# failed. Migrations are fatal; the seed is non-fatal so a seed hiccup can't
+# crash-loop the API (it's an upsert and will retry on the next deploy).
+CMD ["sh", "-c", "echo 'Checking DATABASE_URL...' && if [ -z \"$DATABASE_URL\" ]; then echo 'Fatal: DATABASE_URL is not set. Add it in Render service Environment.'; exit 1; fi && echo 'Running migrations...' && ./node_modules/.bin/drizzle-kit migrate --config=drizzle.config.migrate.cjs || { echo 'Migration failed (see above).'; exit 1; } && echo 'Seeding tournament data...' && node dist/db/seed.js || echo 'Seed failed (non-fatal) — continuing.' && echo 'Starting API...' && exec node dist/main.js"]

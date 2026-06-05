@@ -1,0 +1,2 @@
+CREATE UNIQUE INDEX "team_tournament_name_idx" ON "team" USING btree ("tournament_id","name");--> statement-breakpoint
+CREATE UNIQUE INDEX "tournament_name_year_idx" ON "tournament" USING btree ("name","year");
