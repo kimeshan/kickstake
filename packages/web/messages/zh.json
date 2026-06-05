@@ -170,7 +170,7 @@
   },
   "footer": {
     "tracking": "仅做记录。KickStake 绝不处理付款。",
-    "copyright": "© 2026 KickStake",
+    "copyright": "© {year} KickStake",
     "openSource": "免费且开源 ❤️",
     "github": "在 GitHub 查看",
     "privacy": "隐私",

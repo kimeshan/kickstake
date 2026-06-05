@@ -170,7 +170,7 @@
   },
   "footer": {
     "tracking": "Tracking-only. KickStake never processes payments.",
-    "copyright": "© 2026 KickStake",
+    "copyright": "© {year} KickStake",
     "openSource": "Free & open source ❤️",
     "github": "View on GitHub",
     "contribute": "Contribute 💵",
@@ -293,11 +293,10 @@
   "join": {
     "invited": "You're invited",
     "buyIn": "Buy-in",
-    "pot": "Pot",
+    "pot": "Pot (unassigned)",
     "players": "In so far",
     "whoIn": "Who's in",
     "drawnTitle": "The teams are in!",
-    "pot": "Pot (unassigned)",
     "perGroup": "× {count}",
     "prizes": "{count} prizes up for grabs",
     "namePlaceholder": "Your name",
@@ -362,17 +361,53 @@
     "manualNote": "Manually assigned"
   },
   "prizeTypes": {
-    "winner": { "label": "Tournament Winner", "description": "Owner of the team that lifts the trophy." },
-    "runner_up": { "label": "Runner-up", "description": "Owner of the team that loses the final." },
-    "third_place": { "label": "Bronze", "description": "Owner of the team that wins the 3rd-place playoff." },
-    "group_top": { "label": "Top of group", "description": "Owner of the team that finishes 1st in each group — split across all groups." },
-    "group_bottom": { "label": "Bottom of group", "description": "Owner of the team that finishes last in each group — split across all groups." },
-    "player_of_tournament": { "label": "Player of the Tournament", "description": "Owner of the team whose player wins the official award." },
-    "golden_boot": { "label": "Golden Boot", "description": "Owner of the team with the tournament's top scorer." },
-    "most_cards": { "label": "Dirtiest team", "description": "Most disciplinary points — 15 per red, 10 per yellow." },
-    "least_conceded": { "label": "Best defence", "description": "Team with the lowest average goals conceded." },
-    "most_possession": { "label": "Most possession", "description": "Team with the highest average possession." },
-    "least_possession": { "label": "Least possession", "description": "Team with the lowest average possession." },
-    "biggest_loss": { "label": "Biggest single-game loss", "description": "Team that suffers the heaviest defeat in one match." }
+    "winner": {
+      "label": "Tournament Winner",
+      "description": "Owner of the team that lifts the trophy."
+    },
+    "runner_up": {
+      "label": "Runner-up",
+      "description": "Owner of the team that loses the final."
+    },
+    "third_place": {
+      "label": "Bronze",
+      "description": "Owner of the team that wins the 3rd-place playoff."
+    },
+    "group_top": {
+      "label": "Top of group",
+      "description": "Owner of the team that finishes 1st in each group — split across all groups."
+    },
+    "group_bottom": {
+      "label": "Bottom of group",
+      "description": "Owner of the team that finishes last in each group — split across all groups."
+    },
+    "player_of_tournament": {
+      "label": "Player of the Tournament",
+      "description": "Owner of the team whose player wins the official award."
+    },
+    "golden_boot": {
+      "label": "Golden Boot",
+      "description": "Owner of the team with the tournament's top scorer."
+    },
+    "most_cards": {
+      "label": "Dirtiest team",
+      "description": "Most disciplinary points — 15 per red, 10 per yellow."
+    },
+    "least_conceded": {
+      "label": "Best defence",
+      "description": "Team with the lowest average goals conceded."
+    },
+    "most_possession": {
+      "label": "Most possession",
+      "description": "Team with the highest average possession."
+    },
+    "least_possession": {
+      "label": "Least possession",
+      "description": "Team with the lowest average possession."
+    },
+    "biggest_loss": {
+      "label": "Biggest single-game loss",
+      "description": "Team that suffers the heaviest defeat in one match."
+    }
   }
 }

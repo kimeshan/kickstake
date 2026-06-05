@@ -170,7 +170,7 @@
   },
   "footer": {
     "tracking": "تتبّع فقط. لا يعالج KickStake المدفوعات أبدًا.",
-    "copyright": "© 2026 KickStake",
+    "copyright": "© {year} KickStake",
     "openSource": "مجاني ومفتوح المصدر ❤️",
     "github": "عرض على GitHub",
     "privacy": "الخصوصية",

@@ -170,7 +170,7 @@
   },
   "footer": {
     "tracking": "Только учёт. KickStake никогда не обрабатывает платежи.",
-    "copyright": "© 2026 KickStake",
+    "copyright": "© {year} KickStake",
     "openSource": "Бесплатно и с открытым кодом ❤️",
     "github": "Открыть на GitHub",
     "privacy": "Конфиденциальность",

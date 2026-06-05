@@ -452,7 +452,7 @@ function Footer() {
           </p>
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
-            <span>{t("copyright")}</span>
+            <span>{t("copyright", { year: String(new Date().getFullYear()) })}</span>
           </div>
         </div>
       </div>

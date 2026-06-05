@@ -170,7 +170,7 @@
   },
   "footer": {
     "tracking": "सिर्फ़ ट्रैकिंग। KickStake कभी भुगतान प्रोसेस नहीं करता।",
-    "copyright": "© 2026 KickStake",
+    "copyright": "© {year} KickStake",
     "openSource": "मुफ़्त और ओपन सोर्स ❤️",
     "github": "GitHub पर देखें",
     "privacy": "गोपनीयता",
