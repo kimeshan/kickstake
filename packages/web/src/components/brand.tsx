@@ -1,6 +1,24 @@
 import { cn } from "@/lib/utils";
 
-/** The lime "K" tile + wordmark. Size controls the tile; text scales with it. */
+/** The KickStake "K" mark — same geometry as the favicon (app/icon.svg). */
+export function KMark({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 512 512"
+      className={cn("size-9", className)}
+      role="img"
+      aria-label="KickStake"
+    >
+      <rect width="512" height="512" rx="116" fill="var(--color-primary)" />
+      <path
+        d="M132 120 H204 V224 L300 120 H380 L244 260 L380 400 H300 L204 296 V400 H132 Z"
+        fill="var(--color-primary-foreground)"
+      />
+    </svg>
+  );
+}
+
+/** The "K" mark + wordmark. Size controls the mark; text scales with it. */
 export function Logo({
   className,
   showWord = true,
@@ -10,9 +28,7 @@ export function Logo({
 }) {
   return (
     <div className={cn("flex items-center gap-2.5", className)}>
-      <span className="grid size-9 rotate-3 place-items-center rounded-xl bg-primary font-display text-2xl text-primary-foreground shadow-[0_0_24px_-4px] shadow-primary/50">
-        K
-      </span>
+      <KMark className="size-9 rounded-xl drop-shadow-[0_0_16px_rgba(198,241,53,0.35)]" />
       {showWord && (
         <span className="font-display text-2xl tracking-tight text-foreground">
           KickStake

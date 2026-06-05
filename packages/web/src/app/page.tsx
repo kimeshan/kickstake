@@ -232,10 +232,7 @@ function OldWayVsKickStake() {
             className="pointer-events-none absolute -top-16 right-0 size-40 rounded-full bg-primary/15 blur-3xl"
           />
           <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-primary">
-            <Logo
-              showWord={false}
-              className="[&_span]:size-6 [&_span]:text-base"
-            />
+            <Logo showWord={false} className="[&_svg]:size-6" />
             {t("newLabel")}
           </div>
           <ul className="mt-5 space-y-3">
