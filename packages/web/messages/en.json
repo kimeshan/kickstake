@@ -191,7 +191,8 @@
     "footer": "Tracking-only — KickStake never touches your money.",
     "errSend": "Couldn't send the code.",
     "errVerify": "That code didn't work.",
-    "errGoogle": "Google sign-in isn't available."
+    "errGoogle": "Google sign-in isn't available.",
+    "backHome": "Home"
   },
   "dashboard": {
     "organiser": "Organiser",

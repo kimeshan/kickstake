@@ -191,7 +191,8 @@
     "footer": "Solo seguimiento — KickStake nunca toca tu dinero.",
     "errSend": "No se pudo enviar el código.",
     "errVerify": "Ese código no funcionó.",
-    "errGoogle": "El inicio de sesión con Google no está disponible."
+    "errGoogle": "El inicio de sesión con Google no está disponible.",
+    "backHome": "Inicio"
   },
   "dashboard": {
     "organiser": "Organizador",

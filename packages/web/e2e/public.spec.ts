@@ -44,6 +44,12 @@ test("login page shows the email step and advances to the code step", async ({
   await expect(page.getByText("Check your inbox")).toBeVisible();
 });
 
+test("login page has a way back to the home page", async ({ page }) => {
+  await page.goto("/login");
+  await page.getByRole("link", { name: /Home/i }).first().click();
+  await expect(page).toHaveURL("http://localhost:3800/");
+});
+
 test("language switch to Arabic flips the document to RTL", async ({
   context,
   page,

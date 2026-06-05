@@ -191,7 +191,8 @@
     "footer": "Suivi uniquement — KickStake ne touche jamais à ton argent.",
     "errSend": "Impossible d'envoyer le code.",
     "errVerify": "Ce code n'a pas fonctionné.",
-    "errGoogle": "La connexion Google n'est pas disponible."
+    "errGoogle": "La connexion Google n'est pas disponible.",
+    "backHome": "Accueil"
   },
   "dashboard": {
     "organiser": "Organisateur",

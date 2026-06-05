@@ -191,7 +191,8 @@
     "footer": "تتبّع فقط — لا يلمس KickStake أموالك أبدًا.",
     "errSend": "تعذّر إرسال الرمز.",
     "errVerify": "هذا الرمز لم ينجح.",
-    "errGoogle": "تسجيل الدخول عبر Google غير متاح."
+    "errGoogle": "تسجيل الدخول عبر Google غير متاح.",
+    "backHome": "الرئيسية"
   },
   "dashboard": {
     "organiser": "المنظّم",

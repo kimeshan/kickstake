@@ -191,7 +191,8 @@
     "footer": "Apenas registro — o KickStake nunca toca no seu dinheiro.",
     "errSend": "Não foi possível enviar o código.",
     "errVerify": "Esse código não funcionou.",
-    "errGoogle": "O login com o Google não está disponível."
+    "errGoogle": "O login com o Google não está disponível.",
+    "backHome": "Início"
   },
   "dashboard": {
     "organiser": "Organizador",

@@ -191,7 +191,8 @@
     "footer": "सिर्फ़ ट्रैकिंग — KickStake कभी आपके पैसे को नहीं छूता।",
     "errSend": "कोड नहीं भेजा जा सका।",
     "errVerify": "वह कोड काम नहीं आया।",
-    "errGoogle": "Google साइन-इन उपलब्ध नहीं है।"
+    "errGoogle": "Google साइन-इन उपलब्ध नहीं है।",
+    "backHome": "होम"
   },
   "dashboard": {
     "organiser": "आयोजक",

@@ -191,7 +191,8 @@
     "footer": "仅做记录 — KickStake 绝不经手你的钱。",
     "errSend": "无法发送验证码。",
     "errVerify": "验证码无效。",
-    "errGoogle": "Google 登录不可用。"
+    "errGoogle": "Google 登录不可用。",
+    "backHome": "首页"
   },
   "dashboard": {
     "organiser": "组织者",

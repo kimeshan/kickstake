@@ -7,6 +7,13 @@ test("dashboard loads for an authenticated organiser", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Your KickStakes" })).toBeVisible();
 });
 
+test("an already-signed-in organiser is bounced from /login to the dashboard", async ({
+  page,
+}) => {
+  await page.goto("/login");
+  await expect(page).toHaveURL(/\/dashboard/);
+});
+
 test("create a sweepstake end-to-end and land on its detail page", async ({
   page,
 }) => {

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { signIn, emailOtp } from "@/lib/auth-client";
+import { signIn, emailOtp, useSession } from "@/lib/auth-client";
 import { Logo, GoogleIcon } from "@/components/brand";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,11 @@ type Step = "email" | "code";
 export default function LoginPage() {
   const t = useTranslations("auth");
   const router = useRouter();
+  // Already signed in? Don't show the form again — go straight to the dashboard.
+  const { data: session } = useSession();
+  useEffect(() => {
+    if (session) router.replace("/dashboard");
+  }, [session, router]);
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -58,14 +64,31 @@ export default function LoginPage() {
     }
   }
 
+  // Signed in — show a brief redirecting state instead of the form.
+  if (session) {
+    return (
+      <div className="grid min-h-screen place-items-center">
+        <div className="size-8 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+      </div>
+    );
+  }
+
   return (
     <main className="grain flex min-h-screen flex-col items-center justify-center px-5 py-12">
       <div className="absolute right-5 top-5">
         <LanguageSwitcher />
       </div>
+      <Link
+        href="/"
+        className="absolute left-5 top-5 text-sm text-muted-foreground transition hover:text-foreground"
+      >
+        ← {t("backHome")}
+      </Link>
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center gap-4 text-center duration-700 animate-in fade-in slide-in-from-bottom-3">
-          <Logo />
+          <Link href="/" aria-label="KickStake home">
+            <Logo />
+          </Link>
           <p className="text-sm text-muted-foreground">
             {t("tagline1")}
             <br />
