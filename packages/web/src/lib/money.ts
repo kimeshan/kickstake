@@ -3,8 +3,9 @@ export interface CurrencyInfo {
   name: string;
 }
 
-/** Top ~20 world currencies for the create wizard. Default is USD. */
+/** World currencies for the create wizard. Default is USD. */
 export const CURRENCIES: CurrencyInfo[] = [
+  // Majors
   { code: "USD", name: "US Dollar" },
   { code: "EUR", name: "Euro" },
   { code: "GBP", name: "British Pound" },
@@ -19,12 +20,53 @@ export const CURRENCIES: CurrencyInfo[] = [
   { code: "NZD", name: "New Zealand Dollar" },
   { code: "SEK", name: "Swedish Krona" },
   { code: "NOK", name: "Norwegian Krone" },
+  { code: "DKK", name: "Danish Krone" },
+  // Africa
   { code: "ZAR", name: "South African Rand" },
+  { code: "MUR", name: "Mauritian Rupee" },
+  { code: "KES", name: "Kenyan Shilling" },
+  { code: "NGN", name: "Nigerian Naira" },
+  { code: "GHS", name: "Ghanaian Cedi" },
+  { code: "EGP", name: "Egyptian Pound" },
+  { code: "MAD", name: "Moroccan Dirham" },
+  { code: "TZS", name: "Tanzanian Shilling" },
+  { code: "UGX", name: "Ugandan Shilling" },
+  { code: "BWP", name: "Botswana Pula" },
+  { code: "NAD", name: "Namibian Dollar" },
+  { code: "ZMW", name: "Zambian Kwacha" },
+  // Americas
   { code: "BRL", name: "Brazilian Real" },
   { code: "MXN", name: "Mexican Peso" },
+  { code: "ARS", name: "Argentine Peso" },
+  { code: "CLP", name: "Chilean Peso" },
+  { code: "COP", name: "Colombian Peso" },
+  { code: "PEN", name: "Peruvian Sol" },
+  // Middle East
   { code: "AED", name: "UAE Dirham" },
   { code: "SAR", name: "Saudi Riyal" },
+  { code: "QAR", name: "Qatari Riyal" },
+  { code: "KWD", name: "Kuwaiti Dinar" },
+  { code: "BHD", name: "Bahraini Dinar" },
+  { code: "ILS", name: "Israeli New Shekel" },
+  { code: "TRY", name: "Turkish Lira" },
+  // Europe (non-euro)
+  { code: "PLN", name: "Polish Złoty" },
+  { code: "CZK", name: "Czech Koruna" },
+  { code: "HUF", name: "Hungarian Forint" },
+  { code: "RON", name: "Romanian Leu" },
+  { code: "RUB", name: "Russian Ruble" },
+  { code: "UAH", name: "Ukrainian Hryvnia" },
+  // Asia-Pacific
   { code: "KRW", name: "South Korean Won" },
+  { code: "TWD", name: "Taiwan Dollar" },
+  { code: "THB", name: "Thai Baht" },
+  { code: "MYR", name: "Malaysian Ringgit" },
+  { code: "IDR", name: "Indonesian Rupiah" },
+  { code: "PHP", name: "Philippine Peso" },
+  { code: "VND", name: "Vietnamese Dong" },
+  { code: "PKR", name: "Pakistani Rupee" },
+  { code: "BDT", name: "Bangladeshi Taka" },
+  { code: "LKR", name: "Sri Lankan Rupee" },
 ];
 
 export const DEFAULT_CURRENCY = "USD";
