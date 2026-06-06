@@ -1,0 +1,413 @@
+{
+  "meta": {
+    "title": "KickStake",
+    "description": "Napravite nagradnu igru za fudbalski turnir, podelite link i pustite KickStake da odradi žreb i nagrade umesto vas."
+  },
+  "nav": {
+    "howItWorks": "Kako funkcioniše",
+    "features": "Mogućnosti",
+    "faq": "Pitanja",
+    "signIn": "Prijava",
+    "startFree": "Počni besplatno",
+    "dashboard": "Kontrolna tabla"
+  },
+  "language": {
+    "label": "Jezik"
+  },
+  "hero": {
+    "badge": "⚽ Svetsko prvenstvo FIFA 2026 — već učitano",
+    "titleLine1": "Grupna nagradna igra,",
+    "titleAccent": "rešeno.",
+    "subtitle": "Pokrenite nagradnu igru za turnir, podelite jedan link u grupnom ćaskanju, a KickStake izvlači timove, deli nagradni fond, prati ko je platio i na kraju sve saldira.",
+    "subtitleEmphasis": "Bez tabela. Bez svađe.",
+    "ctaPrimary": "Pokreni KickStake →",
+    "ctaSecondary": "Pogledaj kako funkcioniše",
+    "microcopy": "Besplatan početak · igrači se priključuju bez naloga · ~60 sekundi za podešavanje"
+  },
+  "phone": {
+    "invited": "Pozvani ste",
+    "hostedBy": "Organizuje {name} · Svetsko prvenstvo FIFA 2026",
+    "buyIn": "Ulog",
+    "pot": "Fond",
+    "in": "Prijavljeni",
+    "prizesTitle": "12 nagrada za osvajanje",
+    "join": "Priključi se KickStake-u →",
+    "noAccount": "Bez naloga. Bez lozinke."
+  },
+  "trust": {
+    "fair": "🎲 Proverljivo pošteno izvlačenje",
+    "tracking": "🔒 Samo evidencija — nikada ne diramo vaš novac",
+    "noInstall": "📲 Bez instalacije aplikacije",
+    "free": "🆓 Besplatan početak"
+  },
+  "oldWay": {
+    "eyebrow": "Zašto se mučiti",
+    "title": "Kraj administraciji nagradnih igara",
+    "sub": "Ako ste nekad organizovali jednu, znate muku. KickStake umesto vas radi dosadne delove koji izazivaju svađe.",
+    "oldLabel": "Stari način",
+    "newLabel": "Uz KickStake",
+    "old": [
+      "Pravljenje tabele koju niko ne razume",
+      "Izvlačenje timova iz pravog šešira",
+      "Ručno računanje podele nagrada",
+      "Jurcanje svih po ćaskanju za ulog",
+      "Svađa oko toga ko je osvojio koju nagradu"
+    ],
+    "new": [
+      "Nagradni fond se pravi sam, tačan do pare",
+      "Izvlačenje jednim dodirom — sa semenom i proverljivo",
+      "Pobednici se predlažu sami, vi samo potvrđujete",
+      "Praćenje uplata + jasan pregled saldiranja",
+      "Svako vidi svoje timove i dobitke uživo"
+    ]
+  },
+  "how": {
+    "eyebrow": "Kako funkcioniše",
+    "title": "Od ideje do prvog udarca u četiri koraka",
+    "steps": [
+      {
+        "title": "Napravi",
+        "desc": "Izaberite turnir i postavite ulog. KickStake automatski pravi fond sa 12 nagrada koji možete prilagoditi."
+      },
+      {
+        "title": "Podeli",
+        "desc": "Pošaljite jedan link u grupno ćaskanje. Svako se priključuje samo imenom — bez naloga."
+      },
+      {
+        "title": "Izvuci",
+        "desc": "Pritisnite Izvuci. Svih 48 timova se pošteno raspoređuje i zaključava, uz sačuvano seme."
+      },
+      {
+        "title": "Saldiraj",
+        "desc": "Potvrdite predložene pobednike. Gledajte dobitke uživo i ko kome duguje."
+      }
+    ]
+  },
+  "features": {
+    "eyebrow": "Mogućnosti",
+    "title": "Sve što organizator mrzi — automatizovano",
+    "items": [
+      {
+        "title": "Proverljivo pošteno izvlačenje",
+        "desc": "Svako izvlačenje čuva nasumično seme. Pokrenite ga ponovo i dobićete potpuno isti rezultat — uz objašnjenje „kako je izvlačenje teklo“ za sumnjičave."
+      },
+      {
+        "title": "Automatski nagradni fond",
+        "desc": "Postavite ulog i KickStake pravi uravnoteženu strukturu nagrada, tačnu do pare. Izmenite bilo koji iznos — odmah se ponovo uravnoteži."
+      },
+      {
+        "title": "12 kategorija nagrada",
+        "desc": "Pobednik, finalista i bronza, plus nagrade po grupama i zabavne kategorije kao Zlatna kopačka, Najgrublji tim i Najbolja odbrana."
+      },
+      {
+        "title": "Priključi se linkom",
+        "desc": "Igrači dodirnu vaš link, upišu ime i unutra su. Bez naloga, bez lozinke, ništa za instalaciju. Napravljeno za grupno ćaskanje."
+      },
+      {
+        "title": "Vi imate kontrolu",
+        "desc": "Rezultati se predlažu automatski sa turnira, ali ništa se ne isplaćuje dok ne potvrdite. Promenite bilo kog pobednika, bilo kada."
+      },
+      {
+        "title": "Saldiranje, gotovo",
+        "desc": "Neto svakog igrača — dobici minus ulog — i ko kome duguje. Novac se kreće van aplikacije; KickStake samo vodi čistu evidenciju."
+      }
+    ]
+  },
+  "prizes": {
+    "eyebrow": "Nagradni fond",
+    "title": "Više načina da se pobedi nego samo pogađanje šampiona",
+    "sub": "Podrazumevana podela potiče iz stvarnih, oprobanih nagradnih igara i uvek se sabira tačno u fond. Uključite ili isključite bilo koju nagradu.",
+    "winner": "Pobednik",
+    "runnerUp": "Finalista",
+    "bronze": "Bronza",
+    "topOfGroup": "Prvi u grupi",
+    "bottomOfGroup": "Poslednji u grupi",
+    "goldenBoot": "Zlatna kopačka",
+    "playerOfTournament": "Najbolji igrač turnira",
+    "dirtiestTeam": "Najgrublji tim",
+    "bestDefence": "Najbolja odbrana",
+    "mostPossession": "Najveći posed",
+    "biggestLoss": "Najveći poraz u jednoj utakmici"
+  },
+  "stats": {
+    "labels": [
+      "za podešavanje",
+      "timova izvučeno jednim dodirom",
+      "nagrada automatski izračunato",
+      "tabela potrebno"
+    ]
+  },
+  "faq": {
+    "eyebrow": "Pitanja",
+    "title": "Pitanja koja postavlja svaki organizator",
+    "items": [
+      {
+        "q": "Da li KickStake rukuje novcem?",
+        "a": "Ne — samo vodi evidenciju. Vi unosite ulog i označavate ko je platio; sama uplata se obavlja onako kako vaša grupa to već radi (bankovni prenos, keš, kako god). Na kraju KickStake pravi pregled saldiranja da niko ne mora da računa."
+      },
+      {
+        "q": "Da li je izvlačenje zaista pošteno?",
+        "a": "Da. Svako izvlačenje se generiše iz sačuvanog nasumičnog semena i u potpunosti je ponovljivo. Svako može da vidi raspored svakog tima, uz objašnjenje „kako je izvlačenje teklo“. Bez nameštenih šešira."
+      },
+      {
+        "q": "Da li igrači moraju da se registruju?",
+        "a": "Ne. Organizatori se prijavljuju jednokratnim kodom putem mejla. Igrači samo otvore link i upišu ime — bez naloga, bez lozinke, bez aplikacije."
+      },
+      {
+        "q": "Koji turniri su podržani?",
+        "a": "Svetsko prvenstvo FIFA 2026 je već učitano — svih 48 timova u 12 grupa. Uskoro stižu i drugi turniri."
+      },
+      {
+        "q": "Koliko košta?",
+        "a": "Besplatan početak. Napravite nagradnu igru, izvucite timove i saldirajte bez troškova."
+      }
+    ]
+  },
+  "finalCta": {
+    "title": "Spremni za prvi udarac?",
+    "subtitle": "Vaša grupa se već svađa oko toga ko će pobediti. Dajte im nešto za šta zaista vredi igrati.",
+    "button": "Pokreni KickStake — besplatno →"
+  },
+  "footer": {
+    "tracking": "Samo evidencija. KickStake nikada ne obrađuje uplate.",
+    "copyright": "© {year} KickStake",
+    "openSource": "Besplatno i otvorenog koda ❤️",
+    "github": "Pogledaj na GitHub-u",
+    "contribute": "Doprinesi 💵",
+    "privacy": "Privatnost",
+    "terms": "Uslovi",
+    "madeBy": "Napravio"
+  },
+  "support": {
+    "cantFind": "Ne vidite svoj turnir? Zatražite ga →",
+    "title": "Zatraži turnir",
+    "namePlaceholder": "Koji turnir? (npr. Euro 2028)",
+    "emailPlaceholder": "Vaš mejl (opciono, da bismo odgovorili)",
+    "notePlaceholder": "Još nešto? (opciono)",
+    "submit": "Pošalji zahtev",
+    "sending": "Slanje…",
+    "cancel": "Otkaži",
+    "success": "Hvala! Javićemo se. 🎉",
+    "error": "Slanje nije uspelo. Pokušajte ponovo."
+  },
+  "auth": {
+    "tagline1": "Vodite izvlačenje. Delite nagrade.",
+    "tagline2": "Delite pravo na hvalisanje.",
+    "emailTitle": "Pokrenite svoj KickStake",
+    "emailSub": "Unesite mejl i poslaćemo vam šestocifreni kod. Nikad lozinki.",
+    "emailPlaceholder": "vi@email.com",
+    "sendCode": "Pošalji mi kod",
+    "sending": "Slanje…",
+    "or": "ILI",
+    "google": "Nastavi sa Google-om",
+    "googleRedirecting": "Preusmeravanje…",
+    "codeTitle": "Proverite poštu",
+    "codeSub": "Poslali smo šestocifreni kod na <strong>{email}</strong>.",
+    "verify": "Potvrdi i nastavi",
+    "verifying": "Provera…",
+    "useDifferent": "← Koristi drugi mejl",
+    "resend": "Pošalji kod ponovo",
+    "footer": "Samo evidencija — KickStake nikada ne dira vaš novac.",
+    "errSend": "Slanje koda nije uspelo.",
+    "errVerify": "Taj kod ne radi.",
+    "errGoogle": "Prijava preko Google-a nije dostupna.",
+    "backHome": "Početna"
+  },
+  "dashboard": {
+    "organiser": "Organizator",
+    "title": "Vaše KickStake igre",
+    "start": "+ Pokreni KickStake",
+    "signOut": "Odjava",
+    "loading": "Učitavanje…",
+    "emptyTitle": "Još nema KickStake igara",
+    "emptyBody": "Pokrenite svoju prvu nagradnu igru za Svetsko prvenstvo FIFA 2026 — traje oko minut.",
+    "emptyCta": "Pokreni KickStake",
+    "howTitle": "Kako funkcioniše",
+    "steps": [
+      {
+        "title": "Napravi",
+        "desc": "Izaberite turnir, postavite ulog, automatski napravite nagradni fond."
+      },
+      {
+        "title": "Podeli",
+        "desc": "Pošaljite link u grupno ćaskanje. Svako se priključuje samo imenom."
+      },
+      {
+        "title": "Izvuci",
+        "desc": "Jedan dodir raspoređuje svih 48 timova. Pošteno i proverljivo."
+      },
+      {
+        "title": "Saldiraj",
+        "desc": "Potvrdite pobednike, vidite ko kome duguje. KickStake vodi evidenciju."
+      }
+    ]
+  },
+  "status": {
+    "draft": "Nacrt",
+    "open": "Otvoreno",
+    "drawn": "Izvučeno",
+    "live": "Uživo",
+    "settled": "Saldirano"
+  },
+  "create": {
+    "title": "Napravi KickStake",
+    "subtitle": "Podesite za manje od minuta. Sve možete izmeniti pre nego što podelite.",
+    "tournament": "Turnir",
+    "currency": "Valuta",
+    "name": "Naziv nagradne igre",
+    "namePlaceholder": "Kancelarijsko SP '26",
+    "buyIn": "Ulog po osobi",
+    "players": "Očekivani broj igrača",
+    "donation": "Dodatna donacija fondu (opciono)",
+    "pot": "Planirani fond",
+    "potHint": "Ulog × igrači, plus eventualna donacija. Kasnije možete ponovo skalirati ako se broj promeni.",
+    "submit": "Napravi KickStake",
+    "creating": "Pravljenje…",
+    "cancel": "Otkaži",
+    "error": "Pravljenje nagradne igre nije uspelo. Proverite podatke i pokušajte ponovo."
+  },
+  "detail": {
+    "back": "Sve KickStake igre",
+    "currency": "Valuta",
+    "joiningOpen": "Prijave su otvorene",
+    "joiningClosed": "Prijave su zatvorene",
+    "openJoining": "Ponovo otvori",
+    "closeJoining": "Zatvori prijave",
+    "finalize": "Finalizuj i prikaži igračima",
+    "finalized": "Finalizovano — igrači vide timove",
+    "finalizeHint": "Prikazuje izvučene timove igračima. I dalje možete promeniti izvlačenje.",
+    "pot": "Fond",
+    "buyIn": "Ulog",
+    "players": "Igrači",
+    "share": "Podeli za priključivanje",
+    "shareHint": "Svako sa linkom se priključuje samo imenom — bez naloga.",
+    "copy": "Kopiraj link",
+    "copied": "Kopirano!",
+    "prizes": "Nagradni fond",
+    "perGroup": "po grupi × {count}",
+    "runDraw": "Izvuci timove",
+    "runDrawHint": "Zaključava igrače i raspoređuje sve timove. Uskoro.",
+    "loading": "Učitavanje…",
+    "notFound": "Nagradna igra nije pronađena."
+  },
+  "join": {
+    "invited": "Pozvani ste",
+    "buyIn": "Ulog",
+    "pot": "Fond (neraspoređeno)",
+    "players": "Do sada",
+    "whoIn": "Ko je unutra",
+    "drawnTitle": "Timovi su izvučeni!",
+    "perGroup": "× {count}",
+    "prizes": "{count} nagrada za osvajanje",
+    "namePlaceholder": "Vaše ime",
+    "emailPlaceholder": "Mejl (opciono, za obaveštenja)",
+    "joinButton": "Priključi se KickStake-u",
+    "joining": "Priključivanje…",
+    "noAccount": "Bez naloga. Bez lozinke.",
+    "waiting": "Izvlačenje još nije obavljeno.",
+    "successTitle": "Unutra ste! 🎉",
+    "successBody": "Na spisku ste. Dobićete svoje timove kada organizator obavi izvlačenje.",
+    "closed": "Prijave su zatvorene — izvlačenje je već obavljeno.",
+    "notFound": "Ova KickStake igra ne postoji ili je link pogrešan.",
+    "error": "Priključivanje nije uspelo. Pokušajte ponovo.",
+    "loading": "Učitavanje…"
+  },
+  "prizeEditor": {
+    "edit": "Uredi nagrade",
+    "done": "Gotovo",
+    "save": "Sačuvaj nagrade",
+    "saving": "Čuvanje…",
+    "cancel": "Otkaži",
+    "add": "+ Dodaj nagradu",
+    "namePlaceholder": "Naziv nagrade",
+    "descPlaceholder": "Opišite šta je (opciono)",
+    "manual": "Ručno — pobednika birate sami",
+    "perGroup": "po grupi × {count}",
+    "allocated": "Raspoređeno",
+    "balanced": "Uravnoteženo — sabira se u fond",
+    "over": "Iznad fonda za {amount}",
+    "under": "Još {amount} za raspoređivanje",
+    "autoBalance": "Auto-uravnoteži",
+    "remove": "Ukloni",
+    "saveError": "Nagrade moraju da se saberu tačno u fond pre čuvanja."
+  },
+  "players": {
+    "title": "Igrači",
+    "empty": "Još nema igrača — podelite link da se popuni.",
+    "name": "Ime",
+    "paid": "Plaćeno",
+    "remove": "Ukloni",
+    "confirmRemove": "Ukloniti?",
+    "cancel": "Otkaži"
+  },
+  "draw": {
+    "title": "Izvuci timove",
+    "redraw": "Promeni izvlačenje",
+    "potWarning": "{count} timova nije raspoređeno — nagrade koje osvoje ne idu nikome.",
+    "ready": "{count} igrača prijavljeno. Dodelite svaki tim igraču.",
+    "needPlayers": "Dodajte bar 2 igrača da biste izvukli.",
+    "randomize": "Nasumično",
+    "randomizing": "Izvlačenje…",
+    "manual": "Dodeli ručno",
+    "manualIntro": "Izaberite ko dobija koji tim. Ostavite tim na Fondu da ostane neraspoređen.",
+    "pot": "Fond",
+    "confirmManual": "Potvrdi ovo izvlačenje",
+    "cancel": "Otkaži",
+    "error": "Izvlačenje nije uspelo. Pokušajte ponovo.",
+    "doneTitle": "Timovi izvučeni",
+    "yourPot": "Fond (neraspoređeno)",
+    "teamsCount": "{count} timova",
+    "seedNote": "Proverljivo · seme {seed}",
+    "manualNote": "Ručno dodeljeno"
+  },
+  "prizeTypes": {
+    "winner": {
+      "label": "Pobednik turnira",
+      "description": "Vlasnik tima koji podiže trofej."
+    },
+    "runner_up": {
+      "label": "Finalista",
+      "description": "Vlasnik tima koji izgubi u finalu."
+    },
+    "third_place": {
+      "label": "Bronza",
+      "description": "Vlasnik tima koji pobedi u meču za 3. mesto."
+    },
+    "group_top": {
+      "label": "Prvi u grupi",
+      "description": "Vlasnik tima koji završi kao 1. u svakoj grupi — podeljeno po svim grupama."
+    },
+    "group_bottom": {
+      "label": "Poslednji u grupi",
+      "description": "Vlasnik tima koji završi poslednji u svakoj grupi — podeljeno po svim grupama."
+    },
+    "player_of_tournament": {
+      "label": "Najbolji igrač turnira",
+      "description": "Vlasnik tima čiji igrač osvoji zvaničnu nagradu."
+    },
+    "golden_boot": {
+      "label": "Zlatna kopačka",
+      "description": "Vlasnik tima sa najboljim strelcem turnira."
+    },
+    "most_cards": {
+      "label": "Najgrublji tim",
+      "description": "Najviše disciplinskih poena — 15 po crvenom, 10 po žutom."
+    },
+    "least_conceded": {
+      "label": "Najbolja odbrana",
+      "description": "Tim sa najmanjim prosekom primljenih golova."
+    },
+    "most_possession": {
+      "label": "Najveći posed",
+      "description": "Tim sa najvećim prosečnim posedom lopte."
+    },
+    "least_possession": {
+      "label": "Najmanji posed",
+      "description": "Tim sa najmanjim prosečnim posedom lopte."
+    },
+    "biggest_loss": {
+      "label": "Najveći poraz u jednoj utakmici",
+      "description": "Tim koji pretrpi najteži poraz u jednom meču."
+    }
+  }
+}

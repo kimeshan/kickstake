@@ -33,7 +33,7 @@ mockups.
   `RESEND_API_KEY` is set). Google activates only when `GOOGLE_CLIENT_*` are set.
 - **i18n is mandatory**: all user-facing web copy lives in
   `packages/web/messages/<locale>.json` via next-intl — never hardcode strings
-  in components. 8 locales (en, es, fr, zh, hi, ar, pt, ru); `ar` is RTL.
+  in components. 9 locales (en, es, fr, zh, hi, ar, pt, ru, sr); `ar` is RTL.
   Locale is cookie-based (`NEXT_LOCALE`), no `[locale]` route segment. Add a key
   to **every** locale file (en is the source of truth) and keep keys in sync.
 

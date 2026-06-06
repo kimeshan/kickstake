@@ -7,6 +7,7 @@ export const locales = [
   "ar",
   "pt",
   "ru",
+  "sr",
 ] as const;
 
 export type Locale = (typeof locales)[number];
@@ -26,4 +27,5 @@ export const localeNames: Record<Locale, string> = {
   ar: "العربية",
   pt: "Português",
   ru: "Русский",
+  sr: "Srpski",
 };
