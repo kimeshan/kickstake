@@ -49,6 +49,9 @@ export const team = pgTable(
     groupLabel: text("group_label").notNull(),
     // ISO-3166 alpha-2 (lowercase) for flag rendering, e.g. "br", "gb-eng".
     flagCode: text("flag_code"),
+    // Ordinal strength within the tournament (1 = strongest), seeded from the
+    // FIFA world ranking. Drives the tiered draw; null = tiering unavailable.
+    strengthRank: integer("strength_rank"),
   },
   (t) => [
     index("team_tournament_idx").on(t.tournamentId),

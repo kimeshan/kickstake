@@ -25,12 +25,14 @@ export interface Team {
   name: string;
   groupLabel: string;
   flagCode: string | null;
+  strengthRank: number | null;
 }
 
 export interface Assignment {
   id: string;
   teamId: string;
   participantId: string | null;
+  tier: number | null;
   team: Team;
   participant: Participant | null;
 }
@@ -45,6 +47,7 @@ export interface Sweepstake {
   designedPot: number;
   joinToken: string;
   drawSeed: string | null;
+  drawTiering: "none" | "auto";
   joinClosed: boolean;
   finalized: boolean;
   tournament?: { id: string; name: string; groupCount: number };

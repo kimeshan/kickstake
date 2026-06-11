@@ -57,8 +57,15 @@ test("draw, then finalize reveals the teams to players", async ({
   await page.reload();
   const randomize = page.getByRole("button", { name: /Randomize/i });
   await expect(randomize).toBeVisible();
+  // Tiered is the default for ranked tournaments — the strength-band preview
+  // is visible before drawing (2 players × 48 teams = 24 tiers).
+  await expect(page.getByRole("button", { name: /Tiered/ })).toBeVisible();
+  await expect(page.getByText("Tier 1", { exact: true })).toBeVisible();
   await randomize.click();
   await expect(page.getByText("Teams drawn")).toBeVisible();
+  // The draw note says tiered, and each team chip carries its tier badge.
+  await expect(page.getByText(/Tiered draw/)).toBeVisible();
+  await expect(page.getByText("T1", { exact: true }).first()).toBeVisible();
 
   // A player visiting the link can't see teams until finalized.
   const ctx = await browser.newContext();
@@ -71,6 +78,8 @@ test("draw, then finalize reveals the teams to players", async ({
 
   await p2.reload();
   await expect(p2.getByText("The teams are in!")).toBeVisible();
+  // Players see the tier badges on the reveal too.
+  await expect(p2.getByText("T1", { exact: true }).first()).toBeVisible();
   await ctx.close();
 });
 

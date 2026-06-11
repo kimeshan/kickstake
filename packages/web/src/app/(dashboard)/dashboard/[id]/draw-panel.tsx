@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { apiFetch } from "@/lib/api";
 import { flagEmoji } from "@/lib/flag";
@@ -21,6 +21,7 @@ export function DrawPanel({
 }: Props) {
   const t = useTranslations("draw");
   const [mode, setMode] = useState<"choose" | "manual">("choose");
+  const [style, setStyle] = useState<"tiered" | "pure">("tiered");
   const [teams, setTeams] = useState<Team[]>([]);
   const [picks, setPicks] = useState<Record<string, string>>({}); // teamId -> participantId | "pot"
   const [busy, setBusy] = useState(false);
@@ -28,13 +29,44 @@ export function DrawPanel({
 
   const enoughPlayers = participants.length >= 2;
 
+  // Teams power the tier preview and the manual grid.
+  useEffect(() => {
+    apiFetch(`/tournaments/${tournamentId}/teams`)
+      .then((r) => r.json())
+      .then(setTeams)
+      .catch(() => {});
+  }, [tournamentId]);
+
+  // Tiering needs a strength rank on every team (custom tournaments may lack it).
+  const ranked =
+    teams.length > 0 && teams.every((tm) => tm.strengthRank !== null);
+
+  // Mirrors the API's banding: floor(T/N) tiers of N teams by strength rank.
+  const bands = useMemo(() => {
+    if (!ranked || !enoughPlayers) return [];
+    const sorted = [...teams].sort(
+      (a, b) => (a.strengthRank ?? 0) - (b.strengthRank ?? 0),
+    );
+    const n = participants.length;
+    const base = Math.floor(sorted.length / n);
+    return Array.from({ length: base }, (_, b) =>
+      sorted.slice(b * n, (b + 1) * n),
+    );
+  }, [teams, participants.length, ranked, enoughPlayers]);
+  const extras = ranked
+    ? teams.length - bands.length * participants.length
+    : 0;
+
   async function randomize() {
     setError(null);
     setBusy(true);
     try {
       const r = await apiFetch(`/sweepstakes/${sweepstakeId}/draw`, {
         method: "POST",
-        body: JSON.stringify({ mode: "random" }),
+        body: JSON.stringify({
+          mode: "random",
+          tiering: ranked && style === "tiered" ? "auto" : "none",
+        }),
       });
       onDrawn(await r.json());
     } catch {
@@ -43,12 +75,9 @@ export function DrawPanel({
     }
   }
 
-  async function openManual() {
+  function openManual() {
     setError(null);
-    const r = await apiFetch(`/tournaments/${tournamentId}/teams`);
-    const ts: Team[] = await r.json();
-    setTeams(ts);
-    setPicks(Object.fromEntries(ts.map((t) => [t.id, "pot"])));
+    setPicks(Object.fromEntries(teams.map((tm) => [tm.id, "pot"])));
     setMode("manual");
   }
 
@@ -159,28 +188,84 @@ export function DrawPanel({
   }
 
   return (
-    <div className="rounded-3xl border border-border bg-card/40 p-5 text-center">
-      <div className="font-display text-xl">{t("title")}</div>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {t("ready", { count: participants.length })}
-      </p>
+    <div className="rounded-3xl border border-border bg-card/40 p-5">
+      <div className="text-center">
+        <div className="font-display text-xl">{t("title")}</div>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {t("ready", { count: participants.length })}
+        </p>
+      </div>
+
+      {ranked && (
+        <div className="mt-4">
+          <div className="grid grid-cols-2 gap-1 rounded-xl border border-border p-1">
+            <button
+              onClick={() => setStyle("tiered")}
+              className={`rounded-lg py-2 text-sm font-semibold transition ${
+                style === "tiered"
+                  ? "bg-primary/15 text-primary"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t("tiered")}
+            </button>
+            <button
+              onClick={() => setStyle("pure")}
+              className={`rounded-lg py-2 text-sm font-semibold transition ${
+                style === "pure"
+                  ? "bg-primary/15 text-primary"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t("pure")}
+            </button>
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {style === "tiered" ? t("tieredHint") : t("pureHint")}
+          </p>
+
+          {style === "tiered" && bands.length > 0 && (
+            <div className="mt-3 max-h-48 space-y-1.5 overflow-y-auto rounded-xl border border-border/60 bg-secondary/20 p-3">
+              {bands.map((band, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="w-14 shrink-0 text-[11px] font-bold uppercase tracking-wide text-primary">
+                    {t("tierLabel", { n: i + 1 })}
+                  </span>
+                  <span
+                    className="truncate text-sm"
+                    title={band.map((tm) => tm.name).join(", ")}
+                  >
+                    {band.map((tm) => flagEmoji(tm.flagCode)).join(" ")}
+                  </span>
+                </div>
+              ))}
+              {extras > 0 && (
+                <p className="pt-1 text-[11px] text-muted-foreground">
+                  {t("tierExtras", { count: extras })}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       {error && (
         <p className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {error}
         </p>
       )}
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+      <div className="mt-4 flex flex-col gap-2">
         <button
           onClick={randomize}
           disabled={busy}
-          className="flex-1 rounded-xl bg-primary py-3 font-semibold text-primary-foreground transition active:scale-[.98] disabled:opacity-50"
+          className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground transition active:scale-[.98] disabled:opacity-50"
         >
           🎲 {busy ? t("randomizing") : t("randomize")}
         </button>
         <button
           onClick={openManual}
-          disabled={busy}
-          className="flex-1 rounded-xl border border-border py-3 font-semibold text-foreground transition hover:bg-secondary/60 disabled:opacity-50"
+          disabled={busy || teams.length === 0}
+          className="w-full rounded-xl border border-border py-3 font-semibold text-foreground transition hover:bg-secondary/60 disabled:opacity-50"
         >
           {t("manual")}
         </button>

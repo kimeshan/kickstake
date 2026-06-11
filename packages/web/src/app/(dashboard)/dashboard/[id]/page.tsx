@@ -164,6 +164,7 @@ export default function SweepstakeDetailPage() {
             assignments={s.assignments ?? []}
             participants={s.participants ?? []}
             drawSeed={s.drawSeed}
+            drawTiering={s.drawTiering}
           />
           {editable && (
             <div className="space-y-2">

@@ -19,20 +19,23 @@ import { tournament, team } from "./schema";
 const NAME = "2026 FIFA World Cup";
 const YEAR = 2026;
 
-// [name, ISO flag code]. Scotland/England use the FIFA sub-region codes.
-const GROUPS: Record<string, [string, string][]> = {
-  A: [["Mexico", "mx"], ["South Korea", "kr"], ["South Africa", "za"], ["Czechia", "cz"]],
-  B: [["Canada", "ca"], ["Switzerland", "ch"], ["Qatar", "qa"], ["Bosnia-Herzegovina", "ba"]],
-  C: [["Brazil", "br"], ["Morocco", "ma"], ["Scotland", "gb-sct"], ["Haiti", "ht"]],
-  D: [["USA", "us"], ["Paraguay", "py"], ["Australia", "au"], ["Türkiye", "tr"]],
-  E: [["Germany", "de"], ["Ecuador", "ec"], ["Ivory Coast", "ci"], ["Curaçao", "cw"]],
-  F: [["Netherlands", "nl"], ["Japan", "jp"], ["Tunisia", "tn"], ["Sweden", "se"]],
-  G: [["Belgium", "be"], ["Iran", "ir"], ["Egypt", "eg"], ["New Zealand", "nz"]],
-  H: [["Spain", "es"], ["Uruguay", "uy"], ["Saudi Arabia", "sa"], ["Cape Verde", "cv"]],
-  I: [["France", "fr"], ["Senegal", "sn"], ["Norway", "no"], ["Iraq", "iq"]],
-  J: [["Argentina", "ar"], ["Austria", "at"], ["Algeria", "dz"], ["Jordan", "jo"]],
-  K: [["Portugal", "pt"], ["Colombia", "co"], ["Uzbekistan", "uz"], ["DR Congo", "cd"]],
-  L: [["England", "gb-eng"], ["Croatia", "hr"], ["Panama", "pa"], ["Ghana", "gh"]],
+// [name, ISO flag code, strength rank]. Scotland/England use the FIFA
+// sub-region codes. The rank is the team's ORDINAL position among the 48
+// qualifiers (1 = strongest) per the final pre-tournament FIFA world ranking
+// (11 June 2026 edition); it drives the tiered draw.
+const GROUPS: Record<string, [string, string, number][]> = {
+  A: [["Mexico", "mx", 13], ["South Korea", "kr", 23], ["South Africa", "za", 40], ["Czechia", "cz", 32]],
+  B: [["Canada", "ca", 27], ["Switzerland", "ch", 18], ["Qatar", "qa", 38], ["Bosnia-Herzegovina", "ba", 43]],
+  C: [["Brazil", "br", 6], ["Morocco", "ma", 7], ["Scotland", "gb-sct", 34], ["Haiti", "ht", 47]],
+  D: [["USA", "us", 16], ["Paraguay", "py", 33], ["Australia", "au", 24], ["Türkiye", "tr", 20]],
+  E: [["Germany", "de", 10], ["Ecuador", "ec", 21], ["Ivory Coast", "ci", 29], ["Curaçao", "cw", 46]],
+  F: [["Netherlands", "nl", 8], ["Japan", "jp", 17], ["Tunisia", "tn", 35], ["Sweden", "se", 31]],
+  G: [["Belgium", "be", 9], ["Iran", "ir", 19], ["Egypt", "eg", 26], ["New Zealand", "nz", 48]],
+  H: [["Spain", "es", 2], ["Uruguay", "uy", 15], ["Saudi Arabia", "sa", 41], ["Cape Verde", "cv", 44]],
+  I: [["France", "fr", 3], ["Senegal", "sn", 14], ["Norway", "no", 28], ["Iraq", "iq", 39]],
+  J: [["Argentina", "ar", 1], ["Austria", "at", 22], ["Algeria", "dz", 25], ["Jordan", "jo", 42]],
+  K: [["Portugal", "pt", 5], ["Colombia", "co", 12], ["Uzbekistan", "uz", 37], ["DR Congo", "cd", 36]],
+  L: [["England", "gb-eng", 4], ["Croatia", "hr", 11], ["Panama", "pa", 30], ["Ghana", "gh", 45]],
 };
 
 async function seed() {
@@ -53,15 +56,23 @@ async function seed() {
     })
     .returning();
 
-  // Upsert teams by (tournament_id, name); corrects group/flag if changed.
+  // Upsert teams by (tournament_id, name); corrects group/flag/rank if changed.
   const rows = Object.entries(GROUPS).flatMap(([groupLabel, teams]) =>
-    teams.map(([name, flagCode]) => ({
+    teams.map(([name, flagCode, strengthRank]) => ({
       tournamentId: t.id,
       name,
       groupLabel,
       flagCode,
+      strengthRank,
     })),
   );
+
+  // The ranks must be a permutation of 1..48 — a typo here would silently
+  // skew the tiered draw.
+  const ranks = rows.map((r) => r.strengthRank).sort((a, b) => a - b);
+  if (!ranks.every((r, i) => r === i + 1))
+    throw new Error("Seed strength ranks are not a permutation of 1..48.");
+
   await db
     .insert(team)
     .values(rows)
@@ -70,6 +81,7 @@ async function seed() {
       set: {
         groupLabel: sql`excluded.group_label`,
         flagCode: sql`excluded.flag_code`,
+        strengthRank: sql`excluded.strength_rank`,
       },
     });
 

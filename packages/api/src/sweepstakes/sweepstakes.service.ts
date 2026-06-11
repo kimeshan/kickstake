@@ -18,9 +18,12 @@ import {
 import { generatePrizes, prizeTotal } from "./prize-generation";
 import {
   runDraw,
+  runTieredDraw,
   DRAW_ALGO_VERSION,
   type RemainderPolicy,
+  type DrawTiering,
   type Assignment,
+  type RankedTeam,
 } from "./draw";
 
 /** Minor-unit exponent for a currency (2 for USD, 0 for JPY/KRW). */
@@ -50,6 +53,7 @@ export interface ParticipantInput {
 
 export interface DrawInput {
   mode: "random" | "manual";
+  tiering?: DrawTiering; // random only; "auto" bands teams by strength rank
   remainderPolicy?: RemainderPolicy;
   assignments?: Assignment[]; // required for manual
 }
@@ -266,7 +270,7 @@ export class SweepstakesService {
       throw new BadRequestException("Add at least 2 players before drawing.");
 
     const teams = await db
-      .select({ id: team.id })
+      .select({ id: team.id, strengthRank: team.strengthRank })
       .from(team)
       .where(eq(team.tournamentId, s.tournamentId));
     const teamIds = teams.map((t) => t.id);
@@ -275,6 +279,7 @@ export class SweepstakesService {
     let assignments: Assignment[];
     let seed: string | null;
     let algoVersion: number | null;
+    let tiering: DrawTiering = "none";
 
     if (input.mode === "manual") {
       assignments = this.validateManual(input.assignments ?? [], teamIds, participantIds);
@@ -283,7 +288,21 @@ export class SweepstakesService {
     } else {
       seed = nanoid(12);
       const policy: RemainderPolicy = input.remainderPolicy ?? "spread_fairly";
-      assignments = runDraw(teamIds, participantIds, seed, policy);
+      tiering = input.tiering ?? "none";
+      if (tiering === "auto") {
+        if (teams.some((t) => t.strengthRank === null))
+          throw new BadRequestException(
+            "Tiered draw needs a strength rank on every team in this tournament.",
+          );
+        assignments = runTieredDraw(
+          teams as RankedTeam[],
+          participantIds,
+          seed,
+          policy,
+        );
+      } else {
+        assignments = runDraw(teamIds, participantIds, seed, policy);
+      }
       algoVersion = DRAW_ALGO_VERSION;
     }
 
@@ -296,6 +315,7 @@ export class SweepstakesService {
           sweepstakeId: id,
           teamId: a.teamId,
           participantId: a.participantId,
+          tier: a.tier ?? null,
         })),
       );
       await tx
@@ -304,6 +324,7 @@ export class SweepstakesService {
           status: "drawn",
           drawSeed: seed,
           drawAlgoVersion: algoVersion,
+          drawTiering: tiering,
           remainderPolicy: input.remainderPolicy ?? s.remainderPolicy,
         })
         .where(eq(sweepstake.id, id));
@@ -412,6 +433,7 @@ export class SweepstakesService {
               flagCode: a.team.flagCode,
               groupLabel: a.team.groupLabel,
             },
+            tier: a.tier,
             participantName: a.participant?.displayName ?? null,
           }))
         : null,

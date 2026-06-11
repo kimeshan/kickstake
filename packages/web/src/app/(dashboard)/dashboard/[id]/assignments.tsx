@@ -9,19 +9,47 @@ interface Props {
   assignments: Assignment[];
   participants: Participant[];
   drawSeed: string | null;
+  drawTiering: "none" | "auto";
 }
 
-export function Assignments({ assignments, participants, drawSeed }: Props) {
+// Strongest tier first; extras / pure-random teams (no tier) last.
+const byTier = (a: Assignment, b: Assignment) =>
+  (a.tier ?? Infinity) - (b.tier ?? Infinity);
+
+function TeamChip({ a, muted }: { a: Assignment; muted?: boolean }) {
+  const t = useTranslations("draw");
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-sm ${
+        muted ? "bg-secondary/40 text-muted-foreground" : "bg-secondary/50"
+      }`}
+    >
+      {flagEmoji(a.team.flagCode)} {a.team.name}
+      {a.tier !== null && (
+        <span className="rounded-full bg-primary/15 px-1.5 text-[10px] font-bold text-primary">
+          {t("tierBadge", { n: a.tier })}
+        </span>
+      )}
+    </span>
+  );
+}
+
+export function Assignments({
+  assignments,
+  participants,
+  drawSeed,
+  drawTiering,
+}: Props) {
   const t = useTranslations("draw");
 
   // Group teams by participant (and the pot).
   const byPlayer = participants.map((p) => ({
     name: p.displayName,
-    teams: assignments.filter((a) => a.participantId === p.id).map((a) => a.team),
+    teams: assignments.filter((a) => a.participantId === p.id).sort(byTier),
   }));
   const potTeams = assignments
     .filter((a) => a.participantId === null)
-    .map((a) => a.team);
+    .sort(byTier);
 
   return (
     <div>
@@ -30,7 +58,10 @@ export function Assignments({ assignments, participants, drawSeed }: Props) {
           {t("doneTitle")}
         </h2>
         <span className="text-xs text-muted-foreground">
-          {drawSeed ? t("seedNote", { seed: drawSeed }) : t("manualNote")}
+          {drawSeed
+            ? (drawTiering === "auto" ? `${t("tieredNote")} · ` : "") +
+              t("seedNote", { seed: drawSeed })
+            : t("manualNote")}
         </span>
       </div>
 
@@ -47,13 +78,8 @@ export function Assignments({ assignments, participants, drawSeed }: Props) {
               </span>
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {row.teams.map((tm) => (
-                <span
-                  key={tm.id}
-                  className="inline-flex items-center gap-1 rounded-full bg-secondary/50 px-2 py-0.5 text-sm"
-                >
-                  {flagEmoji(tm.flagCode)} {tm.name}
-                </span>
+              {row.teams.map((a) => (
+                <TeamChip key={a.team.id} a={a} />
               ))}
             </div>
           </li>
@@ -65,13 +91,8 @@ export function Assignments({ assignments, participants, drawSeed }: Props) {
               🫙 {t("yourPot")}
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {potTeams.map((tm) => (
-                <span
-                  key={tm.id}
-                  className="inline-flex items-center gap-1 rounded-full bg-secondary/40 px-2 py-0.5 text-sm text-muted-foreground"
-                >
-                  {flagEmoji(tm.flagCode)} {tm.name}
-                </span>
+              {potTeams.map((a) => (
+                <TeamChip key={a.team.id} a={a} muted />
               ))}
             </div>
           </li>

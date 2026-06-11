@@ -326,5 +326,76 @@ describe("SweepstakesService (DB integration)", () => {
         svc.update(organiserId, s.id, { finalized: true }),
       ).rejects.toThrow(/draw/i);
     });
+
+    it("rejects a tiered draw when teams have no strength rank", async () => {
+      const { s } = await withPlayers(2);
+      await expect(
+        svc.draw(organiserId, s.id, { mode: "random", tiering: "auto" }),
+      ).rejects.toThrow(/strength rank/i);
+    });
+  });
+
+  describe("tiered draw", () => {
+    let tieredSid: string;
+    let rankByTeamId: Map<string, number>;
+
+    beforeAll(async () => {
+      const [dt] = await db
+        .insert(tournament)
+        .values({ name: "Tiered Cup", year: 2032, groupCount: 2, teamCount: 6 })
+        .returning();
+      const rows = await db
+        .insert(team)
+        .values(
+          Array.from({ length: 6 }, (_, i) => ({
+            tournamentId: dt.id,
+            name: `Ranked ${i}`,
+            groupLabel: i < 3 ? "A" : "B",
+            strengthRank: i + 1,
+          })),
+        )
+        .returning();
+      rankByTeamId = new Map(rows.map((r) => [r.id, r.strengthRank!]));
+
+      const s = await svc.create(organiserId, {
+        tournamentId: dt.id,
+        name: "TieredStake",
+        buyIn: 1000,
+        expectedParticipants: 3,
+      });
+      tieredSid = s.id;
+      await db.insert(participant).values(
+        Array.from({ length: 3 }, (_, i) => ({
+          sweepstakeId: s.id,
+          displayName: `T${i}`,
+          amountDue: 1000,
+        })),
+      );
+    });
+
+    it("gives every player one team per band and persists the tiering", async () => {
+      const d = await svc.draw(organiserId, tieredSid, {
+        mode: "random",
+        tiering: "auto",
+      });
+      expect(d.drawTiering).toBe("auto");
+      expect(d.drawSeed).toBeTruthy();
+      expect(d.assignments).toHaveLength(6);
+      // 6 teams / 3 players = 2 bands: ranks 1-3 are tier 1, ranks 4-6 tier 2.
+      for (const p of d.participants) {
+        const mine = d.assignments.filter((a) => a.participantId === p.id);
+        expect(mine.map((a) => a.tier).sort()).toEqual([1, 2]);
+        for (const a of mine) {
+          const rank = rankByTeamId.get(a.teamId)!;
+          expect(a.tier).toBe(rank <= 3 ? 1 : 2);
+        }
+      }
+    });
+
+    it("a pure-random redraw resets the tiering and clears tiers", async () => {
+      const d = await svc.draw(organiserId, tieredSid, { mode: "random" });
+      expect(d.drawTiering).toBe("none");
+      expect(d.assignments.every((a) => a.tier === null)).toBe(true);
+    });
   });
 });

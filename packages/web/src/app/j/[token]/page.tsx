@@ -22,6 +22,7 @@ interface JoinPrize {
 
 interface DrawEntry {
   team: { name: string; flagCode: string | null; groupLabel: string };
+  tier: number | null;
   participantName: string | null;
 }
 
@@ -46,7 +47,7 @@ interface JoinView {
 function groupDraw(draw: DrawEntry[], potLabel: string) {
   const map = new Map<
     string,
-    { name: string; isPot: boolean; teams: DrawEntry["team"][] }
+    { name: string; isPot: boolean; entries: DrawEntry[] }
   >();
   for (const e of draw) {
     const key = e.participantName ?? "__pot__";
@@ -54,15 +55,19 @@ function groupDraw(draw: DrawEntry[], potLabel: string) {
       map.set(key, {
         name: e.participantName ?? potLabel,
         isPot: e.participantName === null,
-        teams: [],
+        entries: [],
       });
-    map.get(key)!.teams.push(e.team);
+    map.get(key)!.entries.push(e);
   }
+  for (const row of map.values())
+    // Strongest tier first; extras / pure-random teams (no tier) last.
+    row.entries.sort((a, b) => (a.tier ?? Infinity) - (b.tier ?? Infinity));
   return [...map.values()].sort((a, b) => Number(a.isPot) - Number(b.isPot));
 }
 
 export default function JoinPage() {
   const t = useTranslations("join");
+  const td = useTranslations("draw");
   const pt = useTranslations("prizeTypes");
   const prizeLabel = (p: JoinPrize) =>
     p.ruleType === "custom" ? p.label : pt(`${p.ruleType}.label`);
@@ -216,12 +221,17 @@ export default function JoinPage() {
                         {row.isPot ? row.name : titleCaseName(row.name)}
                       </div>
                       <div className="flex flex-wrap gap-1">
-                        {row.teams.map((tm, i) => (
+                        {row.entries.map((e, i) => (
                           <span
-                            key={`${tm.name}-${i}`}
+                            key={`${e.team.name}-${i}`}
                             className="inline-flex items-center gap-1 rounded-full bg-secondary/50 px-2 py-0.5 text-xs"
                           >
-                            {flagEmoji(tm.flagCode)} {tm.name}
+                            {flagEmoji(e.team.flagCode)} {e.team.name}
+                            {e.tier !== null && (
+                              <span className="rounded-full bg-primary/15 px-1.5 text-[10px] font-bold text-primary">
+                                {td("tierBadge", { n: e.tier })}
+                              </span>
+                            )}
                           </span>
                         ))}
                       </div>

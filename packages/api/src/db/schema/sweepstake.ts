@@ -30,6 +30,10 @@ export const remainderPolicyEnum = pgEnum("remainder_policy", [
   "to_pot",
 ]);
 
+// Random-draw tiering: "auto" bands teams by strength rank so each player gets
+// exactly one team per band (no one lands two favourites). "none" = pure random.
+export const drawTieringEnum = pgEnum("draw_tiering", ["none", "auto"]);
+
 // Prize rule types (spec §6). `custom` for organiser-defined prizes.
 export const ruleTypeEnum = pgEnum("rule_type", [
   "winner",
@@ -84,6 +88,7 @@ export const sweepstake = pgTable(
     remainderPolicy: remainderPolicyEnum("remainder_policy")
       .notNull()
       .default("spread_fairly"),
+    drawTiering: drawTieringEnum("draw_tiering").notNull().default("none"),
     // Admin-controlled, independent of the draw (spec gives the organiser full
     // control): join_closed stops new joiners; finalized reveals the drawn
     // teams to players. The draw stays re-runnable either way.
@@ -128,6 +133,10 @@ export const teamAssignment = pgTable(
     participantId: uuid("participant_id").references(() => participant.id, {
       onDelete: "set null",
     }),
+    // Strength band this team was drawn from (1 = strongest) under a tiered
+    // draw. Stored per assignment so the display stays truthful even if the
+    // participant list changes later. Null for pure-random/manual/extras.
+    tier: integer("tier"),
   },
   (a) => [
     index("assignment_sweepstake_idx").on(a.sweepstakeId),
