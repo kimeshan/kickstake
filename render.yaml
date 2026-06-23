@@ -1,98 +1,19 @@
 # KickStake – Render Blueprint (API + Web + Postgres)
-# Test and Prod each get a Postgres DB, an API service, and a Web frontend.
+# Prod gets a Postgres DB, an API service, and a Web frontend.
 #
 # Custom domains (configure DNS at your registrar — see notes at bottom):
 #   Prod web  → kickstake.app (+ www)     Prod API  → api.kickstake.app
-#   Test web  → test.kickstake.app        Test API  → api-test.kickstake.app
 #
 # Non-secret env vars are set here; secrets (sync:false) are set per-service in
 # the Dashboard after first deploy: RESEND_API_KEY, GOOGLE_CLIENT_ID/SECRET.
 # (BETTER_AUTH_SECRET is auto-generated.)
 
 databases:
-  - name: kickstake-db-test
-    databaseName: kickstake_test
-    plan: free
   - name: kickstake-db-prod
     databaseName: kickstake_prod
     plan: basic-256mb
 
 services:
-  # ---- Test environment ----
-  - type: web
-    name: kickstake-api-test
-    env: docker
-    runtime: docker
-    region: oregon
-    plan: free
-    branch: test
-    domains:
-      - api-test.kickstake.app
-    dockerfilePath: ./packages/api/Dockerfile
-    dockerContext: .
-    buildCommand: ""
-    startCommand: ""
-    buildFilter:
-      paths:
-        - packages/api/**
-        - package.json
-        - pnpm-lock.yaml
-        - pnpm-workspace.yaml
-        - packages/postgres/**
-    healthCheckPath: /health
-    envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: kickstake-db-test
-          property: connectionString
-      - key: NODE_ENV
-        value: production
-      - key: BETTER_AUTH_SECRET
-        generateValue: true
-      - key: BETTER_AUTH_URL
-        value: https://api-test.kickstake.app
-      - key: CORS_ORIGIN
-        value: https://test.kickstake.app
-      - key: APP_URL
-        value: https://test.kickstake.app
-      - key: COOKIE_DOMAIN
-        value: .kickstake.app
-      - key: EMAIL_FROM
-        value: KickStake <hello@kickstake.app>
-      - key: RESEND_API_KEY
-        sync: false
-      - key: GOOGLE_CLIENT_ID
-        sync: false
-      - key: GOOGLE_CLIENT_SECRET
-        sync: false
-
-  - type: web
-    name: kickstake-web-test
-    env: docker
-    runtime: docker
-    region: oregon
-    plan: free
-    branch: test
-    domains:
-      - test.kickstake.app
-    dockerfilePath: ./packages/web/Dockerfile
-    dockerContext: .
-    buildCommand: ""
-    startCommand: ""
-    buildFilter:
-      paths:
-        - packages/web/**
-        - package.json
-        - pnpm-lock.yaml
-        - pnpm-workspace.yaml
-    envVars:
-      - key: NEXT_PUBLIC_API_URL
-        value: https://api-test.kickstake.app
-      - key: NEXT_PUBLIC_APP_URL
-        value: https://test.kickstake.app
-      - key: NODE_ENV
-        value: production
-
   # ---- Production environment ----
   - type: web
     name: kickstake-api-prod
