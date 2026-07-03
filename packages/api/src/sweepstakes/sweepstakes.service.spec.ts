@@ -2,10 +2,11 @@ import { eq } from "drizzle-orm";
 import { db, pool } from "../db";
 import { user, tournament, team, participant } from "../db/schema";
 import { SweepstakesService } from "./sweepstakes.service";
+import { ResultsService } from "../results/results.service";
 import { prizeTotal } from "./prize-generation";
 
 describe("SweepstakesService (DB integration)", () => {
-  const svc = new SweepstakesService();
+  const svc = new SweepstakesService(new ResultsService());
   const organiserId = "svc-org";
   const otherId = "svc-other";
   let tournamentId: string;

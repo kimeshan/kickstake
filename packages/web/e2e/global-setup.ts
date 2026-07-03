@@ -1,3 +1,5 @@
+import { execSync } from "child_process";
+import { join } from "path";
 import { request } from "@playwright/test";
 import { Client } from "pg";
 
@@ -26,6 +28,14 @@ async function retry<T>(fn: () => Promise<T>, attempts = 30): Promise<T> {
 }
 
 export default async function globalSetup() {
+  // Synthetic WC2026 results (groups + R32 finished) so the live-prizes UI
+  // has data to render. Idempotent, dev-only data.
+  execSync("pnpm --filter @kickstake/api db:seed:demo", {
+    cwd: join(__dirname, "..", "..", ".."),
+    stdio: "pipe",
+    env: { ...process.env, DATABASE_URL: DB },
+  });
+
   const ctx = await request.newContext({ baseURL: APP });
 
   // Wait for the stack to be up, then request a sign-in code.

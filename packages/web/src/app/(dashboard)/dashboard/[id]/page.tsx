@@ -12,6 +12,8 @@ import { PrizeEditor } from "./prize-editor";
 import { ParticipantsManager } from "./participants-manager";
 import { DrawPanel } from "./draw-panel";
 import { Assignments } from "./assignments";
+import { LivePanel } from "@/components/live/live-panel";
+import { Bracket } from "@/components/live/bracket";
 
 export default function SweepstakeDetailPage() {
   const t = useTranslations("detail");
@@ -69,6 +71,20 @@ export default function SweepstakeDetailPage() {
       method: "PATCH",
       body: JSON.stringify(body),
     });
+    setS(await r.json());
+  }
+
+  // Pull fresh results from the provider (when configured), then reload.
+  async function refreshResults() {
+    if (!s?.tournament?.id) return;
+    try {
+      await apiFetch(`/tournaments/${s.tournament.id}/sync-results`, {
+        method: "POST",
+      });
+    } catch {
+      // Provider hiccup — still refetch; the view recomputes from stored data.
+    }
+    const r = await apiFetch(`/sweepstakes/${id}`);
     setS(await r.json());
   }
 
@@ -147,6 +163,18 @@ export default function SweepstakeDetailPage() {
           </div>
         )}
       </div>
+
+      {/* Live prize money + knockout bracket — once results exist */}
+      {s.live && (
+        <>
+          <LivePanel
+            live={s.live}
+            currency={s.currency}
+            onRefresh={refreshResults}
+          />
+          <Bracket bracket={s.live.bracket} />
+        </>
+      )}
 
       {/* Players */}
       <ParticipantsManager

@@ -17,6 +17,10 @@ mockups.
   projects). `docker-compose.yml` maps 5437→5432.
 - Copy `packages/api/.env.example` → `.env` and `packages/web/.env.example` → `.env`.
 - `pnpm postgres:dev` (start + migrate), `pnpm db:seed` (WC2026 data), `pnpm dev`.
+- `pnpm --filter @kickstake/api db:seed:demo` fakes WC2026 results (groups +
+  R32 finished) so live prizes/bracket render locally. Dev/e2e only — prod
+  results come from football-data.org (`FOOTBALL_DATA_API_KEY`, daily in-process
+  cron in `packages/api/src/results/`, override schedule with `RESULTS_CRON`).
 - API Swagger is at **`/api-docs`** and health at **`/health`** — there is no
   `/api` route on the API (`/api/*` only exists on the web app at :3800).
 

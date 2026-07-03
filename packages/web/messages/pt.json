@@ -417,5 +417,33 @@
     "cancel": "Cancelar",
     "success": "Obrigado! Entraremos em contato. 🎉",
     "error": "Não foi possível enviar. Tente de novo."
+  },
+  "live": {
+    "title": "Prêmios ao vivo",
+    "updated": "Atualizado {date}",
+    "refresh": "Atualizar resultados",
+    "refreshing": "Atualizando…",
+    "inPlay": "{amount} em jogo",
+    "potRow": "Pote (times não atribuídos)",
+    "prizeResults": "Resultados dos prêmios ({decided}/{total} decididos)",
+    "group": "Grupo {label}",
+    "inPlayBadge": "Em jogo",
+    "manualBadge": "Decidido no final",
+    "bracket": "Chaveamento do mata-mata",
+    "tbd": "A definir",
+    "stages": {
+      "round_of_32": "16 avos de final",
+      "round_of_16": "Oitavas de final",
+      "quarter_final": "Quartas de final",
+      "semi_final": "Semifinais",
+      "third_place": "Terceiro lugar",
+      "final": "Final"
+    },
+    "leader": "Líder atual",
+    "stat": {
+      "goals": "{count, plural, one {# gol} other {# gols}}",
+      "conceded": "{count, plural, one {# gol sofrido} other {# gols sofridos}}",
+      "lossMargin": "{count, plural, one {perdeu por # gol} other {perdeu por # gols}}"
+    }
   }
 }

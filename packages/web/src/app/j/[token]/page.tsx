@@ -11,6 +11,9 @@ import { flagEmoji } from "@/lib/flag";
 import { Logo } from "@/components/brand";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Input } from "@/components/ui/input";
+import { LivePanel } from "@/components/live/live-panel";
+import { Bracket } from "@/components/live/bracket";
+import type { LiveView } from "@/lib/live";
 
 interface JoinPrize {
   label: string;
@@ -41,6 +44,7 @@ interface JoinView {
   joinClosed: boolean;
   finalized: boolean;
   draw: DrawEntry[] | null;
+  live: LiveView | null;
 }
 
 /** Groups draw entries by player, with the pot (unassigned) last. */
@@ -117,7 +121,9 @@ export default function JoinPage() {
         <Logo />
       </Link>
 
-      <div className="w-full max-w-sm">
+      {/* Narrow card while it's just an invite; open up once live results
+          give the page real content to spread out on desktop. */}
+      <div className={`w-full ${view?.live ? "max-w-md lg:max-w-6xl" : "max-w-sm"}`}>
         {missing ? (
           <p className="rounded-2xl border border-border bg-card/60 p-6 text-center text-muted-foreground">
             {t("notFound")}
@@ -127,7 +133,14 @@ export default function JoinPage() {
             <div className="size-7 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
           </div>
         ) : (
-          <div className="duration-500 animate-in fade-in slide-in-from-bottom-3">
+          <div
+            className={`duration-500 animate-in fade-in slide-in-from-bottom-3 ${
+              view.live
+                ? "lg:grid lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:items-start lg:gap-8"
+                : ""
+            }`}
+          >
+            <div>
             <div className="text-center">
               <div className="text-xs font-bold uppercase tracking-widest text-primary">
                 {t("invited")}
@@ -284,6 +297,16 @@ export default function JoinPage() {
               <p className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
                 {error}
               </p>
+            )}
+            </div>
+
+            {/* Live prize money + bracket — once results are in. Sits beside
+                the invite rail on desktop, below it on mobile. */}
+            {view.live && (
+              <div className="mt-4 space-y-4 lg:mt-0">
+                <LivePanel live={view.live} currency={view.currency} />
+                <Bracket bracket={view.live.bracket} />
+              </div>
             )}
           </div>
         )}

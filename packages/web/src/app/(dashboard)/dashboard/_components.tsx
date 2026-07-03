@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import type { LiveView } from "@/lib/live";
 
 export interface Prize {
   id: string;
@@ -54,6 +55,7 @@ export interface Sweepstake {
   prizeCategories?: Prize[];
   participants?: Participant[];
   assignments?: Assignment[];
+  live?: LiveView | null;
 }
 
 const STATUS_STYLES: Record<string, string> = {
