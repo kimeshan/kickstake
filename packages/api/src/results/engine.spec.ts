@@ -106,6 +106,18 @@ describe("computeOutcomes", () => {
     expect(topB.contenders).toEqual(["b1", "b2"]);
   });
 
+  it("decides a group even when the stored label uses provider format (GROUP_A)", () => {
+    // Prod regression: football-data v4 sends group "GROUP_A"; matches were
+    // stored with that label and every group showed 0 decided. The teams'
+    // own group must win over the stored label.
+    const outcomes = computeOutcomes(teams, [
+      finished("a1", "a2", 2, 0, { groupLabel: "GROUP_A" }),
+    ]);
+    expect(
+      outcomes.find((o) => o.ruleType === "group_top" && o.groupLabel === "A"),
+    ).toMatchObject({ decided: true, winningTeamId: "a1" });
+  });
+
   it("tracks knockout elimination and decides winner/runner-up from the final", () => {
     const outcomes = computeOutcomes(teams, [
       ko("semi_final", "a1", "b1", "a1"),
