@@ -62,10 +62,10 @@ function mapMatch(m: any): ProviderMatch | null {
   return {
     externalId: String(m.id),
     stage,
-    // "Group A" → "A"
+    // v4 sends "GROUP_A" (older payloads "Group A") → "A"
     groupLabel:
       stage === "group" && typeof m.group === "string"
-        ? m.group.replace(/^Group\s+/i, "")
+        ? m.group.replace(/^group[\s_]+/i, "")
         : null,
     kickoffAt: m.utcDate ? new Date(m.utcDate) : null,
     home: {

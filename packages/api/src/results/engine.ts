@@ -245,10 +245,21 @@ export function computeOutcomes(
     byGroup.get(t.groupLabel)!.push(t);
   }
 
+  // Attribute a group match to the group its teams belong to — the stored
+  // label is only a fallback, so provider label-format drift (e.g. "GROUP_A"
+  // vs "A") can never strand a group as undecided.
+  const groupOfTeam = new Map(teams.map((t) => [t.id, t.groupLabel]));
+  const groupLabelOf = (m: EngineMatch): string | null => {
+    const home = m.homeTeamId ? groupOfTeam.get(m.homeTeamId) : undefined;
+    const away = m.awayTeamId ? groupOfTeam.get(m.awayTeamId) : undefined;
+    if (home && home === away) return home;
+    return m.groupLabel;
+  };
+
   // Group prizes.
   for (const [label, groupTeams] of [...byGroup.entries()].sort()) {
     const groupMatches = matches.filter(
-      (m) => m.stage === "group" && m.groupLabel === label,
+      (m) => m.stage === "group" && groupLabelOf(m) === label,
     );
     const ids = groupTeams.map((t) => t.id);
     if (groupDecided(ids.length, groupMatches)) {
