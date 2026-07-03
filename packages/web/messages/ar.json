@@ -417,5 +417,33 @@
     "cancel": "إلغاء",
     "success": "شكرًا! سنتواصل معك. 🎉",
     "error": "تعذّر الإرسال. حاول مجددًا."
+  },
+  "live": {
+    "title": "الجوائز المباشرة",
+    "updated": "آخر تحديث {date}",
+    "refresh": "تحديث النتائج",
+    "refreshing": "جارٍ التحديث…",
+    "inPlay": "{amount} على المحك",
+    "potRow": "الوعاء (فرق غير مخصصة)",
+    "prizeResults": "نتائج الجوائز (حُسم {decided}/{total})",
+    "group": "المجموعة {label}",
+    "inPlayBadge": "قيد اللعب",
+    "manualBadge": "يُحسم في النهاية",
+    "bracket": "شجرة الأدوار الإقصائية",
+    "tbd": "لم يتحدد بعد",
+    "stages": {
+      "round_of_32": "دور الـ32",
+      "round_of_16": "دور الـ16",
+      "quarter_final": "ربع النهائي",
+      "semi_final": "نصف النهائي",
+      "third_place": "المركز الثالث",
+      "final": "النهائي"
+    },
+    "leader": "المتصدر حاليًا",
+    "stat": {
+      "goals": "{count, plural, one {هدف واحد} two {هدفان} few {# أهداف} many {# هدفًا} other {# هدف}}",
+      "conceded": "استقبل {count, plural, one {هدفًا واحدًا} two {هدفين} few {# أهداف} many {# هدفًا} other {# هدف}}",
+      "lossMargin": "خسر بفارق {count}"
+    }
   }
 }

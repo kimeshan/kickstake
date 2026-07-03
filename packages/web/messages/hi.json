@@ -417,5 +417,33 @@
     "cancel": "रद्द करें",
     "success": "धन्यवाद! हम संपर्क करेंगे। 🎉",
     "error": "नहीं भेज सके। फिर से प्रयास करें।"
+  },
+  "live": {
+    "title": "लाइव इनाम",
+    "updated": "{date} को अपडेट किया गया",
+    "refresh": "नतीजे रीफ़्रेश करें",
+    "refreshing": "रीफ़्रेश हो रहा है…",
+    "inPlay": "{amount} दांव पर",
+    "potRow": "पॉट (बिना बांटी टीमें)",
+    "prizeResults": "इनाम नतीजे ({decided}/{total} तय)",
+    "group": "ग्रुप {label}",
+    "inPlayBadge": "दांव पर",
+    "manualBadge": "आख़िर में तय होगा",
+    "bracket": "नॉकआउट ब्रैकेट",
+    "tbd": "तय होना बाकी",
+    "stages": {
+      "round_of_32": "राउंड ऑफ़ 32",
+      "round_of_16": "राउंड ऑफ़ 16",
+      "quarter_final": "क्वार्टर फ़ाइनल",
+      "semi_final": "सेमीफ़ाइनल",
+      "third_place": "तीसरा स्थान",
+      "final": "फ़ाइनल"
+    },
+    "leader": "मौजूदा लीडर",
+    "stat": {
+      "goals": "{count} गोल",
+      "conceded": "{count} गोल खाए",
+      "lossMargin": "{count} गोल से हारे"
+    }
   }
 }

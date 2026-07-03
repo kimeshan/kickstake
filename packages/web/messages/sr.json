@@ -417,5 +417,33 @@
       "label": "Najveći poraz u jednoj utakmici",
       "description": "Tim koji pretrpi najteži poraz u jednom meču."
     }
+  },
+  "live": {
+    "title": "Nagrade uživo",
+    "updated": "Ažurirano {date}",
+    "refresh": "Osveži rezultate",
+    "refreshing": "Osvežavanje…",
+    "inPlay": "{amount} u igri",
+    "potRow": "Fond (neraspoređeni timovi)",
+    "prizeResults": "Rezultati nagrada (odlučeno {decided}/{total})",
+    "group": "Grupa {label}",
+    "inPlayBadge": "U igri",
+    "manualBadge": "Odlučuje se na kraju",
+    "bracket": "Nokaut žreb",
+    "tbd": "Biće odlučeno",
+    "stages": {
+      "round_of_32": "Šesnaestina finala",
+      "round_of_16": "Osmina finala",
+      "quarter_final": "Četvrtfinale",
+      "semi_final": "Polufinale",
+      "third_place": "Treće mesto",
+      "final": "Finale"
+    },
+    "leader": "Trenutni lider",
+    "stat": {
+      "goals": "{count, plural, one {# gol} few {# gola} other {# golova}}",
+      "conceded": "primljeno: {count}",
+      "lossMargin": "poraz razlikom {count}"
+    }
   }
 }

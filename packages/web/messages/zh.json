@@ -417,5 +417,33 @@
     "cancel": "取消",
     "success": "谢谢！我们会联系你。🎉",
     "error": "发送失败，请重试。"
+  },
+  "live": {
+    "title": "实时奖金",
+    "updated": "更新于 {date}",
+    "refresh": "刷新赛果",
+    "refreshing": "刷新中…",
+    "inPlay": "{amount} 待争夺",
+    "potRow": "奖池（未分配球队）",
+    "prizeResults": "奖项结果（已定 {decided}/{total}）",
+    "group": "{label} 组",
+    "inPlayBadge": "争夺中",
+    "manualBadge": "赛末揭晓",
+    "bracket": "淘汰赛对阵图",
+    "tbd": "待定",
+    "stages": {
+      "round_of_32": "32强赛",
+      "round_of_16": "16强赛",
+      "quarter_final": "四分之一决赛",
+      "semi_final": "半决赛",
+      "third_place": "季军赛",
+      "final": "决赛"
+    },
+    "leader": "当前领先",
+    "stat": {
+      "goals": "{count} 球",
+      "conceded": "失 {count} 球",
+      "lossMargin": "净负 {count} 球"
+    }
   }
 }

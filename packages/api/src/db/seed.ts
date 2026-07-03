@@ -49,10 +49,12 @@ async function seed() {
       teamCount: 48,
       format: "international_cup",
       status: "upcoming",
+      // football-data.org competition code — the results sync reads this.
+      dataSourceId: "football-data:WC",
     })
     .onConflictDoUpdate({
       target: [tournament.name, tournament.year],
-      set: { groupCount: 12, teamCount: 48 },
+      set: { groupCount: 12, teamCount: 48, dataSourceId: "football-data:WC" },
     })
     .returning();
 

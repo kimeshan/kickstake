@@ -417,5 +417,33 @@
     "cancel": "Cancelar",
     "success": "¡Gracias! Te contactaremos. 🎉",
     "error": "No se pudo enviar. Inténtalo de nuevo."
+  },
+  "live": {
+    "title": "Premios en vivo",
+    "updated": "Actualizado {date}",
+    "refresh": "Actualizar resultados",
+    "refreshing": "Actualizando…",
+    "inPlay": "{amount} en juego",
+    "potRow": "Bote (equipos sin asignar)",
+    "prizeResults": "Resultados de premios ({decided}/{total} decididos)",
+    "group": "Grupo {label}",
+    "inPlayBadge": "En juego",
+    "manualBadge": "Se decide al final",
+    "bracket": "Cuadro eliminatorio",
+    "tbd": "Por decidir",
+    "stages": {
+      "round_of_32": "Dieciseisavos de final",
+      "round_of_16": "Octavos de final",
+      "quarter_final": "Cuartos de final",
+      "semi_final": "Semifinales",
+      "third_place": "Tercer puesto",
+      "final": "Final"
+    },
+    "leader": "Líder actual",
+    "stat": {
+      "goals": "{count, plural, one {# gol} other {# goles}}",
+      "conceded": "{count, plural, one {# gol encajado} other {# goles encajados}}",
+      "lossMargin": "{count, plural, one {perdió por # gol} other {perdió por # goles}}"
+    }
   }
 }

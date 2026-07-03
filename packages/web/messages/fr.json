@@ -417,5 +417,33 @@
     "cancel": "Annuler",
     "success": "Merci ! On te recontacte. 🎉",
     "error": "Échec de l'envoi. Réessaie."
+  },
+  "live": {
+    "title": "Gains en direct",
+    "updated": "Mis à jour {date}",
+    "refresh": "Actualiser les résultats",
+    "refreshing": "Actualisation…",
+    "inPlay": "{amount} en jeu",
+    "potRow": "Cagnotte (équipes non attribuées)",
+    "prizeResults": "Résultats des prix ({decided}/{total} décidés)",
+    "group": "Groupe {label}",
+    "inPlayBadge": "En jeu",
+    "manualBadge": "Décidé à la fin",
+    "bracket": "Tableau final",
+    "tbd": "À déterminer",
+    "stages": {
+      "round_of_32": "Seizièmes de finale",
+      "round_of_16": "Huitièmes de finale",
+      "quarter_final": "Quarts de finale",
+      "semi_final": "Demi-finales",
+      "third_place": "Troisième place",
+      "final": "Finale"
+    },
+    "leader": "Leader actuel",
+    "stat": {
+      "goals": "{count, plural, one {# but} other {# buts}}",
+      "conceded": "{count, plural, one {# but encaissé} other {# buts encaissés}}",
+      "lossMargin": "{count, plural, one {défaite par # but} other {défaite par # buts}}"
+    }
   }
 }

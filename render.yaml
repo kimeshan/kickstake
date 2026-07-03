@@ -61,6 +61,10 @@ services:
         sync: false
       - key: GOOGLE_CLIENT_SECRET
         sync: false
+      # football-data.org key — enables the daily live-results sync (in-process
+      # cron; the API runs as a single instance so no separate worker needed).
+      - key: FOOTBALL_DATA_API_KEY
+        sync: false
 
   - type: web
     name: kickstake-web-prod

@@ -36,3 +36,4 @@ postgres-data/
 
 # Local MCP config (contains API keys)
 .mcp.json
+.claude/settings.local.json

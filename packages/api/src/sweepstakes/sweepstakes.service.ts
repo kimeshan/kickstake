@@ -16,6 +16,8 @@ import {
   teamAssignment,
 } from "../db/schema";
 import { generatePrizes, prizeTotal } from "./prize-generation";
+import { buildLiveView, type LiveView } from "../results/live";
+import { ResultsService } from "../results/results.service";
 import {
   runDraw,
   runTieredDraw,
@@ -99,6 +101,8 @@ export interface CreateSweepstakeInput {
 
 @Injectable()
 export class SweepstakesService {
+  constructor(private readonly results: ResultsService) {}
+
   async create(organiserId: string, input: CreateSweepstakeInput) {
     const name = input.name?.trim();
     if (!name) throw new BadRequestException("Name is required.");
@@ -165,7 +169,49 @@ export class SweepstakesService {
     if (!s) throw new NotFoundException("Sweepstake not found.");
     if (s.organiserId !== organiserId)
       throw new ForbiddenException("Not your sweepstake.");
-    return s;
+    return { ...s, live: await this.liveView(s) };
+  }
+
+  /**
+   * Live results view (bracket, prize outcomes, winnings) — recomputed from
+   * the matches on file at read time. Null before the draw or when the
+   * tournament has no results data yet.
+   */
+  private async liveView(s: {
+    tournamentId: string;
+    status: string;
+    participants: { id: string; displayName: string }[];
+    assignments: {
+      teamId: string;
+      participantId: string | null;
+      team: {
+        id: string;
+        name: string;
+        groupLabel: string;
+        flagCode: string | null;
+      };
+      participant: { id: string; displayName: string } | null;
+    }[];
+    prizeCategories: {
+      id: string;
+      ruleType: string;
+      label: string;
+      amount: number;
+      perGroup: boolean;
+      enabled: boolean;
+    }[];
+  }): Promise<LiveView | null> {
+    if (!["drawn", "live", "settled"].includes(s.status)) return null;
+    const teams = await db.query.team.findMany({
+      where: eq(team.tournamentId, s.tournamentId),
+    });
+    return buildLiveView({
+      tournamentId: s.tournamentId,
+      teams,
+      participants: s.participants,
+      assignments: s.assignments,
+      prizeCategories: s.prizeCategories,
+    });
   }
 
   /** Update config — currency (re-denominated) and/or name. */
@@ -330,6 +376,10 @@ export class SweepstakesService {
         .where(eq(sweepstake.id, id));
     });
 
+    // If results already exist (mid-tournament draw), settle what's decided
+    // right away — don't leave the status stale until the next cron tick.
+    await this.results.recomputeTournament(s.tournamentId);
+
     return this.findOne(organiserId, id);
   }
 
@@ -398,6 +448,10 @@ export class SweepstakesService {
         .values(clean as (typeof prizeCategory.$inferInsert)[]);
     });
 
+    // Replacing categories cascade-deleted their stored prize results —
+    // recompute so decided outcomes reattach to the new categories.
+    await this.results.recomputeTournament(s.tournamentId);
+
     return this.findOne(organiserId, id);
   }
 
@@ -419,6 +473,9 @@ export class SweepstakesService {
       id: s.id,
       name: s.name,
       status: s.status,
+      // Live winnings reveal who owns which team, so they follow the same
+      // gate as the draw reveal.
+      live: s.finalized ? await this.liveView(s) : null,
       currency: s.currency,
       buyIn: s.buyIn,
       designedPot: s.designedPot,

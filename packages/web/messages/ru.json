@@ -417,5 +417,33 @@
     "cancel": "Отмена",
     "success": "Спасибо! Мы свяжемся с вами. 🎉",
     "error": "Не удалось отправить. Попробуйте снова."
+  },
+  "live": {
+    "title": "Призы в реальном времени",
+    "updated": "Обновлено {date}",
+    "refresh": "Обновить результаты",
+    "refreshing": "Обновление…",
+    "inPlay": "{amount} в игре",
+    "potRow": "Банк (нераспределённые команды)",
+    "prizeResults": "Итоги призов (решено {decided}/{total})",
+    "group": "Группа {label}",
+    "inPlayBadge": "В игре",
+    "manualBadge": "Решится в конце",
+    "bracket": "Сетка плей-офф",
+    "tbd": "Ещё не определено",
+    "stages": {
+      "round_of_32": "1/16 финала",
+      "round_of_16": "1/8 финала",
+      "quarter_final": "Четвертьфиналы",
+      "semi_final": "Полуфиналы",
+      "third_place": "Матч за третье место",
+      "final": "Финал"
+    },
+    "leader": "Текущий лидер",
+    "stat": {
+      "goals": "{count, plural, one {# гол} few {# гола} many {# голов} other {# гола}}",
+      "conceded": "пропущено: {count}",
+      "lossMargin": "поражение с разницей {count}"
+    }
   }
 }

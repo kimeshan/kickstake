@@ -3,8 +3,10 @@ import { SweepstakesController } from "./sweepstakes.controller";
 import { TournamentsController } from "./tournaments.controller";
 import { JoinController } from "./join.controller";
 import { SweepstakesService } from "./sweepstakes.service";
+import { ResultsModule } from "../results/results.module";
 
 @Module({
+  imports: [ResultsModule],
   controllers: [SweepstakesController, TournamentsController, JoinController],
   providers: [SweepstakesService],
 })
