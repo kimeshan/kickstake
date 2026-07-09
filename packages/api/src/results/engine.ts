@@ -29,6 +29,65 @@ export const KNOCKOUT_STAGES: Stage[] = [
   "final",
 ];
 
+/** Minimal match shape needed to lay out the knockout bracket. */
+export interface BracketOrderMatch {
+  stage: Stage;
+  kickoffAt: Date | null;
+  externalId: string;
+  homeTeamId: string | null;
+  awayTeamId: string | null;
+}
+
+/**
+ * Groups knockout matches into rounds ordered for bracket display. Kickoff
+ * order reflects TV scheduling, not bracket position, so sorting a round by
+ * date puts ties next to the wrong feeders. Instead the earliest round keeps
+ * kickoff order and every later round is sorted by where its teams played in
+ * the previous round, so each tie sits beside the two matches that feed it.
+ * Ties whose teams are still TBD fall to the end of their round in kickoff
+ * order — with no lineage there is no right slot to draw them in anyway.
+ */
+export function orderBracketRounds<M extends BracketOrderMatch>(
+  matches: M[],
+): { stage: Stage; matches: M[] }[] {
+  const byKickoff = (a: M, b: M) =>
+    (a.kickoffAt?.getTime() ?? 0) - (b.kickoffAt?.getTime() ?? 0) ||
+    a.externalId.localeCompare(b.externalId);
+
+  const rounds: { stage: Stage; matches: M[] }[] = [];
+  let feeders: M[] = [];
+  for (const stage of KNOCKOUT_STAGES) {
+    const round = matches.filter((m) => m.stage === stage).sort(byKickoff);
+    if (round.length === 0) continue;
+    if (feeders.length > 0) {
+      const prev = feeders;
+      const feederIndex = (teamId: string | null) => {
+        if (teamId === null) return Infinity;
+        const i = prev.findIndex(
+          (p) => p.homeTeamId === teamId || p.awayTeamId === teamId,
+        );
+        return i === -1 ? Infinity : i;
+      };
+      const pos = new Map(
+        round.map((m) => [
+          m,
+          Math.min(feederIndex(m.homeTeamId), feederIndex(m.awayTeamId)),
+        ]),
+      );
+      // Stable sort: TBD ties (Infinity) keep their kickoff order at the end.
+      round.sort((a, b) => {
+        const pa = pos.get(a)!;
+        const pb = pos.get(b)!;
+        return pa === pb ? 0 : pa - pb;
+      });
+    }
+    rounds.push({ stage, matches: round });
+    // The third-place play-off is a side match; the final feeds off the semis.
+    if (stage !== "third_place") feeders = round;
+  }
+  return rounds;
+}
+
 export interface EngineTeam {
   id: string;
   groupLabel: string;

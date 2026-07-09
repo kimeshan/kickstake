@@ -4,6 +4,8 @@ import {
   computeOutcomes,
   buildPrizeRows,
   computeWinnings,
+  orderBracketRounds,
+  type BracketOrderMatch,
   type EngineMatch,
   type EngineTeam,
 } from "./engine";
@@ -290,5 +292,79 @@ describe("prize rows + winnings", () => {
     ]);
     const { potWon } = computeWinnings(["alice"], ownership, rows);
     expect(potWon).toBe(500);
+  });
+});
+
+describe("orderBracketRounds", () => {
+  const day = (n: number) => new Date(Date.UTC(2026, 6, n));
+  const bm = (
+    externalId: string,
+    stage: BracketOrderMatch["stage"],
+    home: string | null,
+    away: string | null,
+    kickoffDay: number,
+  ): BracketOrderMatch => ({
+    externalId,
+    stage,
+    homeTeamId: home,
+    awayTeamId: away,
+    kickoffAt: day(kickoffDay),
+  });
+
+  it("orders later rounds by feeder position, not kickoff", () => {
+    // Semi 2 (winners of QFs 1+2) kicks off AFTER semi 1 (winners of QFs 3+4),
+    // so kickoff order would draw each semi next to the wrong quarter-finals.
+    const matches = [
+      bm("qf1", "quarter_final", "nor", "bra", 1),
+      bm("qf2", "quarter_final", "mex", "eng", 1),
+      bm("qf3", "quarter_final", "por", "esp", 2),
+      bm("qf4", "quarter_final", "usa", "bel", 2),
+      bm("sf-late", "semi_final", "nor", "eng", 11),
+      bm("sf-early", "semi_final", "esp", "bel", 10),
+    ];
+    const rounds = orderBracketRounds(matches);
+    expect(rounds.map((r) => r.stage)).toEqual(["quarter_final", "semi_final"]);
+    expect(rounds[1].matches.map((m) => m.externalId)).toEqual([
+      "sf-late",
+      "sf-early",
+    ]);
+  });
+
+  it("keeps TBD ties in kickoff order and skips the third-place match as a feeder", () => {
+    const matches = [
+      bm("sf1", "semi_final", "nor", "eng", 10),
+      bm("sf2", "semi_final", "esp", "bel", 11),
+      bm("third", "third_place", null, null, 13),
+      // Final decided from the semis even with the play-off in between.
+      bm("final", "final", "eng", "esp", 14),
+    ];
+    const rounds = orderBracketRounds(matches);
+    expect(rounds.map((r) => r.stage)).toEqual([
+      "semi_final",
+      "third_place",
+      "final",
+    ]);
+    expect(rounds[2].matches[0].externalId).toBe("final");
+
+    // All-TBD round: nothing to anchor on, kickoff order stands.
+    const tbd = orderBracketRounds([
+      bm("qf1", "quarter_final", "a", "b", 1),
+      bm("qf2", "quarter_final", "c", "d", 1),
+      bm("sfB", "semi_final", null, null, 10),
+      bm("sfA", "semi_final", null, null, 11),
+    ]);
+    expect(tbd[1].matches.map((m) => m.externalId)).toEqual(["sfB", "sfA"]);
+  });
+
+  it("drops empty rounds and leaves the earliest round in kickoff order", () => {
+    const rounds = orderBracketRounds([
+      bm("r32-2", "round_of_32", "c", "d", 2),
+      bm("r32-1", "round_of_32", "a", "b", 1),
+    ]);
+    expect(rounds).toHaveLength(1);
+    expect(rounds[0].matches.map((m) => m.externalId)).toEqual([
+      "r32-1",
+      "r32-2",
+    ]);
   });
 });
