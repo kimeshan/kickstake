@@ -10,7 +10,7 @@ import {
   computeOutcomes,
   buildPrizeRows,
   computeWinnings,
-  KNOCKOUT_STAGES,
+  orderBracketRounds,
   type EngineMatch,
   type Stage,
   type PrizeLeader,
@@ -158,29 +158,22 @@ export async function buildLiveView(input: {
     rows,
   );
 
-  const bracket = KNOCKOUT_STAGES.map((stage) => ({
+  const bracket = orderBracketRounds(matches).map(({ stage, matches: round }) => ({
     stage,
-    matches: matches
-      .filter((m) => m.stage === stage)
-      .sort(
-        (a, b) =>
-          (a.kickoffAt?.getTime() ?? 0) - (b.kickoffAt?.getTime() ?? 0) ||
-          a.externalId.localeCompare(b.externalId),
-      )
-      .map((m) => ({
-        id: m.id,
-        stage: m.stage as Stage,
-        kickoffAt: m.kickoffAt,
-        status: m.status,
-        home: slot(m.homeTeamId),
-        away: slot(m.awayTeamId),
-        homeScore: m.homeScore,
-        awayScore: m.awayScore,
-        homePenalties: m.homePenalties,
-        awayPenalties: m.awayPenalties,
-        winnerTeamId: m.winnerTeamId,
-      })),
-  })).filter((s) => s.matches.length > 0);
+    matches: round.map((m) => ({
+      id: m.id,
+      stage: m.stage as Stage,
+      kickoffAt: m.kickoffAt,
+      status: m.status,
+      home: slot(m.homeTeamId),
+      away: slot(m.awayTeamId),
+      homeScore: m.homeScore,
+      awayScore: m.awayScore,
+      homePenalties: m.homePenalties,
+      awayPenalties: m.awayPenalties,
+      winnerTeamId: m.winnerTeamId,
+    })),
+  }));
 
   const leaderboard = winnings.entries
     .map((e) => ({
