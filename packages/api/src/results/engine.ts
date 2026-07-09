@@ -40,12 +40,20 @@ export interface BracketOrderMatch {
 
 /**
  * Groups knockout matches into rounds ordered for bracket display. Kickoff
- * order reflects TV scheduling, not bracket position, so sorting a round by
- * date puts ties next to the wrong feeders. Instead the earliest round keeps
- * kickoff order and every later round is sorted by where its teams played in
- * the previous round, so each tie sits beside the two matches that feed it.
- * Ties whose teams are still TBD fall to the end of their round in kickoff
- * order — with no lineage there is no right slot to draw them in anyway.
+ * order reflects TV scheduling, not bracket position, so sorting rounds by
+ * date puts ties next to the wrong feeders. No round's kickoff order can be
+ * trusted as tree order, so the tree is rebuilt from lineage instead:
+ *
+ * - Anchor on the LATEST round whose pairings are all known and keep it in
+ *   kickoff order — every valid tree order of the anchor works equally well.
+ * - Walk BACKWARD from the anchor: sort each earlier round by which
+ *   next-round tie its advancing team feeds. Each tie has exactly two
+ *   feeders, so this forces them adjacent all the way down the tree.
+ * - Rounds after the anchor are TBD ties; there is no lineage to place them
+ *   with, so they keep kickoff order (blank cards — position can't misread).
+ *
+ * The third-place play-off is a side match: it is never a feeder and never
+ * reordered; the final hangs off the semi-finals.
  */
 export function orderBracketRounds<M extends BracketOrderMatch>(
   matches: M[],
@@ -54,37 +62,71 @@ export function orderBracketRounds<M extends BracketOrderMatch>(
     (a.kickoffAt?.getTime() ?? 0) - (b.kickoffAt?.getTime() ?? 0) ||
     a.externalId.localeCompare(b.externalId);
 
-  const rounds: { stage: Stage; matches: M[] }[] = [];
-  let feeders: M[] = [];
-  for (const stage of KNOCKOUT_STAGES) {
-    const round = matches.filter((m) => m.stage === stage).sort(byKickoff);
-    if (round.length === 0) continue;
-    if (feeders.length > 0) {
-      const prev = feeders;
-      const feederIndex = (teamId: string | null) => {
-        if (teamId === null) return Infinity;
-        const i = prev.findIndex(
-          (p) => p.homeTeamId === teamId || p.awayTeamId === teamId,
-        );
-        return i === -1 ? Infinity : i;
-      };
-      const pos = new Map(
-        round.map((m) => [
-          m,
-          Math.min(feederIndex(m.homeTeamId), feederIndex(m.awayTeamId)),
-        ]),
-      );
-      // Stable sort: TBD ties (Infinity) keep their kickoff order at the end.
-      round.sort((a, b) => {
-        const pa = pos.get(a)!;
-        const pb = pos.get(b)!;
-        return pa === pb ? 0 : pa - pb;
-      });
-    }
-    rounds.push({ stage, matches: round });
-    // The third-place play-off is a side match; the final feeds off the semis.
-    if (stage !== "third_place") feeders = round;
+  const rounds = KNOCKOUT_STAGES.map((stage) => ({
+    stage,
+    matches: matches.filter((m) => m.stage === stage).sort(byKickoff),
+  })).filter((r) => r.matches.length > 0);
+
+  // The main tree path, excluding the third-place side match. `path` shares
+  // the same (mutable) matches arrays as `rounds`.
+  const path = rounds.filter((r) => r.stage !== "third_place");
+
+  let anchor = -1;
+  for (let i = 0; i < path.length; i++) {
+    const known = path[i].matches.every(
+      (m) => m.homeTeamId !== null && m.awayTeamId !== null,
+    );
+    if (known) anchor = i;
   }
+
+  // Backward pass: position each match under the next-round tie one of its
+  // teams advanced to. Ties (same target, or no lineage found) keep kickoff
+  // order — the sort is stable.
+  for (let i = anchor - 1; i >= 0; i--) {
+    const next = path[i + 1].matches;
+    const feedsInto = (m: M) => {
+      const j = next.findIndex(
+        (n) =>
+          (m.homeTeamId !== null &&
+            (n.homeTeamId === m.homeTeamId || n.awayTeamId === m.homeTeamId)) ||
+          (m.awayTeamId !== null &&
+            (n.homeTeamId === m.awayTeamId || n.awayTeamId === m.awayTeamId)),
+      );
+      return j === -1 ? Infinity : j;
+    };
+    const pos = new Map(path[i].matches.map((m) => [m, feedsInto(m)]));
+    path[i].matches.sort((a, b) => {
+      const pa = pos.get(a)!;
+      const pb = pos.get(b)!;
+      return pa === pb ? 0 : pa - pb;
+    });
+  }
+
+  // Forward pass past the anchor: best-effort for partially-known rounds —
+  // any tie with a known team sorts next to its feeder, TBD ties trail in
+  // kickoff order.
+  for (let i = Math.max(anchor, 0) + 1; i < path.length; i++) {
+    const prev = path[i - 1].matches;
+    const feederIndex = (teamId: string | null) => {
+      if (teamId === null) return Infinity;
+      const j = prev.findIndex(
+        (p) => p.homeTeamId === teamId || p.awayTeamId === teamId,
+      );
+      return j === -1 ? Infinity : j;
+    };
+    const pos = new Map(
+      path[i].matches.map((m) => [
+        m,
+        Math.min(feederIndex(m.homeTeamId), feederIndex(m.awayTeamId)),
+      ]),
+    );
+    path[i].matches.sort((a, b) => {
+      const pa = pos.get(a)!;
+      const pb = pos.get(b)!;
+      return pa === pb ? 0 : pa - pb;
+    });
+  }
+
   return rounds;
 }
 

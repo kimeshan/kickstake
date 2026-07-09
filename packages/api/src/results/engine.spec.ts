@@ -311,9 +311,9 @@ describe("orderBracketRounds", () => {
     kickoffAt: day(kickoffDay),
   });
 
-  it("orders later rounds by feeder position, not kickoff", () => {
-    // Semi 2 (winners of QFs 1+2) kicks off AFTER semi 1 (winners of QFs 3+4),
-    // so kickoff order would draw each semi next to the wrong quarter-finals.
+  it("hangs earlier rounds off the latest fully-known round, not kickoff", () => {
+    // Kickoff order would draw each semi next to the wrong quarter-finals:
+    // the Jul 10 semi is fed by the QFs at the bottom of the column.
     const matches = [
       bm("qf1", "quarter_final", "nor", "bra", 1),
       bm("qf2", "quarter_final", "mex", "eng", 1),
@@ -324,9 +324,61 @@ describe("orderBracketRounds", () => {
     ];
     const rounds = orderBracketRounds(matches);
     expect(rounds.map((r) => r.stage)).toEqual(["quarter_final", "semi_final"]);
+    // Semis anchor the tree in kickoff order; QFs regroup beneath them.
     expect(rounds[1].matches.map((m) => m.externalId)).toEqual([
-      "sf-late",
       "sf-early",
+      "sf-late",
+    ]);
+    expect(rounds[0].matches.map((m) => m.externalId)).toEqual([
+      "qf3",
+      "qf4",
+      "qf1",
+      "qf2",
+    ]);
+  });
+
+  it("keeps feeder pairs adjacent down a deep chain with interleaved kickoffs", () => {
+    // Kickoff order interleaves the bracket halves at every level — sorting
+    // any single round by date (or forward off it) breaks pair adjacency.
+    const matches = [
+      bm("r16-1", "round_of_16", "a", "a2", 1),
+      bm("r16-2", "round_of_16", "c", "c2", 1),
+      bm("r16-3", "round_of_16", "e", "e2", 1),
+      bm("r16-4", "round_of_16", "g", "g2", 1),
+      bm("r16-5", "round_of_16", "b", "b2", 2),
+      bm("r16-6", "round_of_16", "d", "d2", 2),
+      bm("r16-7", "round_of_16", "f", "f2", 2),
+      bm("r16-8", "round_of_16", "h", "h2", 2),
+      // QF pairings cross the kickoff order: a+b, c+d, e+f, g+h.
+      bm("qf-ab", "quarter_final", "a", "b", 5),
+      bm("qf-ef", "quarter_final", "e", "f", 5),
+      bm("qf-cd", "quarter_final", "c", "d", 6),
+      bm("qf-gh", "quarter_final", "g", "h", 6),
+      bm("sf-ae", "semi_final", "a", "e", 10),
+      bm("sf-cg", "semi_final", "c", "g", 11),
+    ];
+    const rounds = orderBracketRounds(matches);
+    // Semis anchor (kickoff order); every earlier round groups into the
+    // adjacent feeder pairs of the tie above it.
+    expect(rounds[2].matches.map((m) => m.externalId)).toEqual([
+      "sf-ae",
+      "sf-cg",
+    ]);
+    expect(rounds[1].matches.map((m) => m.externalId)).toEqual([
+      "qf-ab",
+      "qf-ef",
+      "qf-cd",
+      "qf-gh",
+    ]);
+    expect(rounds[0].matches.map((m) => m.externalId)).toEqual([
+      "r16-1",
+      "r16-5",
+      "r16-3",
+      "r16-7",
+      "r16-2",
+      "r16-6",
+      "r16-4",
+      "r16-8",
     ]);
   });
 
