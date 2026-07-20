@@ -431,6 +431,12 @@
     "manualBadge": "Decided at the end",
     "bracket": "Knockout bracket",
     "tbd": "To be decided",
+    "markPaid": "Mark paid out",
+    "paidOut": "Paid out",
+    "declareWinner": "Declare winner",
+    "declareWinnerPlaceholder": "Choose a team…",
+    "declareWinnerConfirm": "Confirm",
+    "declareWinnerCancel": "Cancel",
     "stages": {
       "round_of_32": "Round of 32",
       "round_of_16": "Round of 16",

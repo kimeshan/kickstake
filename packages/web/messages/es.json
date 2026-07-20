@@ -431,6 +431,12 @@
     "manualBadge": "Se decide al final",
     "bracket": "Cuadro eliminatorio",
     "tbd": "Por decidir",
+    "markPaid": "Marcar como pagado",
+    "paidOut": "Pagado",
+    "declareWinner": "Declarar ganador",
+    "declareWinnerPlaceholder": "Elige un equipo…",
+    "declareWinnerConfirm": "Confirmar",
+    "declareWinnerCancel": "Cancelar",
     "stages": {
       "round_of_32": "Dieciseisavos de final",
       "round_of_16": "Octavos de final",

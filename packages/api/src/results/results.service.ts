@@ -13,6 +13,7 @@ import {
 import {
   computeOutcomes,
   buildPrizeRows,
+  isTournamentComplete,
   type EngineMatch,
   type Stage,
 } from "./engine";
@@ -183,7 +184,11 @@ export class ResultsService {
    * Re-derives prize results for every drawn/live sweepstake of a tournament
    * from the matches on file. Decided outcomes are auto-approved; rows an
    * organiser overrode manually are left untouched. Flips drawn → live once
-   * the first prize is decided.
+   * the first prize is decided, and live → settled once the tournament is
+   * over and every enabled prize category has a result (computed or manual)
+   * — categories with no engine outcome (custom, most_cards, …) block
+   * settlement until the organiser resolves them manually. Also flips the
+   * tournament itself to "completed" once its final has been played.
    */
   async recomputeTournament(tournamentId: string): Promise<number> {
     const [teams, matches, scorers, sweepstakes] = await Promise.all([
@@ -211,6 +216,14 @@ export class ResultsService {
       status: m.status,
     }));
     const outcomes = computeOutcomes(teams, engineMatches, scorers);
+    const tournamentComplete = isTournamentComplete(engineMatches);
+
+    if (tournamentComplete) {
+      await db
+        .update(tournament)
+        .set({ status: "completed" })
+        .where(and(eq(tournament.id, tournamentId), ne(tournament.status, "completed")));
+    }
 
     for (const s of sweepstakes) {
       const rows = buildPrizeRows(s.prizeCategories, outcomes);
@@ -255,7 +268,23 @@ export class ResultsService {
           }));
         if (inserts.length) await tx.insert(prizeResult).values(inserts);
 
-        if ((inserts.length || overridden.length) && s.status === "drawn") {
+        // Every enabled row (including non-computable ones, which only ever
+        // resolve via a manual override) needs a result before this
+        // sweepstake can settle.
+        const fullyResolved =
+          categoryIds.length > 0 &&
+          rows.every(
+            (r) =>
+              isOverridden(r.categoryId, r.groupLabel) ||
+              (r.decided && r.winningTeamId !== null),
+          );
+
+        if (tournamentComplete && fullyResolved) {
+          await tx
+            .update(sweepstake)
+            .set({ status: "settled" })
+            .where(eq(sweepstake.id, s.id));
+        } else if ((inserts.length || overridden.length) && s.status === "drawn") {
           await tx
             .update(sweepstake)
             .set({ status: "live" })

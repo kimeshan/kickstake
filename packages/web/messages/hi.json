@@ -431,6 +431,12 @@
     "manualBadge": "आख़िर में तय होगा",
     "bracket": "नॉकआउट ब्रैकेट",
     "tbd": "तय होना बाकी",
+    "markPaid": "भुगतान हुआ चिह्नित करें",
+    "paidOut": "भुगतान हो गया",
+    "declareWinner": "विजेता घोषित करें",
+    "declareWinnerPlaceholder": "टीम चुनें…",
+    "declareWinnerConfirm": "पुष्टि करें",
+    "declareWinnerCancel": "रद्द करें",
     "stages": {
       "round_of_32": "राउंड ऑफ़ 32",
       "round_of_16": "राउंड ऑफ़ 16",

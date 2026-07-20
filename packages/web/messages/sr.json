@@ -431,6 +431,12 @@
     "manualBadge": "Odlučuje se na kraju",
     "bracket": "Nokaut žreb",
     "tbd": "Biće odlučeno",
+    "markPaid": "Označi kao isplaćeno",
+    "paidOut": "Isplaćeno",
+    "declareWinner": "Odredi pobednika",
+    "declareWinnerPlaceholder": "Izaberi tim…",
+    "declareWinnerConfirm": "Potvrdi",
+    "declareWinnerCancel": "Otkaži",
     "stages": {
       "round_of_32": "Šesnaestina finala",
       "round_of_16": "Osmina finala",

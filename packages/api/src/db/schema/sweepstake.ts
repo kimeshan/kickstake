@@ -181,6 +181,9 @@ export const prizeResult = pgTable(
       .default("pending_approval"),
     approvedBy: text("approved_by").references(() => user.id),
     approvedAt: timestamp("approved_at"),
+    // Settlement is tracked separately from approval — a result can be
+    // decided/approved for a while before the organiser actually pays it out.
+    paidOut: boolean("paid_out").notNull().default(false),
   },
   (r) => [index("prize_result_category_idx").on(r.prizeCategoryId)],
 );

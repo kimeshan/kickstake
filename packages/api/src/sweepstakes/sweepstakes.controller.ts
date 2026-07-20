@@ -16,6 +16,7 @@ import {
   type UpdateInput,
   type ParticipantInput,
   type DrawInput,
+  type PrizeResultInput,
 } from "./sweepstakes.service";
 
 interface AuthUser {
@@ -88,5 +89,25 @@ export class SweepstakesController {
     @Body() body: DrawInput,
   ) {
     return this.sweepstakes.draw(user.id, id, body);
+  }
+
+  @Patch(":id/prizes/:categoryId/result")
+  setPrizeResult(
+    @CurrentUser() user: AuthUser,
+    @Param("id") id: string,
+    @Param("categoryId") categoryId: string,
+    @Body() body: PrizeResultInput,
+  ) {
+    return this.sweepstakes.setPrizeResult(user.id, id, categoryId, body);
+  }
+
+  @Patch(":id/prize-results/:resultId")
+  setPrizePaidOut(
+    @CurrentUser() user: AuthUser,
+    @Param("id") id: string,
+    @Param("resultId") resultId: string,
+    @Body() body: { paidOut: boolean },
+  ) {
+    return this.sweepstakes.setPrizePaidOut(user.id, id, resultId, !!body.paidOut);
   }
 }

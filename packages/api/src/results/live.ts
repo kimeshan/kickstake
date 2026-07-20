@@ -3,9 +3,9 @@
  * outcomes and per-participant winnings — always computed fresh from the
  * matches on file, so the UI never lags the last cron run.
  */
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { db } from "../db";
-import { match, scorer } from "../db/schema";
+import { match, scorer, prizeResult } from "../db/schema";
 import {
   computeOutcomes,
   buildPrizeRows,
@@ -87,6 +87,10 @@ export interface LivePrize {
   decided: boolean;
   winner: LiveSlot | null;
   leader: LiveLeader | null;
+  // Set once this prize has a persisted result (computed or manual override)
+  // — needed to let the organiser mark it paid out.
+  resultId: string | null;
+  paidOut: boolean;
 }
 
 export interface LiveView {
@@ -109,15 +113,27 @@ export async function buildLiveView(input: {
   assignments: AssignmentInfo[];
   prizeCategories: PrizeCategoryInfo[];
 }): Promise<LiveView | null> {
-  const [matches, scorers] = await Promise.all([
+  const categoryIds = input.prizeCategories.map((c) => c.id);
+  const [matches, scorers, persisted] = await Promise.all([
     db.query.match.findMany({
       where: eq(match.tournamentId, input.tournamentId),
     }),
     db.query.scorer.findMany({
       where: eq(scorer.tournamentId, input.tournamentId),
     }),
+    categoryIds.length
+      ? db.query.prizeResult.findMany({
+          where: inArray(prizeResult.prizeCategoryId, categoryIds),
+        })
+      : Promise.resolve([]),
   ]);
   if (matches.length === 0) return null;
+
+  // Persisted rows are authoritative — they're the only place a manual
+  // override for a non-computable prize (or a tied stat prize) ever shows up.
+  const persistedByKey = new Map(
+    persisted.map((r) => [`${r.prizeCategoryId}:${r.groupLabel ?? ""}`, r]),
+  );
 
   const teamById = new Map(input.teams.map((t) => [t.id, t]));
   const ownerByTeam = new Map(
@@ -197,34 +213,42 @@ export async function buildLiveView(input: {
   return {
     updatedAt,
     bracket,
-    prizes: rows.map((r) => ({
-      categoryId: r.categoryId,
-      ruleType: r.ruleType,
-      label: r.label,
-      amount: r.amount,
-      perGroup: r.perGroup,
-      groupLabel: r.groupLabel,
-      computable: r.computable,
-      decided: r.decided,
-      winner: r.decided ? slot(r.winningTeamId) : null,
-      leader: r.leader
-        ? {
-            teamId: r.leader.teamId,
-            name: r.leader.teamId
-              ? (teamById.get(r.leader.teamId)?.name ?? null)
-              : null,
-            flagCode: r.leader.teamId
-              ? (teamById.get(r.leader.teamId)?.flagCode ?? null)
-              : null,
-            participantName: r.leader.teamId
-              ? (slot(r.leader.teamId)?.participantName ?? null)
-              : null,
-            playerName: r.leader.playerName,
-            statKey: r.leader.statKey,
-            statValue: r.leader.statValue,
-          }
-        : null,
-    })),
+    prizes: rows.map((r) => {
+      const persistedResult = persistedByKey.get(`${r.categoryId}:${r.groupLabel ?? ""}`);
+      const decided = persistedResult ? true : r.decided;
+      const winningTeamId = persistedResult ? persistedResult.winningTeamId : r.winningTeamId;
+      return {
+        categoryId: r.categoryId,
+        ruleType: r.ruleType,
+        label: r.label,
+        amount: r.amount,
+        perGroup: r.perGroup,
+        groupLabel: r.groupLabel,
+        computable: r.computable,
+        decided,
+        winner: decided ? slot(winningTeamId) : null,
+        leader:
+          !decided && r.leader
+            ? {
+                teamId: r.leader.teamId,
+                name: r.leader.teamId
+                  ? (teamById.get(r.leader.teamId)?.name ?? null)
+                  : null,
+                flagCode: r.leader.teamId
+                  ? (teamById.get(r.leader.teamId)?.flagCode ?? null)
+                  : null,
+                participantName: r.leader.teamId
+                  ? (slot(r.leader.teamId)?.participantName ?? null)
+                  : null,
+                playerName: r.leader.playerName,
+                statKey: r.leader.statKey,
+                statValue: r.leader.statValue,
+              }
+            : null,
+        resultId: persistedResult?.id ?? null,
+        paidOut: persistedResult?.paidOut ?? false,
+      };
+    }),
     leaderboard,
     potWon: winnings.potWon,
   };

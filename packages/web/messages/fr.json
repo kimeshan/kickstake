@@ -431,6 +431,12 @@
     "manualBadge": "Décidé à la fin",
     "bracket": "Tableau final",
     "tbd": "À déterminer",
+    "markPaid": "Marquer comme payé",
+    "paidOut": "Payé",
+    "declareWinner": "Déclarer le gagnant",
+    "declareWinnerPlaceholder": "Choisir une équipe…",
+    "declareWinnerConfirm": "Confirmer",
+    "declareWinnerCancel": "Annuler",
     "stages": {
       "round_of_32": "Seizièmes de finale",
       "round_of_16": "Huitièmes de finale",

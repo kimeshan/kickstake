@@ -431,6 +431,12 @@
     "manualBadge": "赛末揭晓",
     "bracket": "淘汰赛对阵图",
     "tbd": "待定",
+    "markPaid": "标记为已发放",
+    "paidOut": "已发放",
+    "declareWinner": "指定获奖者",
+    "declareWinnerPlaceholder": "选择球队…",
+    "declareWinnerConfirm": "确认",
+    "declareWinnerCancel": "取消",
     "stages": {
       "round_of_32": "32强赛",
       "round_of_16": "16强赛",
