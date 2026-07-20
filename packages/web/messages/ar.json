@@ -431,6 +431,12 @@
     "manualBadge": "يُحسم في النهاية",
     "bracket": "شجرة الأدوار الإقصائية",
     "tbd": "لم يتحدد بعد",
+    "markPaid": "وضع علامة \"تم الدفع\"",
+    "paidOut": "تم الدفع",
+    "declareWinner": "تحديد الفائز",
+    "declareWinnerPlaceholder": "اختر فريقًا…",
+    "declareWinnerConfirm": "تأكيد",
+    "declareWinnerCancel": "إلغاء",
     "stages": {
       "round_of_32": "دور الـ32",
       "round_of_16": "دور الـ16",

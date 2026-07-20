@@ -1,0 +1,1 @@
+ALTER TABLE "prize_result" ADD COLUMN "paid_out" boolean DEFAULT false NOT NULL;

@@ -431,6 +431,12 @@
     "manualBadge": "Решится в конце",
     "bracket": "Сетка плей-офф",
     "tbd": "Ещё не определено",
+    "markPaid": "Отметить как выплачено",
+    "paidOut": "Выплачено",
+    "declareWinner": "Указать победителя",
+    "declareWinnerPlaceholder": "Выберите команду…",
+    "declareWinnerConfirm": "Подтвердить",
+    "declareWinnerCancel": "Отмена",
     "stages": {
       "round_of_32": "1/16 финала",
       "round_of_16": "1/8 финала",

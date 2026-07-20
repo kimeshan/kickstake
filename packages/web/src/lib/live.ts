@@ -50,6 +50,8 @@ export interface LivePrize {
   decided: boolean;
   winner: LiveSlot | null;
   leader: LiveLeader | null;
+  resultId: string | null;
+  paidOut: boolean;
 }
 
 export interface LiveView {

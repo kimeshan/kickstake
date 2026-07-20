@@ -431,6 +431,12 @@
     "manualBadge": "Decidido no final",
     "bracket": "Chaveamento do mata-mata",
     "tbd": "A definir",
+    "markPaid": "Marcar como pago",
+    "paidOut": "Pago",
+    "declareWinner": "Declarar vencedor",
+    "declareWinnerPlaceholder": "Escolha um time…",
+    "declareWinnerConfirm": "Confirmar",
+    "declareWinnerCancel": "Cancelar",
     "stages": {
       "round_of_32": "16 avos de final",
       "round_of_16": "Oitavas de final",

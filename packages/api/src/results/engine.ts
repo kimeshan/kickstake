@@ -307,6 +307,12 @@ export function groupStandings(
   });
 }
 
+/** The tournament is over once its final has been played. */
+export function isTournamentComplete(matches: EngineMatch[]): boolean {
+  const final = matches.find((m) => m.stage === "final");
+  return final?.status === "finished";
+}
+
 /** A group is decided once every pairing has a finished result. */
 export function groupDecided(teamCount: number, groupMatches: EngineMatch[]): boolean {
   const expected = (teamCount * (teamCount - 1)) / 2;
@@ -466,8 +472,7 @@ export function computeOutcomes(
   // Stat-based prizes derived from scorelines (+ provider scorers). They run
   // as a "current leader" until the whole tournament is played, then settle —
   // unless the top spot is tied, which needs a human call.
-  const complete = final?.status === "finished";
-  outcomes.push(...statOutcomes(teams, matches, scorers, !!complete));
+  outcomes.push(...statOutcomes(teams, matches, scorers, isTournamentComplete(matches)));
 
   return outcomes;
 }

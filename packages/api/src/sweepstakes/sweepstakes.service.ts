@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   BadRequestException,
 } from "@nestjs/common";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, isNull } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "../db";
 import {
@@ -14,6 +14,7 @@ import {
   participant,
   team,
   teamAssignment,
+  prizeResult,
 } from "../db/schema";
 import { generatePrizes, prizeTotal } from "./prize-generation";
 import { buildLiveView, type LiveView } from "../results/live";
@@ -51,6 +52,11 @@ export interface ParticipantInput {
   displayName?: string;
   email?: string | null;
   paid?: boolean;
+}
+
+export interface PrizeResultInput {
+  groupLabel?: string | null;
+  winningTeamId: string;
 }
 
 export interface DrawInput {
@@ -452,6 +458,80 @@ export class SweepstakesService {
     // recompute so decided outcomes reattach to the new categories.
     await this.results.recomputeTournament(s.tournamentId);
 
+    return this.findOne(organiserId, id);
+  }
+
+  /**
+   * Organiser override for a prize the engine can't (or won't) decide on its
+   * own — e.g. player_of_tournament, most_cards, or a tied stat prize.
+   * Upserts a manual_override result; recompute afterwards both re-attaches
+   * ownership/labels consistently and re-checks whether this unblocks the
+   * sweepstake settling.
+   */
+  async setPrizeResult(
+    organiserId: string,
+    id: string,
+    categoryId: string,
+    input: PrizeResultInput,
+  ) {
+    const s = await this.findOne(organiserId, id);
+    if (s.status === "settled")
+      throw new BadRequestException("This sweepstake is already settled.");
+    const category = s.prizeCategories.find((c) => c.id === categoryId);
+    if (!category) throw new NotFoundException("Prize category not found.");
+
+    const winningTeam = await db.query.team.findFirst({
+      where: and(eq(team.id, input.winningTeamId), eq(team.tournamentId, s.tournamentId)),
+    });
+    if (!winningTeam)
+      throw new BadRequestException("Unknown team for this tournament.");
+
+    const groupLabel = input.groupLabel?.trim() || null;
+    const ownership = new Map(s.assignments.map((a) => [a.teamId, a.participantId]));
+    const values = {
+      prizeCategoryId: categoryId,
+      groupLabel,
+      winningTeamId: input.winningTeamId,
+      winningParticipantId: ownership.get(input.winningTeamId) ?? null,
+      status: "manual_override" as const,
+      approvedBy: organiserId,
+      approvedAt: new Date(),
+    };
+
+    const existing = await db.query.prizeResult.findFirst({
+      where: and(
+        eq(prizeResult.prizeCategoryId, categoryId),
+        groupLabel === null
+          ? isNull(prizeResult.groupLabel)
+          : eq(prizeResult.groupLabel, groupLabel),
+      ),
+    });
+    if (existing) {
+      await db.update(prizeResult).set(values).where(eq(prizeResult.id, existing.id));
+    } else {
+      await db.insert(prizeResult).values(values);
+    }
+
+    await this.results.recomputeTournament(s.tournamentId);
+    return this.findOne(organiserId, id);
+  }
+
+  /** Organiser toggle for whether a decided prize has actually been paid out. */
+  async setPrizePaidOut(
+    organiserId: string,
+    id: string,
+    resultId: string,
+    paidOut: boolean,
+  ) {
+    await this.findOne(organiserId, id); // ownership check
+    const result = await db.query.prizeResult.findFirst({
+      where: eq(prizeResult.id, resultId),
+      with: { category: true },
+    });
+    if (!result || result.category.sweepstakeId !== id)
+      throw new NotFoundException("Prize result not found.");
+
+    await db.update(prizeResult).set({ paidOut }).where(eq(prizeResult.id, resultId));
     return this.findOne(organiserId, id);
   }
 

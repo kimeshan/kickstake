@@ -1,9 +1,11 @@
 import request from "supertest";
 import type { INestApplication } from "@nestjs/common";
+import { eq } from "drizzle-orm";
 import { createApp } from "../create-app";
 import { db, pool } from "../db";
 import { tournament, team, match } from "../db/schema";
 import { testOtpStore } from "../email/email";
+import { prizeTotal } from "../sweepstakes/prize-generation";
 import { ResultsService } from "./results.service";
 import { resolveTeamId, normalizeTeamName } from "./football-data";
 
@@ -45,8 +47,9 @@ describe("Live prize results", () => {
   });
 
   afterAll(async () => {
+    // The db/pool import is a process-wide singleton, and another describe
+    // block below still needs it — only the last block to finish closes it.
     await app.close();
-    await pool.end();
   });
 
   async function signIn(email: string) {
@@ -202,6 +205,274 @@ describe("Live prize results", () => {
       .post(`/tournaments/${tournamentId}/sync-results`)
       .expect(201);
     expect(sync.body).toMatchObject({ matchesUpserted: 0 });
+  });
+});
+
+describe("Tournament finalize / settle", () => {
+  let app: INestApplication;
+  let server: ReturnType<INestApplication["getHttpServer"]>;
+  let results: ResultsService;
+  let tournamentId: string;
+  const teamIds: Record<string, string> = {};
+  const groupCount = 2;
+
+  beforeAll(async () => {
+    app = await createApp();
+    await app.init();
+    server = app.getHttpServer();
+    results = app.get(ResultsService);
+
+    const [t] = await db
+      .insert(tournament)
+      .values({ name: "Finalize Cup", year: 2032, groupCount, teamCount: 4 })
+      .returning();
+    tournamentId = t.id;
+    for (const [name, groupLabel] of [
+      ["Alpha", "A"],
+      ["Aster", "A"],
+      ["Bravo", "B"],
+      ["Basil", "B"],
+    ] as const) {
+      const [row] = await db
+        .insert(team)
+        .values({ tournamentId, name, groupLabel, flagCode: "br" })
+        .returning();
+      teamIds[name] = row.id;
+    }
+
+    // A fully-decided tournament: both groups complete, final + third place
+    // played. Scorelines are chosen so least_conceded/biggest_loss each
+    // resolve to a single unique leader (no tie left for a human to break).
+    await db.insert(match).values([
+      {
+        tournamentId,
+        externalId: "fin-a",
+        stage: "group",
+        groupLabel: "A",
+        homeTeamId: teamIds.Alpha,
+        awayTeamId: teamIds.Aster,
+        homeScore: 2,
+        awayScore: 0,
+        winnerTeamId: teamIds.Alpha,
+        status: "finished",
+      },
+      {
+        tournamentId,
+        externalId: "fin-b",
+        stage: "group",
+        groupLabel: "B",
+        homeTeamId: teamIds.Bravo,
+        awayTeamId: teamIds.Basil,
+        homeScore: 3,
+        awayScore: 0,
+        winnerTeamId: teamIds.Bravo,
+        status: "finished",
+      },
+      {
+        tournamentId,
+        externalId: "fin-final",
+        stage: "final",
+        homeTeamId: teamIds.Alpha,
+        awayTeamId: teamIds.Bravo,
+        homeScore: 1,
+        awayScore: 3,
+        winnerTeamId: teamIds.Bravo,
+        status: "finished",
+      },
+      {
+        tournamentId,
+        externalId: "fin-bronze",
+        stage: "third_place",
+        homeTeamId: teamIds.Aster,
+        awayTeamId: teamIds.Basil,
+        homeScore: 1,
+        awayScore: 0,
+        winnerTeamId: teamIds.Aster,
+        status: "finished",
+      },
+    ]);
+  });
+
+  afterAll(async () => {
+    await app.close();
+    await pool.end();
+  });
+
+  async function signIn(email: string) {
+    const agent = request.agent(server);
+    await agent
+      .post("/auth/email-otp/send-verification-otp")
+      .send({ email, type: "sign-in" })
+      .expect(200);
+    await agent
+      .post("/auth/sign-in/email-otp")
+      .send({ email, otp: testOtpStore.get(email) })
+      .expect(200);
+    return agent;
+  }
+
+  it("settles once every enabled prize is computable and decided, and completes the tournament", async () => {
+    const agent = await signIn("settle-org@kickstake.dev");
+    const created = await agent
+      .post("/sweepstakes")
+      .send({ tournamentId, name: "All-computable Cup", buyIn: 10000, expectedParticipants: 2 })
+      .expect(201);
+    const id = created.body.id;
+
+    // Keep only rule types the engine can actually decide from these matches
+    // — no scorers on file, so golden_boot (and the other manual-only rules)
+    // would block settlement forever otherwise.
+    const KEEP = new Set([
+      "winner",
+      "runner_up",
+      "third_place",
+      "group_top",
+      "group_bottom",
+      "least_conceded",
+      "biggest_loss",
+    ]);
+    const computableOnly = created.body.prizeCategories
+      .filter((p: { ruleType: string }) => KEEP.has(p.ruleType))
+      .map(
+        (p: {
+          label: string;
+          description: string | null;
+          ruleType: string;
+          amount: number;
+          perGroup: boolean;
+        }) => ({
+          label: p.label,
+          description: p.description,
+          ruleType: p.ruleType,
+          amount: p.amount,
+          perGroup: p.perGroup,
+          enabled: true,
+        }),
+      );
+    const winner = computableOnly.find((p: { ruleType: string }) => p.ruleType === "winner");
+    winner.amount += created.body.designedPot - prizeTotal(computableOnly, groupCount);
+    await agent
+      .put(`/sweepstakes/${id}/prizes`)
+      .send({ prizes: computableOnly })
+      .expect(200);
+
+    for (const displayName of ["Ann", "Ben"])
+      await request(server)
+        .post(`/j/${created.body.joinToken}/participants`)
+        .send({ displayName })
+        .expect(201);
+    const detail = await agent.get(`/sweepstakes/${id}`).expect(200);
+    const ann = detail.body.participants.find(
+      (p: { displayName: string }) => p.displayName === "Ann",
+    );
+    const ben = detail.body.participants.find(
+      (p: { displayName: string }) => p.displayName === "Ben",
+    );
+
+    await agent
+      .post(`/sweepstakes/${id}/draw`)
+      .send({
+        mode: "manual",
+        assignments: [
+          { teamId: teamIds.Alpha, participantId: ann.id },
+          { teamId: teamIds.Aster, participantId: ann.id },
+          { teamId: teamIds.Bravo, participantId: ben.id },
+          { teamId: teamIds.Basil, participantId: ben.id },
+        ],
+      })
+      .expect(201);
+
+    await results.recomputeTournament(tournamentId);
+
+    const s = await agent.get(`/sweepstakes/${id}`).expect(200);
+    expect(s.body.status).toBe("settled");
+
+    const t = await db.query.tournament.findFirst({ where: eq(tournament.id, tournamentId) });
+    expect(t?.status).toBe("completed");
+  });
+
+  it("blocks settlement on non-computable prizes until manually resolved, then supports paid-out tracking", async () => {
+    const agent = await signIn("manual-org@kickstake.dev");
+    const created = await agent
+      .post("/sweepstakes")
+      .send({ tournamentId, name: "Manual Cup", buyIn: 10000, expectedParticipants: 2 })
+      .expect(201);
+    const id = created.body.id;
+    const token = created.body.joinToken;
+
+    for (const displayName of ["Cara", "Dee"])
+      await request(server).post(`/j/${token}/participants`).send({ displayName }).expect(201);
+    const detail = await agent.get(`/sweepstakes/${id}`).expect(200);
+    const cara = detail.body.participants.find(
+      (p: { displayName: string }) => p.displayName === "Cara",
+    );
+    const dee = detail.body.participants.find(
+      (p: { displayName: string }) => p.displayName === "Dee",
+    );
+
+    await agent
+      .post(`/sweepstakes/${id}/draw`)
+      .send({
+        mode: "manual",
+        assignments: [
+          { teamId: teamIds.Alpha, participantId: cara.id },
+          { teamId: teamIds.Aster, participantId: cara.id },
+          { teamId: teamIds.Bravo, participantId: dee.id },
+          { teamId: teamIds.Basil, participantId: dee.id },
+        ],
+      })
+      .expect(201);
+
+    await results.recomputeTournament(tournamentId);
+
+    let s = await agent.get(`/sweepstakes/${id}`).expect(200);
+    // Tournament is complete, but the default template's non-computable
+    // prizes (no scorer/cards/possession data) have nothing to decide them.
+    expect(s.body.status).toBe("live");
+
+    const nonComputable = s.body.prizeCategories.filter((p: { ruleType: string }) =>
+      ["player_of_tournament", "golden_boot", "most_cards", "most_possession", "least_possession"].includes(
+        p.ruleType,
+      ),
+    );
+    expect(nonComputable.length).toBe(5);
+
+    for (const cat of nonComputable) {
+      await agent
+        .patch(`/sweepstakes/${id}/prizes/${cat.id}/result`)
+        .send({ winningTeamId: teamIds.Alpha })
+        .expect(200);
+    }
+
+    s = await agent.get(`/sweepstakes/${id}`).expect(200);
+    expect(s.body.status).toBe("settled");
+
+    // The manual override now shows up in the live view (previously
+    // invisible), decided in favour of Alpha/Cara, ready to be paid out.
+    const golden = s.body.live.prizes.find(
+      (p: { ruleType: string }) => p.ruleType === "golden_boot",
+    );
+    expect(golden).toMatchObject({
+      decided: true,
+      winner: { name: "Alpha", participantName: "Cara" },
+      paidOut: false,
+    });
+    expect(golden.resultId).toEqual(expect.any(String));
+
+    const paid = await agent
+      .patch(`/sweepstakes/${id}/prize-results/${golden.resultId}`)
+      .send({ paidOut: true })
+      .expect(200);
+    const goldenAfter = paid.body.live.prizes.find(
+      (p: { ruleType: string }) => p.ruleType === "golden_boot",
+    );
+    expect(goldenAfter.paidOut).toBe(true);
+
+    // A settled sweepstake rejects further overrides.
+    await agent
+      .patch(`/sweepstakes/${id}/prizes/${golden.categoryId}/result`)
+      .send({ winningTeamId: teamIds.Bravo })
+      .expect(400);
   });
 });
 

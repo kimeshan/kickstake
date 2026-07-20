@@ -171,6 +171,15 @@ export default function SweepstakeDetailPage() {
             live={s.live}
             currency={s.currency}
             onRefresh={refreshResults}
+            sweepstakeId={s.id}
+            editable={editable}
+            teamOptions={(s.assignments ?? []).map((a) => ({
+              teamId: a.team.id,
+              name: a.team.name,
+              flagCode: a.team.flagCode,
+              groupLabel: a.team.groupLabel,
+            }))}
+            onChange={(ns) => setS(ns as Sweepstake)}
           />
           <Bracket bracket={s.live.bracket} />
         </>
