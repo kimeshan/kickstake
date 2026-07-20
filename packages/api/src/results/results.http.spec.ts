@@ -447,6 +447,15 @@ describe("Tournament finalize / settle", () => {
     s = await agent.get(`/sweepstakes/${id}`).expect(200);
     expect(s.body.status).toBe("settled");
 
+    // Every prize is decided (computed or manual) — the leaderboard + pot
+    // must add up to the full designed pot, manual overrides included.
+    const paidTotal =
+      s.body.live.leaderboard.reduce(
+        (sum: number, e: { won: number }) => sum + e.won,
+        0,
+      ) + s.body.live.potWon;
+    expect(paidTotal).toBe(s.body.designedPot);
+
     // The manual override now shows up in the live view (previously
     // invisible), decided in favour of Alpha/Cara, ready to be paid out.
     const golden = s.body.live.prizes.find(
