@@ -167,7 +167,27 @@ export async function buildLiveView(input: {
   }));
 
   const outcomes = computeOutcomes(input.teams, engineMatches, scorers);
-  const rows = buildPrizeRows(input.prizeCategories, outcomes);
+  const baseRows = buildPrizeRows(input.prizeCategories, outcomes);
+  // Persisted rows are authoritative — merge them in before computing
+  // winnings so a manual override (the only source of truth for
+  // non-computable prizes, and the tie-breaker for computable ones) counts
+  // toward the leaderboard and pot the same way a decided row does.
+  const rows = baseRows.map((r) => {
+    const persistedResult = persistedByKey.get(`${r.categoryId}:${r.groupLabel ?? ""}`);
+    if (!persistedResult) return r;
+    return {
+      ...r,
+      // A manual override is, by definition, a rule type the engine can't
+      // compute — but computeWinnings() skips !computable rows outright
+      // regardless of `decided`, so it must flip to true here or the
+      // override's amount would silently never reach the leaderboard/pot.
+      computable: true,
+      decided: true,
+      winningTeamId: persistedResult.winningTeamId,
+      contenders: [],
+      leader: null,
+    };
+  });
   const winnings = computeWinnings(
     input.participants.map((p) => p.id),
     ownerByTeam,
@@ -215,8 +235,6 @@ export async function buildLiveView(input: {
     bracket,
     prizes: rows.map((r) => {
       const persistedResult = persistedByKey.get(`${r.categoryId}:${r.groupLabel ?? ""}`);
-      const decided = persistedResult ? true : r.decided;
-      const winningTeamId = persistedResult ? persistedResult.winningTeamId : r.winningTeamId;
       return {
         categoryId: r.categoryId,
         ruleType: r.ruleType,
@@ -225,10 +243,10 @@ export async function buildLiveView(input: {
         perGroup: r.perGroup,
         groupLabel: r.groupLabel,
         computable: r.computable,
-        decided,
-        winner: decided ? slot(winningTeamId) : null,
+        decided: r.decided,
+        winner: r.decided ? slot(r.winningTeamId) : null,
         leader:
-          !decided && r.leader
+          !r.decided && r.leader
             ? {
                 teamId: r.leader.teamId,
                 name: r.leader.teamId
