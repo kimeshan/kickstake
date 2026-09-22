@@ -513,6 +513,37 @@ describe("Challenges HTTP", () => {
     });
   });
 
+  it("overall leaderboard ranks challenge totals independently of the week", async () => {
+    const owner = await signIn("owner");
+    const c = await createChallenge(owner.userId);
+    clock.set(WEEK3);
+    const a = await signIn("ova");
+    const b = await signIn("ovb");
+    const n = await signIn("ovn");
+    await join(a.agent, c.joinToken, "Ace");
+    await join(b.agent, c.joinToken, "Bee");
+    await join(n.agent, c.joinToken, "Nil");
+    await save(a.agent, c.id, 1, 300, 0).expect(200); // Ace: 300 total, nothing in week 3
+    await save(b.agent, c.id, 1, 100, 0).expect(200);
+    await save(b.agent, c.id, 2, 100, 0).expect(200);
+    await save(b.agent, c.id, 3, 150, 0).expect(200); // Bee: 350 total
+
+    const st = await a.agent.get(`/challenges/${c.id}/standings?week=3`).expect(200);
+    const rows = Object.fromEntries(
+      st.body.entries.map((e: { displayName: string; minutes: number | null; rank: number | null; totalMinutes: number | null; overallRank: number | null }) => [
+        e.displayName,
+        { week: [e.minutes, e.rank], overall: [e.totalMinutes, e.overallRank] },
+      ]),
+    );
+    expect(rows).toEqual({
+      Bee: { week: [150, 1], overall: [350, 1] },
+      Ace: { week: [null, null], overall: [300, 2] },
+      Nil: { week: [null, null], overall: [null, null] },
+    });
+    // Display order follows the weekly ranking.
+    expect(st.body.entries.map((e: { displayName: string }) => e.displayName)).toEqual(["Bee", "Ace", "Nil"]);
+  });
+
   it("CSV export preserves blank vs zero, excludes emails/tokens, neutralises formulas", async () => {
     const owner = await signIn("owner");
     const c = await createChallenge(owner.userId);

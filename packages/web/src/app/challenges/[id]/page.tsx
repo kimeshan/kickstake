@@ -13,7 +13,10 @@ import {
   formatNumber,
   type MyProgress,
   type MyWeek,
+  type Standings,
 } from "@/lib/challenge";
+import { LevelLadder } from "@/components/challenge/ladder";
+import { Leaderboard } from "@/components/challenge/leaderboard";
 import { useChallenge } from "@/components/challenge/context";
 import { UpdateDialog } from "@/components/challenge/update-dialog";
 import {
@@ -56,6 +59,8 @@ function MemberProgress() {
   const picked = useRef(false);
   const [editing, setEditing] = useState<MyWeek | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [board, setBoard] = useState<Standings | null>(null);
+  const [boardNonce, reloadBoard] = useReload();
 
   const apply = useCallback((p: MyProgress) => {
     setProgress(p);
@@ -82,6 +87,20 @@ function MemberProgress() {
     };
   }, [detail.id, nonce, apply, refresh]);
   useRefreshOnFocus(load);
+  useRefreshOnFocus(reloadBoard);
+
+  // Leaderboard for the selected week (everyone in the challenge).
+  const boardWeek = selected ?? progress?.timing.defaultWeek ?? null;
+  useEffect(() => {
+    if (boardWeek === null) return;
+    let live = true;
+    challengeApi<Standings>(`/${detail.id}/standings?week=${boardWeek}`)
+      .then((s) => live && setBoard(s))
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [detail.id, boardWeek, boardNonce]);
 
   useEffect(() => {
     if (!toast) return;
@@ -224,6 +243,13 @@ function MemberProgress() {
           {!week.editable && disabledReason && (
             <p className="text-center text-sm text-muted-foreground">{disabledReason}</p>
           )}
+
+          <div className="border-t border-border pt-4">
+            <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-muted-foreground">
+              {tc("ladder.title")}
+            </h2>
+            <LevelLadder ladder={detail.ladder} minutes={week.minutes} baseline={baseline} />
+          </div>
         </section>
 
         <div className="mt-5 space-y-5 lg:mt-0">
@@ -301,6 +327,31 @@ function MemberProgress() {
         </div>
       </div>
 
+      <section aria-labelledby="board-heading" className="space-y-2">
+        <div className="flex items-baseline justify-between gap-3">
+          <h2 id="board-heading" className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+            {tc("leaderboard.title")}
+          </h2>
+          <Link href={`/challenges/${detail.id}/group`} className="text-sm font-semibold text-primary underline">
+            {tc("leaderboard.fullGroup")}
+          </Link>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {tc("weekRange", { n: week.weekNumber, range: formatDateRange(week.startDate, week.endDate, locale) })}
+          {week.inProgress ? ` · ${tc("inProgress")}` : ""}
+        </p>
+        {board && board.week.weekNumber === week.weekNumber ? (
+          <Leaderboard
+            entries={board.entries}
+            weekCount={detail.weekCount}
+            baseline={baseline}
+            initialLimit={10}
+          />
+        ) : (
+          <Spinner className="py-6" />
+        )}
+      </section>
+
       {editing && (
         <UpdateDialog
           challengeId={detail.id}
@@ -309,6 +360,7 @@ function MemberProgress() {
           onClose={() => setEditing(null)}
           onSaved={(p, minutes) => {
             setEditing(null);
+            reloadBoard();
             if (p) apply(p);
             else load();
             const range = formatDateRange(editing.startDate, editing.endDate, locale);

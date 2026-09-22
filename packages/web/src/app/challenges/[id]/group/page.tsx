@@ -2,12 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
 import { ChallengeApiError, challengeApi, formatNumber, type Standings } from "@/lib/challenge";
 import { useChallenge } from "@/components/challenge/context";
+import { Leaderboard } from "@/components/challenge/leaderboard";
 import {
   InProgressTag,
-  LevelBadge,
   Spinner,
   StateCard,
   WeekPicker,
@@ -94,56 +93,7 @@ export default function GroupPage() {
             </p>
           )}
 
-          {data.entries.length === 0 ? (
-            <StateCard message={t("empty")} />
-          ) : (
-            <ol className="grid grid-cols-1 gap-2 lg:grid-cols-2">
-              {data.entries.map((e) => (
-                <li
-                  key={e.memberId}
-                  className={cn(
-                    "flex min-w-0 items-center gap-3 rounded-2xl border p-3",
-                    e.isMe ? "border-primary/60 bg-primary/5" : "border-border bg-card/60",
-                  )}
-                >
-                  <span className="w-10 shrink-0 text-center font-display text-xl text-muted-foreground">
-                    {e.rank === null ? "–" : t("rank", { rank: e.rank })}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex min-w-0 items-center gap-2">
-                      <span className="min-w-0 truncate font-semibold" dir="auto">
-                        {e.displayName}
-                      </span>
-                      {e.isMe && (
-                        <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-[11px] font-bold text-primary-foreground">
-                          {tc("you")}
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-1 flex flex-wrap items-center gap-2">
-                      {e.level !== null && e.medal !== null ? (
-                        <LevelBadge level={e.level} medal={e.medal} size="sm" />
-                      ) : (
-                        <span className="text-xs text-muted-foreground">{tc("notEntered")}</span>
-                      )}
-                      <span className="text-xs text-muted-foreground">
-                        {t("weeksAt", { done: e.successfulWeeks, total: detail.weekCount, count: baseline })}
-                      </span>
-                      {e.updateSource === "organiser" && (
-                        <span className="text-xs text-muted-foreground">{tc("updatedByOrganiser")}</span>
-                      )}
-                    </div>
-                  </div>
-                  <span className="shrink-0 text-end font-display text-2xl">
-                    {e.minutes === null ? "" : fmt(e.minutes)}
-                    {e.minutes !== null && (
-                      <span className="ms-1 text-xs font-sans text-muted-foreground">{tc("minUnit")}</span>
-                    )}
-                  </span>
-                </li>
-              ))}
-            </ol>
-          )}
+          <Leaderboard entries={data.entries} weekCount={detail.weekCount} baseline={baseline} />
         </>
       )}
     </div>

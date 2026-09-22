@@ -721,6 +721,21 @@
       "removedDone": "Removed.",
       "restore": "Restore",
       "restored": "Restored."
+    },
+    "leaderboard": {
+      "title": "Leaderboard",
+      "thisWeek": "This week",
+      "overall": "Overall",
+      "fullGroup": "Group view",
+      "rankLabel": "Rank {rank}",
+      "showAll": "Show all {count}"
+    },
+    "ladder": {
+      "title": "Level scale",
+      "baseline": "Baseline",
+      "youAreHere": "Your level this week",
+      "hint": "Lit levels are reached this week; the outlined one is your level. Levels reset every Monday.",
+      "hintEmpty": "Enter this week's total to see where you land. {count} minutes reaches the baseline."
     }
   }
 }

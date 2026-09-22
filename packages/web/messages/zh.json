@@ -721,6 +721,21 @@
       "removedDone": "已移除。",
       "restore": "恢复",
       "restored": "已恢复。"
+    },
+    "leaderboard": {
+      "title": "排行榜",
+      "thisWeek": "本周",
+      "overall": "总榜",
+      "fullGroup": "小组视图",
+      "rankLabel": "第 {rank} 名",
+      "showAll": "显示全部 {count} 人"
+    },
+    "ladder": {
+      "title": "等级刻度",
+      "baseline": "基准",
+      "youAreHere": "你本周的等级",
+      "hint": "亮起的是本周已达到的等级，带框的是你当前的等级。等级每周一重置。",
+      "hintEmpty": "填写本周总数即可看到你的等级。达到 {count} 分钟即达到基准。"
     }
   }
 }

@@ -121,8 +121,13 @@ export interface StandingEntry {
   reachedBaseline: boolean;
   updateSource: UpdateSource | null;
   successfulWeeks: number;
+  /** Whole-challenge total (null = nothing entered yet). */
+  totalMinutes: number | null;
   isMe: boolean;
+  /** Rank for the selected week (null = not entered). */
   rank: number | null;
+  /** Rank by challenge total (null = nothing entered). */
+  overallRank: number | null;
 }
 
 export interface Aggregates {

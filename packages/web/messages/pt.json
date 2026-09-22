@@ -721,6 +721,21 @@
       "removedDone": "Removido.",
       "restore": "Restaurar",
       "restored": "Restaurado."
+    },
+    "leaderboard": {
+      "title": "Classificação",
+      "thisWeek": "Esta semana",
+      "overall": "Geral",
+      "fullGroup": "Visão do grupo",
+      "rankLabel": "Posição {rank}",
+      "showAll": "Ver todos os {count}"
+    },
+    "ladder": {
+      "title": "Escala de níveis",
+      "baseline": "Base",
+      "youAreHere": "Seu nível nesta semana",
+      "hint": "Os níveis acesos foram alcançados nesta semana; o destacado é o seu nível. Os níveis recomeçam toda segunda.",
+      "hintEmpty": "Registre o total desta semana para ver onde você fica. Com {count} minutos você alcança a base."
     }
   }
 }

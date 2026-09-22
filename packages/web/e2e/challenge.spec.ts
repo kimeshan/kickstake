@@ -43,8 +43,9 @@ test("invite → sign in → join → save replaces, never adds", async ({ page 
   await saveMinutes(page, "200");
   await expect(page.getByText(/Saved: 200 minutes for/).first()).toBeVisible();
   await page.reload();
-  await expect(page.getByText("200", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("350")).toHaveCount(0);
+  const card = page.getByRole("region", { name: /^Week 2 · / });
+  await expect(card.getByText("200", { exact: true })).toBeVisible();
+  await expect(card.getByText("350", { exact: true })).toHaveCount(0);
 
   // Reopening the invitation goes straight to progress (no duplicate membership).
   await page.goto(`/challenges/join/${token}`);
@@ -107,7 +108,7 @@ test("group results show names and levels but never emails", async ({ page }) =>
   await saveMinutes(page, "320");
   await expect(page.getByText(/Saved: 320 minutes/).first()).toBeVisible();
 
-  await page.getByRole("link", { name: "Group" }).click();
+  await page.getByRole("navigation").getByRole("link", { name: "Group" }).click();
   await expect(page).toHaveURL(new RegExp(`/challenges/${id}/group$`));
   const me = page.getByRole("listitem").filter({ hasText: "Group Gus" }).filter({ hasText: "You" });
   await expect(me).toContainText("You");
@@ -115,7 +116,7 @@ test("group results show names and levels but never emails", async ({ page }) =>
   await expect(page.getByText(/@kickstake\.dev/)).toHaveCount(0);
   await expectNoHorizontalOverflow(page);
 
-  await page.getByRole("link", { name: "Rules" }).click();
+  await page.getByRole("navigation").getByRole("link", { name: "Rules" }).click();
   await expect(page.getByRole("heading", { name: "Level ladder" })).toBeVisible();
   await expect(page.getByText("1,000+")).toBeVisible();
 });
@@ -160,10 +161,36 @@ test("participant flow has no horizontal overflow at 320px", async ({ page }) =>
   await expectNoHorizontalOverflow(page);
   await expect(page.getByRole("button", { name: "Save total" })).toBeInViewport();
   await page.getByRole("button", { name: "Cancel" }).click();
-  await page.getByRole("link", { name: "Group" }).click();
+  await page.getByRole("navigation").getByRole("link", { name: "Group" }).click();
   await expect(page.getByText("A very long display name").first()).toBeVisible();
   await expectNoHorizontalOverflow(page);
-  await page.getByRole("link", { name: "Rules" }).click();
+  await page.getByRole("navigation").getByRole("link", { name: "Rules" }).click();
   await expect(page.getByRole("heading", { name: "Level ladder" })).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});
+
+test("progress page shows the level scale and a leaderboard of everyone", async ({ page }) => {
+  await joinAsNewParticipant(page, "Ladder Lou");
+  // Before entering anything: scale is shown with a hint, nothing marked.
+  const scale = page.getByRole("list", { name: "Level scale" });
+  await expect(scale).toBeVisible();
+  await expect(scale.getByRole("listitem")).toHaveCount(12);
+  await expect(scale.locator('[aria-current="step"]')).toHaveCount(0);
+
+  await saveMinutes(page, "260");
+  await expect(page.getByText(/Saved: 260 minutes/).first()).toBeVisible();
+  const current = scale.locator('[aria-current="step"]');
+  await expect(current).toHaveCount(1);
+  await expect(current).toContainText("Level 3");
+  await expect(current).toContainText("250+");
+
+  // Leaderboard lists other participants too, with this person highlighted.
+  const board = page.getByRole("list", { name: "This week" });
+  await expect(board.getByRole("listitem").filter({ hasText: "You" })).toContainText("Ladder Lou");
+  expect(await board.getByRole("listitem").count()).toBeGreaterThan(1);
+
+  await page.getByRole("tab", { name: "Overall" }).click();
+  const overall = page.getByRole("list", { name: "Overall" });
+  await expect(overall.getByRole("listitem").filter({ hasText: "You" })).toContainText("260");
   await expectNoHorizontalOverflow(page);
 });

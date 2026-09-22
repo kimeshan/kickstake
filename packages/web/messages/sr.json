@@ -721,6 +721,21 @@
       "removedDone": "Uklonjeno.",
       "restore": "Vrati",
       "restored": "Vraćeno."
+    },
+    "leaderboard": {
+      "title": "Rang-lista",
+      "thisWeek": "Ova nedelja",
+      "overall": "Ukupno",
+      "fullGroup": "Prikaz grupe",
+      "rankLabel": "Mesto {rank}",
+      "showAll": "Prikaži sve ({count})"
+    },
+    "ladder": {
+      "title": "Skala nivoa",
+      "baseline": "Osnova",
+      "youAreHere": "Vaš nivo ove nedelje",
+      "hint": "Osvetljeni nivoi su dostignuti ove nedelje; uokviren je vaš nivo. Nivoi se resetuju svakog ponedeljka.",
+      "hintEmpty": "Unesite zbir za ovu nedelju da vidite gde ste. Sa {count} minuta dostižete osnovu."
     }
   }
 }

@@ -461,6 +461,7 @@ export class ChallengesService {
       const row = mine.find((r) => r.weekNumber === weekNumber);
       const minutes = row?.minutes ?? null;
       const result = weekResult(minutes, rules);
+      const summary = summarise(this.minutesByWeek(c, mine), rules);
       return {
         memberId: m.id,
         displayName: m.displayName,
@@ -469,25 +470,21 @@ export class ChallengesService {
         medal: result?.medal ?? null,
         reachedBaseline: result?.reachedBaseline ?? false,
         updateSource: row?.updateSource ?? null,
-        successfulWeeks: summarise(this.minutesByWeek(c, mine), rules).successfulWeeks,
+        successfulWeeks: summary.successfulWeeks,
+        // Whole-challenge total for the overall leaderboard.
+        totalMinutes: summary.totalMinutes,
         isMe: m.userId === viewerUserId,
         rank: null as number | null,
+        overallRank: null as number | null,
       };
     });
 
-    // Entered totals by minutes desc (names only stabilise display order),
-    // then "Not entered" — unranked. Ties share a rank (1, 1, 3).
-    const collator = new Intl.Collator("en", { sensitivity: "base" });
-    entries.sort((a, b) => {
-      if (a.minutes === null || b.minutes === null)
-        return a.minutes === b.minutes ? collator.compare(a.displayName, b.displayName) : a.minutes === null ? 1 : -1;
-      return b.minutes - a.minutes || collator.compare(a.displayName, b.displayName);
-    });
-    entries.forEach((e, i) => {
-      if (e.minutes === null) return;
-      const prev = entries[i - 1];
-      e.rank = prev && prev.minutes === e.minutes ? prev.rank : i + 1;
-    });
+    // Overall: by challenge total. Assigned before the weekly sort below,
+    // which fixes the display order.
+    assignRanks(entries, (e) => e.totalMinutes, (e, r) => (e.overallRank = r));
+    // Weekly: entered totals by minutes desc (names only stabilise display
+    // order), then "Not entered" — unranked. Ties share a rank (1, 1, 3).
+    assignRanks(entries, (e) => e.minutes, (e, r) => (e.rank = r));
 
     const entered = entries.filter((e) => e.minutes !== null);
     const levelCounts: Record<string, number> = {};
@@ -701,6 +698,35 @@ export class ChallengesService {
     }
     return lines.map((cols) => cols.map(csvCell).join(",")).join("\r\n") + "\r\n";
   }
+}
+
+const collator = new Intl.Collator("en", { sensitivity: "base" });
+
+/**
+ * Sorts `items` by value desc (null last, names break ties for display only)
+ * and assigns competition ranks — equal values share a rank (1, 1, 3); null
+ * values stay unranked.
+ */
+function assignRanks<T extends { displayName: string }>(
+  items: T[],
+  value: (t: T) => number | null,
+  setRank: (t: T, rank: number | null) => void,
+) {
+  items.sort((a, b) => {
+    const va = value(a);
+    const vb = value(b);
+    if (va === null || vb === null)
+      return va === vb ? collator.compare(a.displayName, b.displayName) : va === null ? 1 : -1;
+    return vb - va || collator.compare(a.displayName, b.displayName);
+  });
+  let prev: { value: number; rank: number } | null = null;
+  items.forEach((t, i) => {
+    const v = value(t);
+    if (v === null) return setRank(t, null);
+    const rank = prev && prev.value === v ? prev.rank : i + 1;
+    setRank(t, rank);
+    prev = { value: v, rank };
+  });
 }
 
 /**
