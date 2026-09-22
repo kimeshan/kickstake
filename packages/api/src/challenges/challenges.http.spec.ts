@@ -198,6 +198,7 @@ describe("Challenges HTTP", () => {
     // A replayed request (double tap / network retry) is stale → 409, no change.
     const replay = await save(p.agent, c.id, 1, 200, 1).expect(409);
     expect(replay.body).toMatchObject({ code: "version_conflict", current: { minutes: 200, version: 2 } });
+    expect(replay.headers["cache-control"]).toBe("private, no-store");
 
     const reread = await p.agent.get(`/challenges/${c.id}/me`).expect(200);
     expect(reread.body.weeks[0]).toMatchObject({ minutes: 200, version: 2 });
