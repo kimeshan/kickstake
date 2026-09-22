@@ -27,7 +27,7 @@ export default function RulesPage() {
         {t("success", { count: detail.baselineMinutes, weeks: detail.weekCount })}
       </p>
 
-      <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:items-start [&>*]:min-w-0">
         <section className={section} aria-labelledby="ladder-h">
           <h2 id="ladder-h" className={heading}>
             {t("ladderTitle")}

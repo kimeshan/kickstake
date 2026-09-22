@@ -51,3 +51,22 @@ export async function expectNoHorizontalOverflow(page: Page) {
   );
   expect(overflow, "page must not scroll horizontally").toBeLessThanOrEqual(0);
 }
+
+/**
+ * A private challenge owned by the e2e organiser, on the demo calendar
+ * (week 1 elapsed, week 2 current), so organiser tests can toggle settings
+ * without disturbing parallel participant tests.
+ */
+export async function createOwnedChallenge(title = `Org ${Date.now()}`) {
+  const token = `e2e${Date.now()}${Math.floor(Math.random() * 1e6)}`;
+  const [row] = await query<{ id: string }>(
+    `INSERT INTO activity_challenge
+       (slug, title, organiser_id, start_date, week_count, time_zone, final_edit_cutoff, scoring_version, join_token)
+     SELECT $1, $2, u.id, d.start_date, d.week_count, d.time_zone, d.final_edit_cutoff, d.scoring_version, $3
+       FROM "user" u, activity_challenge d
+      WHERE u.email = 'e2e-organiser@kickstake.dev' AND d.slug = 'demo-level-up'
+     RETURNING id`,
+    [`e2e-${token}`, title, token],
+  );
+  return { id: row.id, token, title };
+}

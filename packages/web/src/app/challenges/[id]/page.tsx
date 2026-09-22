@@ -30,11 +30,15 @@ import {
 export default function ProgressPage() {
   const { detail } = useChallenge();
   const t = useTranslations("challenge.progress");
+  const tc = useTranslations("challenge");
   if (!detail.role.isMember) {
     return (
       <div className="mx-auto max-w-md space-y-4">
         <h1 className="font-display text-3xl">{t("organiserOnlyTitle")}</h1>
-        <StateCard message={t("organiserOnlyHint")} />
+        <StateCard
+          message={t("organiserOnlyHint")}
+          action={{ label: tc("join.openManage"), href: `/challenges/${detail.id}/manage` }}
+        />
       </div>
     );
   }

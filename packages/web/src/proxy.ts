@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { CHALLENGE_APP_URL } from "@/lib/constants";
+
+// The challenge subdomain shares this app. Exact host match only (never a
+// substring or X-Forwarded-Host), taken from the configured URL.
+const CHALLENGE_HOST = new URL(CHALLENGE_APP_URL).host.toLowerCase();
 
 // Routes that require a session. Everything else is public: the landing
 // page, participant join pages (/j/:token), the challenge home and challenge
@@ -14,6 +19,13 @@ function isPrivateChallengePath(pathname: string) {
 
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
+
+  // challenge.kickstake.app/ → the challenge home. Only the root is
+  // rewritten; deeper URLs already live under /challenges/…, and /api, auth,
+  // assets and metadata routes pass through untouched.
+  if (pathname === "/" && request.headers.get("host")?.toLowerCase() === CHALLENGE_HOST) {
+    return NextResponse.rewrite(new URL("/challenges", request.url));
+  }
 
   const isDashboard = PROTECTED_PREFIXES.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`),

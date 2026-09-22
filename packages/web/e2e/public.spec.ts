@@ -73,3 +73,26 @@ test("language switch to Arabic flips the document to RTL", async ({
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   await expect(page.locator("html")).toHaveAttribute("lang", "ar");
 });
+
+test("challenge host serves the challenge home at /, football host is unchanged", async ({ request }) => {
+  const challenge = await request.get("/", { headers: { host: "challenge.kickstake.app" } });
+  expect(challenge.status()).toBe(200);
+  expect(await challenge.text()).toContain("<title>KickStake Challenge</title>");
+
+  const football = await request.get("/");
+  expect(await football.text()).toContain("<title>KickStake</title>");
+
+  // Exact host match only — no substring / lookalike hosts.
+  const lookalike = await request.get("/", { headers: { host: "challenge.kickstake.app.evil.test" } });
+  expect(await lookalike.text()).not.toContain("<title>KickStake Challenge</title>");
+
+  // API rewrite still passes through on the challenge host.
+  const api = await request.get("/api/challenges/invitations/nope", { headers: { host: "challenge.kickstake.app" } });
+  expect(api.status()).toBe(404);
+  expect((await api.json()).code).toBe("invitation_not_found");
+});
+
+test("unauthenticated challenge pages redirect to login with a return path", async ({ page }) => {
+  await page.goto("/challenges/00000000-0000-0000-0000-000000000000/group");
+  await expect(page).toHaveURL(/\/login\?next=%2Fchallenges%2F00000000-0000-0000-0000-000000000000%2Fgroup/);
+});

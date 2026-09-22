@@ -286,3 +286,65 @@ export const MEDAL_STYLES: Record<Medal, string> = {
   gold: "bg-[#f2c94c]/15 text-[#f2c94c] border-[#f2c94c]/40",
   platinum: "bg-[#9fe7ff]/15 text-[#bdf0ff] border-[#9fe7ff]/40",
 };
+
+// --- Organiser --------------------------------------------------------------
+
+export interface ManageWeek {
+  weekNumber: number;
+  minutes: number | null;
+  version: number;
+  updatedAt: string | null;
+  updateSource: UpdateSource | null;
+  level: number | null;
+}
+
+export interface ManageMember {
+  memberId: string;
+  displayName: string;
+  joinedAt: string;
+  removedAt: string | null;
+  lastUpdatedAt: string | null;
+  weeks: ManageWeek[];
+  summary: Summary;
+}
+
+export interface ManageView extends Omit<ChallengeDetail, "role"> {
+  joinToken: string;
+  invitationUrl: string;
+  finalEditCutoff: string;
+  members: ManageMember[];
+}
+
+export interface WeekSummary extends Aggregates {
+  title: string;
+  timeZone: string;
+  baselineMinutes: number;
+  weekNumber: number;
+  weekCount: number;
+  startDate: string;
+  endDate: string;
+  inProgress: boolean;
+}
+
+/** Copies text; falls back to a hidden textarea where the async API is unavailable. */
+export async function copyText(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      ta.remove();
+      return ok;
+    } catch {
+      return false;
+    }
+  }
+}

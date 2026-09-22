@@ -28,9 +28,20 @@ export default defineConfig({
       testMatch: /challenge\.spec\.ts/,
       use: { ...devices["Pixel 7"] },
     },
+    // Opt-in Safari/WebKit pass of the phone flows (E2E_WEBKIT=1); CI
+    // installs Chromium only.
+    ...(process.env.E2E_WEBKIT
+      ? [
+          {
+            name: "challenge-webkit",
+            testMatch: /challenge\.spec\.ts/,
+            use: { ...devices["iPhone 13"] },
+          },
+        ]
+      : []),
     {
       name: "authed",
-      testMatch: /(create|join|live)\.spec\.ts/,
+      testMatch: /(create|join|live|challenge-manage)\.spec\.ts/,
       use: {
         ...devices["Desktop Chrome"],
         storageState: "e2e/.auth/organiser.json",
