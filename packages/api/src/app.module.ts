@@ -8,6 +8,7 @@ import { AuthGuard } from "./auth/auth.guard";
 import { SweepstakesModule } from "./sweepstakes/sweepstakes.module";
 import { SupportModule } from "./support/support.module";
 import { ResultsModule } from "./results/results.module";
+import { ChallengesModule } from "./challenges/challenges.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ResultsModule } from "./results/results.module";
     SweepstakesModule,
     SupportModule,
     ResultsModule,
+    ChallengesModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],

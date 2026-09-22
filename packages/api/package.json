@@ -12,7 +12,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "tsx src/db/seed.ts",
-    "db:seed:demo": "tsx src/db/seed-demo-results.ts"
+    "db:seed:demo": "tsx src/db/seed-demo-results.ts",
+    "db:challenge:bootstrap": "tsx src/challenges/bootstrap.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.24",
