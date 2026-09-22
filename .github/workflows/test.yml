@@ -69,6 +69,7 @@ jobs:
       CORS_ORIGIN: http://localhost:3800
       NEXT_PUBLIC_API_URL: http://localhost:3801
       NEXT_PUBLIC_APP_URL: http://localhost:3800
+      CHALLENGE_APP_URL: http://localhost:3800
       E2E_BASE_URL: http://localhost:3800
 
     steps:
