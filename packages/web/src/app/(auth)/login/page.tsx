@@ -1,64 +1,38 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { signIn, emailOtp, useSession } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
+import { safeNext } from "@/lib/safe-next";
 import { Logo } from "@/components/brand";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { Input } from "@/components/ui/input";
+import { EmailOtpForm } from "@/components/email-otp-form";
 
-type Step = "email" | "code";
+function Spinner() {
+  return (
+    <div className="grid min-h-screen place-items-center">
+      <div className="size-8 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+    </div>
+  );
+}
 
-export default function LoginPage() {
+function LoginInner() {
   const t = useTranslations("auth");
   const tf = useTranslations("footer");
   const router = useRouter();
-  // Already signed in? Don't show the form again — go straight to the dashboard.
+  // ?next= returns to e.g. a challenge after sign-in. Validated to local,
+  // approved paths only; football users keep the /dashboard default.
+  const next = safeNext(useSearchParams().get("next"));
+  // Already signed in? Don't show the form again — go straight on.
   const { data: session } = useSession();
   useEffect(() => {
-    if (session) router.replace("/dashboard");
-  }, [session, router]);
-  const [step, setStep] = useState<Step>("email");
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function sendCode(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-    const { error } = await emailOtp.sendVerificationOtp({
-      email: email.trim(),
-      type: "sign-in",
-    });
-    setLoading(false);
-    if (error) return setError(error.message ?? t("errSend"));
-    setCode("");
-    setStep("code");
-  }
-
-  async function verify(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-    const { error } = await signIn.emailOtp({ email: email.trim(), otp: code });
-    setLoading(false);
-    if (error) return setError(error.message ?? t("errVerify"));
-    router.push("/dashboard");
-    router.refresh();
-  }
+    if (session) router.replace(next);
+  }, [session, router, next]);
 
   // Signed in — show a brief redirecting state instead of the form.
-  if (session) {
-    return (
-      <div className="grid min-h-screen place-items-center">
-        <div className="size-8 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
-      </div>
-    );
-  }
+  if (session) return <Spinner />;
 
   return (
     <main className="grain flex min-h-screen flex-col items-center justify-center px-5 py-12">
@@ -88,103 +62,12 @@ export default function LoginPage() {
             aria-hidden
             className="pointer-events-none absolute -top-16 left-1/2 size-40 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl"
           />
-
-          {step === "email" ? (
-            <>
-              <h1 className="font-display text-3xl text-balance">
-                {t("emailTitle")}
-              </h1>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {t("emailSub")}
-              </p>
-
-              <form onSubmit={sendCode} className="mt-6 space-y-3">
-                <Input
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  autoFocus
-                  required
-                  placeholder={t("emailPlaceholder")}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <button
-                  type="submit"
-                  disabled={loading || !email}
-                  className="h-12 w-full rounded-xl bg-primary font-semibold text-primary-foreground transition active:scale-[.98] disabled:opacity-50"
-                >
-                  {loading ? t("sending") : t("sendCode")}
-                </button>
-              </form>
-            </>
-          ) : (
-            <>
-              <h1 className="font-display text-3xl text-balance">
-                {t("codeTitle")}
-              </h1>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {t.rich("codeSub", {
-                  email,
-                  strong: (chunks) => (
-                    <span className="font-medium text-foreground">
-                      {chunks}
-                    </span>
-                  ),
-                })}
-              </p>
-
-              <form onSubmit={verify} className="mt-6 space-y-3">
-                <Input
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
-                  autoFocus
-                  required
-                  maxLength={6}
-                  placeholder="••••••"
-                  value={code}
-                  onChange={(e) =>
-                    setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
-                  }
-                  className="text-center font-mono text-2xl tracking-[0.5em]"
-                />
-                <button
-                  type="submit"
-                  disabled={loading || code.length < 6}
-                  className="h-12 w-full rounded-xl bg-primary font-semibold text-primary-foreground transition active:scale-[.98] disabled:opacity-50"
-                >
-                  {loading ? t("verifying") : t("verify")}
-                </button>
-              </form>
-
-              <div className="mt-4 flex items-center justify-between text-xs">
-                <button
-                  onClick={() => {
-                    setStep("email");
-                    setError(null);
-                  }}
-                  className="text-muted-foreground transition hover:text-foreground"
-                >
-                  {t("useDifferent")}
-                </button>
-                <button
-                  onClick={() =>
-                    sendCode({ preventDefault() {} } as React.FormEvent)
-                  }
-                  disabled={loading}
-                  className="font-medium text-primary transition hover:opacity-80 disabled:opacity-50"
-                >
-                  {t("resend")}
-                </button>
-              </div>
-            </>
-          )}
-
-          {error && (
-            <p className="mt-4 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-              {error}
-            </p>
-          )}
+          <EmailOtpForm
+            onSignedIn={() => {
+              router.push(next);
+              router.refresh();
+            }}
+          />
         </div>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
@@ -201,5 +84,13 @@ export default function LoginPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<Spinner />}>
+      <LoginInner />
+    </Suspense>
   );
 }

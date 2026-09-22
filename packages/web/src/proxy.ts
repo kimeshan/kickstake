@@ -1,26 +1,39 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Routes that require an organiser session. Everything else is public:
-// the landing page, and participant join pages (/j/:token) per spec §1.
+// Routes that require a session. Everything else is public: the landing
+// page, participant join pages (/j/:token), the challenge home and challenge
+// invitations (/challenges/join/:token).
 const PROTECTED_PREFIXES = ["/dashboard"];
 
-export function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+/** /challenges/<id>/… — private challenge pages (not the home, not invites). */
+function isPrivateChallengePath(pathname: string) {
+  const m = pathname.match(/^\/challenges\/([^/]+)(\/|$)/);
+  return !!m && m[1] !== "join";
+}
 
-  const isProtected = PROTECTED_PREFIXES.some(
+export function proxy(request: NextRequest) {
+  const { pathname, search } = request.nextUrl;
+
+  const isDashboard = PROTECTED_PREFIXES.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`),
   );
-  if (!isProtected) {
+  const isChallenge = isPrivateChallengePath(pathname);
+  if (!isDashboard && !isChallenge) {
     return NextResponse.next();
   }
 
-  // Check for session cookie (prefixed with __Secure- in production)
+  // Cookie presence is only a navigation hint — the API enforces the real
+  // session, membership and organiser checks on every request.
   const sessionCookie =
     request.cookies.get("better-auth.session_token") ||
     request.cookies.get("__Secure-better-auth.session_token");
   if (!sessionCookie) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const login = new URL("/login", request.url);
+    // Challenge pages come back to where they started after sign-in; the
+    // login page validates `next` again before using it.
+    if (isChallenge) login.searchParams.set("next", `${pathname}${search}`);
+    return NextResponse.redirect(login);
   }
 
   return NextResponse.next();

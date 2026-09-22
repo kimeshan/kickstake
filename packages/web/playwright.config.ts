@@ -23,6 +23,12 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
     {
+      // Participant flows are phone-first: run them in a mobile viewport.
+      name: "challenge",
+      testMatch: /challenge\.spec\.ts/,
+      use: { ...devices["Pixel 7"] },
+    },
+    {
       name: "authed",
       testMatch: /(create|join|live)\.spec\.ts/,
       use: {
