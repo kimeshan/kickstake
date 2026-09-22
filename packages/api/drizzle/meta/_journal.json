@@ -50,6 +50,13 @@
       "when": 1784554791994,
       "tag": "0006_faulty_siren",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790071288717,
+      "tag": "0007_superb_dagger",
+      "breakpoints": true
     }
   ]
 }

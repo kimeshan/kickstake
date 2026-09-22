@@ -20,6 +20,13 @@ export async function createApp(): Promise<INestApplication> {
   // Mount better-auth before NestJS routes (handles /auth/* with all sub-paths)
   app.use("/auth", toNodeHandler(auth));
 
+  // Challenge responses are per-user — never cacheable, including errors
+  // (a 409 carries the caller's saved total), which @Header() doesn't cover.
+  app.use("/challenges", (_req: unknown, res: { setHeader: (k: string, v: string) => void }, next: () => void) => {
+    res.setHeader("Cache-Control", "private, no-store");
+    next();
+  });
+
   // Re-add JSON parser for NestJS routes
   app.use(require("express").json({ limit: "10mb" }));
 

@@ -32,3 +32,10 @@ export const MAKER = {
   name: "Kimeshan Naidoo",
   url: "https://github.com/kimeshan",
 };
+
+/**
+ * Public base URL of the activity challenge experience (its own subdomain in
+ * production). Separate from APP_URL so football links never change.
+ */
+export const CHALLENGE_APP_URL =
+  process.env.NEXT_PUBLIC_CHALLENGE_APP_URL ?? `https://challenge.${DOMAIN}`;

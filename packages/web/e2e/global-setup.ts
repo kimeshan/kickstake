@@ -64,10 +64,29 @@ export default async function globalSetup() {
 
   await ctx.storageState({ path: "e2e/.auth/organiser.json" });
 
+  // Demo activity challenge owned by the e2e organiser (week 1 elapsed,
+  // week 2 current). Idempotent; needs the organiser account to exist first.
+  execSync(
+    "pnpm --filter @kickstake/api db:challenge:bootstrap --organiser-email e2e-organiser@kickstake.dev --demo",
+    { cwd: join(__dirname, "..", "..", ".."), stdio: "pipe", env: { ...process.env, DATABASE_URL: DB } },
+  );
+
   // Warm Next dev's on-demand route compilation so parallel tests don't each
   // pay a cold-compile cost (which can blow past per-test timeouts).
   await Promise.all(
-    ["/", "/login", "/dashboard", "/dashboard/new", "/dashboard/warmup", "/j/warmup"].map(
+    [
+      "/",
+      "/login",
+      "/dashboard",
+      "/dashboard/new",
+      "/dashboard/warmup",
+      "/j/warmup",
+      "/challenges",
+      "/challenges/join/warmup",
+      "/challenges/00000000-0000-0000-0000-000000000000",
+      "/challenges/00000000-0000-0000-0000-000000000000/group",
+      "/challenges/00000000-0000-0000-0000-000000000000/rules",
+    ].map(
       (p) => ctx.get(p).catch(() => {}),
     ),
   );

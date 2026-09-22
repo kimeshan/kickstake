@@ -1,8 +1,10 @@
 # KickStake – Render Blueprint (API + Web + Postgres)
 # Prod gets a Postgres DB, an API service, and a Web frontend.
 #
-# Custom domains (configure DNS at your registrar — see notes at bottom):
-#   Prod web  → kickstake.app (+ www)     Prod API  → api.kickstake.app
+# Custom domains (configure DNS at your registrar):
+#   Prod web  → kickstake.app (+ www) and challenge.kickstake.app (activity
+#               challenge, same web service)
+#   Prod API  → api.kickstake.app
 #
 # Non-secret env vars are set here; secrets (sync:false) are set per-service in
 # the Dashboard after first deploy: RESEND_API_KEY, GOOGLE_CLIENT_ID/SECRET.
@@ -47,10 +49,15 @@ services:
         generateValue: true
       - key: BETTER_AUTH_URL
         value: https://api.kickstake.app
+      # Exact origins allowed for CORS, Better Auth and challenge mutations.
+      # Keep the football origin; the challenge subdomain is added alongside.
       - key: CORS_ORIGIN
-        value: https://kickstake.app
+        value: https://kickstake.app,https://challenge.kickstake.app
       - key: APP_URL
         value: https://kickstake.app
+      # Base URL for challenge invitation links (separate from APP_URL).
+      - key: CHALLENGE_APP_URL
+        value: https://challenge.kickstake.app
       - key: COOKIE_DOMAIN
         value: .kickstake.app
       - key: EMAIL_FROM
@@ -76,6 +83,7 @@ services:
     domains:
       - kickstake.app
       - www.kickstake.app
+      - challenge.kickstake.app
     dockerfilePath: ./packages/web/Dockerfile
     dockerContext: .
     buildCommand: ""
@@ -91,5 +99,8 @@ services:
         value: https://api.kickstake.app
       - key: NEXT_PUBLIC_APP_URL
         value: https://kickstake.app
+      # Build-time (inlined): challenge host matching + challenge metadata.
+      - key: NEXT_PUBLIC_CHALLENGE_APP_URL
+        value: https://challenge.kickstake.app
       - key: NODE_ENV
         value: production
