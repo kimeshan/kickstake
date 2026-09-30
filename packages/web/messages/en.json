@@ -494,6 +494,8 @@
       "open": "Open menu",
       "close": "Close menu",
       "rename": "Change my name",
+      "remindersOff": "Turn off email reminders",
+      "remindersOn": "Turn on email reminders",
       "manage": "Organiser tools",
       "signOut": "Sign out",
       "signedInAs": "Signed in as {name}"
@@ -720,7 +722,21 @@
       "removeYes": "Yes, remove",
       "removedDone": "Removed.",
       "restore": "Restore",
-      "restored": "Restored."
+      "restored": "Restored.",
+      "remindersTitle": "Reminders",
+      "remindersHint": "Emails the people who haven't entered a total. Sent automatically on the Monday after each week; you can also send one now.",
+      "remindersMissing": "{count, plural, one {# person hasn't entered this week} other {# people haven't entered this week}}",
+      "remindersNobody": "Everyone has entered this week. Nothing to send.",
+      "remindersClosed": "Entries are closed, so reminders are off.",
+      "remindAll": "{count, plural, one {Remind # person} other {Remind all # people}}",
+      "remindersSending": "Sending…",
+      "remindersSent": "{count, plural, =0 {No emails sent — everyone had entered or opted out.} one {Reminder sent to # person.} other {Reminders sent to # people.}}",
+      "remindPerson": "Send reminder for week {n}",
+      "remindPersonHint": "Only sends if they haven't entered that week yet.",
+      "reminderSent": "Reminder sent.",
+      "lastReminder": "reminded {time}",
+      "optedOut": "reminders off",
+      "optedOutHint": "This person has turned off reminder emails."
     },
     "leaderboard": {
       "title": "Leaderboard",

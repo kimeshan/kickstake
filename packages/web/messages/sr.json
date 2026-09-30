@@ -494,6 +494,8 @@
       "open": "Otvori meni",
       "close": "Zatvori meni",
       "rename": "Promeni moje ime",
+      "remindersOff": "Isključi podsetnike mejlom",
+      "remindersOn": "Uključi podsetnike mejlom",
       "manage": "Alati organizatora",
       "signOut": "Odjavi se",
       "signedInAs": "Prijavljeni ste kao {name}"
@@ -720,7 +722,21 @@
       "removeYes": "Da, ukloni",
       "removedDone": "Uklonjeno.",
       "restore": "Vrati",
-      "restored": "Vraćeno."
+      "restored": "Vraćeno.",
+      "remindersTitle": "Podsetnici",
+      "remindersHint": "Šalje mejl onima koji nisu uneli zbir. Automatski se šalje u ponedeljak posle svake nedelje; možete poslati i odmah.",
+      "remindersMissing": "{count, plural, one {# osoba nije unela ove nedelje} few {# osobe nisu unele ove nedelje} other {# osoba nije unelo ove nedelje}}",
+      "remindersNobody": "Svi su uneli ove nedelje. Nema šta da se šalje.",
+      "remindersClosed": "Unos je zatvoren, pa su podsetnici isključeni.",
+      "remindAll": "{count, plural, one {Podseti # osobu} few {Podseti # osobe} other {Podseti svih # osoba}}",
+      "remindersSending": "Slanje…",
+      "remindersSent": "{count, plural, =0 {Nijedan mejl nije poslat — svi su uneli ili isključili podsetnike.} one {Podsetnik poslat # osobi.} few {Podsetnici poslati # osobama.} other {Podsetnici poslati # osobama.}}",
+      "remindPerson": "Pošalji podsetnik za nedelju {n}",
+      "remindPersonHint": "Šalje se samo ako ta nedelja još nije uneta.",
+      "reminderSent": "Podsetnik poslat.",
+      "lastReminder": "podsećen {time}",
+      "optedOut": "podsetnici isključeni",
+      "optedOutHint": "Ova osoba je isključila podsetnike mejlom."
     },
     "leaderboard": {
       "title": "Rang-lista",

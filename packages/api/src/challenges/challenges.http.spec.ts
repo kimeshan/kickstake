@@ -364,7 +364,14 @@ describe("Challenges HTTP", () => {
 
     // The organiser isn't automatically a participant.
     const d = await owner.agent.get(`/challenges/${c.id}`).expect(200);
-    expect(d.body.role).toEqual({ isOwner: true, isMember: false, memberId: null, displayName: null });
+    expect(d.body.role).toEqual({
+      isOwner: true,
+      isMember: false,
+      memberId: null,
+      displayName: null,
+      remindersOptOut: false,
+      locale: null,
+    });
     expect((await owner.agent.get(`/challenges/${c.id}/me`).expect(403)).body.code).toBe("not_a_member");
     await owner.agent.get(`/challenges/${c.id}/standings`).expect(200);
 

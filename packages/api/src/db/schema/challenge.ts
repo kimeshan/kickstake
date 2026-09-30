@@ -19,6 +19,12 @@ import { user } from "./auth";
 // Deliberately separate from the anonymous sweepstake `participant` table —
 // challenge edits are authorised against a Better Auth account.
 
+/** How a weekly reminder was triggered. */
+export const challengeReminderKindEnum = pgEnum("activity_challenge_reminder_kind", [
+  "automatic",
+  "organiser",
+]);
+
 /** Who wrote a weekly total — shown to the participant ("Updated by organiser"). */
 export const challengeUpdateSourceEnum = pgEnum("activity_challenge_update_source", [
   "participant",
@@ -77,6 +83,10 @@ export const activityChallengeMember = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     // Shown to the group. Email never is.
     displayName: text("display_name").notNull(),
+    // Locale this person last used in the app — reminder emails follow it.
+    locale: text("locale").notNull().default("en"),
+    // Per-person opt-out from reminder emails (never blocks sign-in emails).
+    remindersOptOut: boolean("reminders_opt_out").notNull().default(false),
     joinedAt: timestamp("joined_at", { withTimezone: true }).notNull().defaultNow(),
     // Soft removal keeps history; a removed account can't rejoin until restored.
     removedAt: timestamp("removed_at", { withTimezone: true }),
@@ -135,4 +145,31 @@ export const activityChallengeWeekAudit = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (a) => [index("activity_challenge_week_audit_week_idx").on(a.weekId)],
+);
+
+/**
+ * One row per reminder email actually sent. Doubles as the idempotency
+ * record: the partial unique index means the weekly job can run as often as
+ * it likes (and be retried) without emailing anyone twice for a week.
+ * Organiser nudges are deliberately repeatable, so they aren't constrained.
+ */
+export const activityChallengeReminder = pgTable(
+  "activity_challenge_reminder",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    memberId: uuid("member_id")
+      .notNull()
+      .references(() => activityChallengeMember.id, { onDelete: "cascade" }),
+    weekNumber: integer("week_number").notNull(),
+    kind: challengeReminderKindEnum("kind").notNull(),
+    // Null for the automatic job; the organiser's account for a manual send.
+    sentBy: text("sent_by").references(() => user.id, { onDelete: "set null" }),
+    sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (r) => [
+    uniqueIndex("activity_challenge_reminder_auto_idx")
+      .on(r.memberId, r.weekNumber)
+      .where(sql`${r.kind} = 'automatic'`),
+    index("activity_challenge_reminder_member_idx").on(r.memberId),
+  ],
 );

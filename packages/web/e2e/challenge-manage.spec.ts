@@ -131,3 +131,51 @@ test("organiser page works on a phone and non-owners are refused", async ({ page
   expect(r.status()).toBe(403);
   await p.ctx.close();
 });
+
+test("organiser can nudge one person or everyone who hasn't entered", async ({ page, browser }) => {
+  const c = await createOwnedChallenge();
+  const missing = await participant(browser, c.token, "Missing Mia");
+  const entered = await participant(browser, c.token, "Entered Ena");
+  await entered.page.getByRole("button", { name: "Update minutes" }).click();
+  await entered.page.getByLabel("Total minutes this week").fill("200");
+  await entered.page.getByRole("button", { name: "Save total" }).click();
+  await expect(entered.page.getByText(/Saved: 200 minutes/).first()).toBeVisible();
+
+  await page.goto(`/challenges/${c.id}/manage`);
+  const reminders = page.getByRole("region", { name: "Reminders" });
+  // Only the person who hasn't entered counts.
+  await expect(reminders.getByText("1 person hasn't entered this week")).toBeVisible();
+  await reminders.getByRole("button", { name: "Remind 1 person" }).click();
+  await expect(reminders.getByText("Reminder sent to 1 person.")).toBeVisible();
+
+  // The roster records it; the person who entered was never emailed.
+  const card = page.locator("details").filter({ hasText: "Missing Mia" });
+  await expect(card).toContainText("reminded");
+  await card.locator("summary").click();
+  await card.getByRole("button", { name: /Send reminder for week/ }).click();
+  await expect(card.getByText("Reminder sent.")).toBeVisible();
+
+  await missing.ctx.close();
+  await entered.ctx.close();
+});
+
+test("a participant can turn reminder emails off, and the organiser sees it", async ({ page, browser }) => {
+  const c = await createOwnedChallenge();
+  const p = await participant(browser, c.token, "Quiet Qi");
+
+  await p.page.getByRole("button", { name: "Open menu" }).click();
+  await p.page.getByRole("menuitem", { name: "Turn off email reminders" }).click();
+  await p.page.getByRole("button", { name: "Open menu" }).click();
+  await expect(p.page.getByRole("menuitem", { name: "Turn on email reminders" })).toBeVisible();
+
+  await page.goto(`/challenges/${c.id}/manage`);
+  await expect(page.getByRole("region", { name: "Reminders" })).toContainText(
+    "Everyone has entered this week. Nothing to send.",
+  );
+  const card = page.locator("details").filter({ hasText: "Quiet Qi" });
+  await expect(card).toContainText("reminders off");
+  await card.locator("summary").click();
+  await expect(card.getByText("This person has turned off reminder emails.")).toBeVisible();
+  await expect(card.getByRole("button", { name: /Send reminder/ })).toHaveCount(0);
+  await p.ctx.close();
+});

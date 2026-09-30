@@ -27,3 +27,7 @@ export const CHALLENGE_APP_URL =
 
 export const challengeInviteUrl = (token: string) =>
   `${CHALLENGE_APP_URL}/challenges/join/${token}`;
+
+/** A member's own progress page (reminder-email deep link). */
+export const challengeUrl = (challengeId: string) =>
+  `${CHALLENGE_APP_URL}/challenges/${challengeId}`;

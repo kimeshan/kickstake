@@ -494,6 +494,8 @@
       "open": "Abrir menú",
       "close": "Cerrar menú",
       "rename": "Cambiar mi nombre",
+      "remindersOff": "Desactivar recordatorios por correo",
+      "remindersOn": "Activar recordatorios por correo",
       "manage": "Herramientas del organizador",
       "signOut": "Cerrar sesión",
       "signedInAs": "Sesión iniciada como {name}"
@@ -720,7 +722,21 @@
       "removeYes": "Sí, quitar",
       "removedDone": "Eliminado.",
       "restore": "Restaurar",
-      "restored": "Restaurado."
+      "restored": "Restaurado.",
+      "remindersTitle": "Recordatorios",
+      "remindersHint": "Envía un correo a quienes no han anotado su total. Se manda automáticamente el lunes siguiente a cada semana; también puedes enviarlo ahora.",
+      "remindersMissing": "{count, plural, one {# persona no ha anotado esta semana} other {# personas no han anotado esta semana}}",
+      "remindersNobody": "Todos han anotado esta semana. No hay nada que enviar.",
+      "remindersClosed": "Las entradas están cerradas, así que los recordatorios están desactivados.",
+      "remindAll": "{count, plural, one {Recordar a # persona} other {Recordar a las # personas}}",
+      "remindersSending": "Enviando…",
+      "remindersSent": "{count, plural, =0 {No se envió ningún correo: todos habían anotado o lo desactivaron.} one {Recordatorio enviado a # persona.} other {Recordatorios enviados a # personas.}}",
+      "remindPerson": "Enviar recordatorio de la semana {n}",
+      "remindPersonHint": "Solo se envía si aún no ha anotado esa semana.",
+      "reminderSent": "Recordatorio enviado.",
+      "lastReminder": "recordado {time}",
+      "optedOut": "recordatorios desactivados",
+      "optedOutHint": "Esta persona ha desactivado los recordatorios por correo."
     },
     "leaderboard": {
       "title": "Clasificación",

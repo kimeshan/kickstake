@@ -20,6 +20,7 @@ import { CurrentUser } from "../auth/current-user.decorator";
 import { Public } from "../auth/public.decorator";
 import { ChallengesService } from "./challenges.service";
 import { RateLimiter, clientKey } from "./rate-limit";
+import { localeFromCookie } from "./validation";
 import { TrustedOriginGuard } from "./trusted-origin.guard";
 
 interface AuthUser {
@@ -57,9 +58,11 @@ export class ChallengesController {
     @CurrentUser() user: AuthUser,
     @Param("token") token: string,
     @Body() body: unknown,
+    @Req() req: Request,
   ) {
     joins.hit(user.id);
-    return this.challenges.join(user.id, token, body);
+    // Remember the language they're using, so reminder emails match it.
+    return this.challenges.join(user.id, token, body, localeFromCookie(req.headers["cookie"]));
   }
 
   @Get("mine")
@@ -101,6 +104,13 @@ export class ChallengesController {
   @Header("Cache-Control", NO_STORE)
   standings(@CurrentUser() user: AuthUser, @Param("id") id: string, @Query("week") week: unknown) {
     return this.challenges.standings(user.id, id, week);
+  }
+
+  @Post(":id/reminders")
+  @HttpCode(200)
+  @Header("Cache-Control", NO_STORE)
+  sendReminders(@CurrentUser() user: AuthUser, @Param("id") id: string, @Body() body: unknown) {
+    return this.challenges.sendReminders(user.id, id, body);
   }
 
   @Get(":id/manage")

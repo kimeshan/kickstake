@@ -66,6 +66,18 @@ Football host (regression):
 - [ ] Football login → `/dashboard`, create/open a sweepstake, `/j/:token`
       join still works.
 
+## 4b. Reminder emails
+
+- [ ] `RESEND_API_KEY` is set on the API (already needed for sign-in codes).
+- [ ] Decide whether automatic reminders should be on for this challenge.
+      They are on by default; `CHALLENGE_REMINDERS_ENABLED=false` turns them
+      off without affecting organiser-sent nudges.
+- [ ] Sanity check after the first Monday 12:00 SAST: people who hadn't
+      entered received one email, people who had received none, and the
+      roster shows "reminded …" against the right names.
+- [ ] Tell the group that reminders can be turned off per person in the app
+      menu, so nobody feels nagged.
+
 ## 5. Spreadsheet transition
 
 - [ ] Post in the group: stop updating the spreadsheet; use the link.
