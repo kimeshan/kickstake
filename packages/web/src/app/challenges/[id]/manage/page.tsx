@@ -13,6 +13,8 @@ import {
   formatNumber,
   parseMinutesInput,
   type ManageMember,
+  type DigestCadence,
+  type DigestResult,
   type ManageView,
   type RemindersResult,
   type WeekSummary,
@@ -76,6 +78,7 @@ export default function ManagePage() {
           <InvitationCard view={view} onChange={onChange} />
           <SettingsCard view={view} onChange={onChange} />
           <RemindersCard view={view} onChange={onChange} />
+          <DigestCard view={view} onChange={onChange} />
           <SummaryCard view={view} />
           <section className={card} aria-labelledby="export-h">
             <h2 id="export-h" className={heading}>
@@ -334,6 +337,84 @@ function RemindersCard({ view, onChange }: { view: ManageView; onChange: (v: Man
   );
 }
 
+function DigestCard({ view, onChange }: { view: ManageView; onChange: (v: ManageView) => void }) {
+  const t = useTranslations("challenge.manage");
+  const te = useTranslations("challenge.errors");
+  const locale = useLocale();
+  const [pending, setPending] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const cadences: DigestCadence[] = ["twice_weekly", "weekly", "off"];
+
+  async function patch(digestCadence: DigestCadence) {
+    setPending(true);
+    setMessage(null);
+    try {
+      onChange(
+        await challengeApi<ManageView>(`/${view.id}/settings`, {
+          method: "PATCH",
+          body: JSON.stringify({ digestCadence }),
+        }),
+      );
+    } catch (e) {
+      setMessage(te(errorKey(e)));
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function sendNow() {
+    setPending(true);
+    setMessage(null);
+    try {
+      const r = await challengeApi<DigestResult>(`/${view.id}/digest`, { method: "POST" });
+      onChange(r.manage);
+      setMessage(t("digestSent", { count: r.outcomes.filter((o) => o.sent).length }));
+    } catch (e) {
+      setMessage(te(errorKey(e)));
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <section className={card} aria-labelledby="digest-h">
+      <h2 id="digest-h" className={heading}>
+        {t("digestTitle")}
+      </h2>
+      <p className="mb-3 text-sm text-muted-foreground">{t("digestHint")}</p>
+      <label htmlFor="digest-cadence" className="block text-sm font-semibold">
+        {t("digestCadence")}
+      </label>
+      <select
+        id="digest-cadence"
+        value={view.digestCadence}
+        disabled={pending}
+        onChange={(e) => patch(e.target.value as DigestCadence)}
+        className="mt-1 h-12 w-full rounded-xl border border-input bg-secondary/40 px-3 text-base"
+      >
+        {cadences.map((c) => (
+          <option key={c} value={c} className="bg-card">
+            {t(`digestCadence_${c}`)}
+          </option>
+        ))}
+      </select>
+      <p className="mt-2 text-xs text-muted-foreground">
+        {view.lastDigestAt
+          ? t("digestLastSent", { time: formatInstant(view.lastDigestAt, locale, view.timeZone) })
+          : t("digestNeverSent")}
+      </p>
+      <button type="button" className={cn(btn, "mt-3")} disabled={pending} onClick={sendNow}>
+        {pending ? t("remindersSending") : t("digestSendNow")}
+      </button>
+      {message && (
+        <p role="status" className="mt-2 text-sm text-primary">
+          {message}
+        </p>
+      )}
+    </section>
+  );
+}
+
 function SummaryCard({ view }: { view: ManageView }) {
   const t = useTranslations("challenge.manage");
   const tc = useTranslations("challenge");
@@ -522,6 +603,7 @@ function MemberCard({
             {member.lastReminderAt &&
               ` · ${t("lastReminder", { time: formatInstant(member.lastReminderAt, locale, view.timeZone) })}`}
             {member.remindersOptOut && ` · ${t("optedOut")}`}
+            {member.digestOptOut && ` · ${t("digestOptedOut")}`}
           </div>
         </div>
         <span aria-hidden className="text-muted-foreground transition group-open:rotate-180">

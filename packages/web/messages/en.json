@@ -496,6 +496,8 @@
       "rename": "Change my name",
       "remindersOff": "Turn off email reminders",
       "remindersOn": "Turn on email reminders",
+      "digestOff": "Turn off leaderboard emails",
+      "digestOn": "Turn on leaderboard emails",
       "manage": "Organiser tools",
       "signOut": "Sign out",
       "signedInAs": "Signed in as {name}"
@@ -736,7 +738,18 @@
       "reminderSent": "Reminder sent.",
       "lastReminder": "reminded {time}",
       "optedOut": "reminders off",
-      "optedOutHint": "This person has turned off reminder emails."
+      "optedOutHint": "This person has turned off reminder emails.",
+      "digestTitle": "Leaderboard emails",
+      "digestHint": "Emails everyone the current leaderboard. Sent Thursday and Sunday evenings — never more than twice a week, and never on Monday, when reminders go out.",
+      "digestCadence": "How often",
+      "digestCadence_twice_weekly": "Twice a week (Thu + Sun)",
+      "digestCadence_weekly": "Once a week (Sun)",
+      "digestCadence_off": "Off",
+      "digestSendNow": "Send leaderboard now",
+      "digestLastSent": "Last sent {time}",
+      "digestNeverSent": "Not sent yet",
+      "digestSent": "{count, plural, =0 {No emails sent — everyone has opted out.} one {Leaderboard sent to # person.} other {Leaderboard sent to # people.}}",
+      "digestOptedOut": "leaderboard off"
     },
     "leaderboard": {
       "title": "Leaderboard",

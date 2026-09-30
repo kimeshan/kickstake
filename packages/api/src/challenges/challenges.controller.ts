@@ -113,6 +113,13 @@ export class ChallengesController {
     return this.challenges.sendReminders(user.id, id, body);
   }
 
+  @Post(":id/digest")
+  @HttpCode(200)
+  @Header("Cache-Control", NO_STORE)
+  sendDigest(@CurrentUser() user: AuthUser, @Param("id") id: string) {
+    return this.challenges.sendDigestNow(user.id, id);
+  }
+
   @Get(":id/manage")
   @Header("Cache-Control", NO_STORE)
   manage(@CurrentUser() user: AuthUser, @Param("id") id: string) {

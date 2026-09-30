@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { CONTACT_EMAIL, DEFAULT_EMAIL_FROM } from "../constants";
 import { fill, reminderCopy } from "./challenge-reminder-copy";
+import { digestCopy, type DigestCopy } from "./challenge-digest-copy";
 
 const apiKey = process.env.RESEND_API_KEY;
 // Must be a verified Resend domain in production (kickstake.app). For quick
@@ -20,6 +21,14 @@ type OtpType =
 // integration tests can complete the real sign-in flow in-process. Never
 // populated in dev or production.
 export const testOtpStore = new Map<string, string>();
+
+// Test seam: digest emails captured instead of sent under NODE_ENV=test.
+export const testDigestStore: {
+  to: string;
+  subject: string;
+  text: string;
+  locale: string;
+}[] = [];
 
 // Test seam: reminder emails captured instead of sent under NODE_ENV=test.
 export const testReminderStore: {
@@ -217,6 +226,146 @@ export function reminderHtml(
           </td></tr>
           <tr><td style="padding:0 32px 32px;color:#8a967e;font-size:13px;line-height:1.6;">
             ${escapeHtml(fill(c.deadline, values))}
+          </td></tr>
+        </table>
+        <div style="color:#5a6452;font-size:12px;margin-top:20px;max-width:440px;line-height:1.5;">${escapeHtml(fill(c.optOut, values))}</div>
+      </td></tr>
+    </table>
+  </body>
+</html>`;
+}
+
+export interface DigestRow {
+  rank: number | null;
+  name: string;
+  /** Pre-formatted minutes, or null when they haven't entered. */
+  minutes: string | null;
+  level: string | null;
+  isMe: boolean;
+}
+
+export interface DigestEmail {
+  to: string;
+  locale: string;
+  name: string;
+  title: string;
+  weekNumber: number;
+  range: string;
+  baseline: string;
+  groupMinutes: string;
+  atBaseline: number;
+  activeCount: number;
+  /** Leaderboard rows, already ranked and trimmed for email. */
+  rows: DigestRow[];
+  /** The recipient's own row, even when it fell outside `rows`. */
+  you: DigestRow | null;
+  url: string;
+}
+
+const MEDALS = ["🥇", "🥈", "🥉"];
+
+/** Leaderboard digest — goes to everyone who hasn't opted out. */
+export async function sendChallengeDigestEmail(input: DigestEmail) {
+  const c = digestCopy(input.locale);
+  const values = {
+    title: input.title,
+    n: input.weekNumber,
+    range: input.range,
+    name: input.name,
+    baseline: input.baseline,
+    groupMinutes: input.groupMinutes,
+    done: input.atBaseline,
+    total: input.activeCount,
+    rank: input.you?.rank ?? 0,
+    minutes: input.you?.minutes ?? "0",
+  };
+  const subject = fill(c.subject, values);
+  const line = (r: DigestRow) =>
+    `${r.rank === null ? "–" : `${r.rank}.`} ${r.name}${r.isMe ? " *" : ""} — ${
+      r.minutes === null ? "—" : `${r.minutes} ${c.minUnit}`
+    }${r.level ? ` · ${r.level}` : ""}`;
+  const text = [
+    fill(c.intro, values),
+    "",
+    fill(c.heading, values),
+    input.you?.minutes ? fill(c.yourRank, values) : fill(c.yourRankNotEntered, values),
+    "",
+    fill(c.board, values),
+    ...input.rows.map(line),
+    "",
+    fill(c.group, values),
+    "",
+    input.url,
+    "",
+    fill(c.optOut, values),
+  ].join("\n");
+
+  if (process.env.NODE_ENV === "test") {
+    testDigestStore.push({ to: input.to, subject, text, locale: input.locale });
+    return;
+  }
+  if (!resend) {
+    console.log(`\n[challenge digest] → ${input.to}\nSubject: ${subject}\n${text}\n`);
+    return;
+  }
+  const { error } = await resend.emails.send({
+    from,
+    to: input.to,
+    subject,
+    text,
+    html: digestHtml(input, c, values),
+  });
+  if (error) throw new Error(`Resend: ${error.message}`);
+}
+
+/** Exported for preview + tests. */
+export function digestHtml(
+  input: DigestEmail,
+  c: DigestCopy,
+  values: Record<string, string | number>,
+) {
+  const rtl = input.locale === "ar";
+  const row = (r: DigestRow) => `
+            <tr>
+              <td style="padding:8px 0;width:36px;color:#8a967e;font-size:15px;">${
+                r.rank !== null && r.rank <= 3 ? MEDALS[r.rank - 1] : escapeHtml(r.rank === null ? "–" : `${r.rank}`)
+              }</td>
+              <td style="padding:8px 0;color:${r.isMe ? "#c6f135" : "#e8efe0"};font-size:15px;font-weight:${r.isMe ? 700 : 400};">
+                ${escapeHtml(r.name)}${r.level ? `<div style="color:#8a967e;font-size:12px;">${escapeHtml(r.level)}</div>` : ""}
+              </td>
+              <td align="${rtl ? "left" : "right"}" style="padding:8px 0;color:${r.isMe ? "#c6f135" : "#e8efe0"};font-size:15px;font-weight:700;white-space:nowrap;">
+                ${escapeHtml(r.minutes ?? "—")}${r.minutes === null ? "" : `<span style="color:#8a967e;font-weight:400;font-size:12px;"> ${escapeHtml(c.minUnit)}</span>`}
+              </td>
+            </tr>`;
+  const youOutsideTop = input.you && !input.rows.some((r) => r.isMe) ? row(input.you) : "";
+  return `<!doctype html>
+<html${rtl ? ' dir="rtl"' : ""}>
+  <body style="margin:0;background:#070906;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#070906;padding:32px 16px;">
+      <tr><td align="center">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background:#141a11;border:1px solid rgba(255,255,255,0.08);border-radius:20px;overflow:hidden;">
+          <tr><td style="padding:32px 32px 4px;">
+            <div style="display:inline-block;width:36px;height:36px;line-height:36px;text-align:center;background:#c6f135;color:#0a0e0a;font-weight:800;font-size:22px;border-radius:10px;">K</div>
+            <span style="color:#e8efe0;font-size:20px;font-weight:800;vertical-align:middle;margin-${rtl ? "right" : "left"}:8px;">${escapeHtml(input.title)}</span>
+          </td></tr>
+          <tr><td style="padding:8px 32px 0;color:#c6f135;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;">
+            ${escapeHtml(fill(c.heading, values))}
+          </td></tr>
+          <tr><td style="padding:10px 32px 0;color:#e8efe0;font-size:16px;line-height:1.5;">
+            ${escapeHtml(input.you?.minutes ? fill(c.yourRank, values) : fill(c.yourRankNotEntered, values))}
+          </td></tr>
+          <tr><td style="padding:18px 32px 0;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${input.rows.map(row).join("")}${
+              youOutsideTop
+                ? `<tr><td colspan="3" style="padding:4px 0;color:#5a6452;">⋯</td></tr>${youOutsideTop}`
+                : ""
+            }</table>
+          </td></tr>
+          <tr><td style="padding:16px 32px 0;color:#8a967e;font-size:13px;line-height:1.6;">
+            ${escapeHtml(fill(c.group, values))}
+          </td></tr>
+          <tr><td style="padding:20px 32px 32px;">
+            <a href="${escapeHtml(input.url)}" style="display:block;background:#c6f135;color:#0a0e0a;font-size:16px;font-weight:700;text-align:center;text-decoration:none;padding:16px;border-radius:14px;">${escapeHtml(c.cta)}</a>
           </td></tr>
         </table>
         <div style="color:#5a6452;font-size:12px;margin-top:20px;max-width:440px;line-height:1.5;">${escapeHtml(fill(c.optOut, values))}</div>

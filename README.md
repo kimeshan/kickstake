@@ -103,6 +103,8 @@ through the web rewrite) — see Swagger at `/api-docs`.
 | `CHALLENGE_NOW` | API, dev only | Pin challenge server time (ISO instant) to preview later weeks. Ignored in production. |
 | `CHALLENGE_REMINDERS_CRON` | API | Schedule for the reminder job (default `*/15 * * * *`). The job is idempotent, so this only changes how soon a due reminder goes out. |
 | `CHALLENGE_REMINDERS_ENABLED` | API | `false` stops automatic reminders; organiser-sent ones still work. |
+| `CHALLENGE_DIGEST_CRON` | API | Schedule for the leaderboard-digest job (default `*/15 * * * *`). The cadence itself is a per-challenge organiser setting. |
+| `CHALLENGE_DIGEST_ENABLED` | API | `false` stops scheduled digests; "Send leaderboard now" still works. |
 
 **Run it locally**
 
@@ -131,6 +133,17 @@ every 15 minutes and claims each (member, week) before sending, so restarts
 and retries can't email anyone twice, and it stops once entries close. People
 who have already entered, opted out (menu → *Turn off email reminders*) or
 been removed are never emailed.
+
+**Leaderboard emails**
+
+Everyone gets the current leaderboard — their own position, the top of the
+board, and the group's total — on **Thursday and Sunday evenings (18:00
+local)**. That is capped at twice a week by design, and deliberately avoids
+Monday, which is reminder day, so nobody gets two emails at once. Organisers
+choose the cadence per challenge in **Manage → Leaderboard emails** (twice
+weekly / weekly / off) and can send one immediately. Each member can opt out
+separately from reminders (menu → *Turn off leaderboard emails*). Scheduled
+sends are claimed per member and send slot, so the job is safe to re-run.
 
 Organisers can also nudge from **Manage → Reminders**: everyone who is
 missing that week, or one person from their roster card. Manual nudges are

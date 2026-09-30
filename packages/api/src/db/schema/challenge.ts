@@ -19,6 +19,22 @@ import { user } from "./auth";
 // Deliberately separate from the anonymous sweepstake `participant` table —
 // challenge edits are authorised against a Better Auth account.
 
+/**
+ * How often the leaderboard digest goes out. Capped at twice a week by
+ * design — more than that reads as spam for a four-week challenge.
+ */
+export const challengeDigestCadenceEnum = pgEnum("activity_challenge_digest_cadence", [
+  "off",
+  "weekly",
+  "twice_weekly",
+]);
+
+/** How a digest or reminder send was triggered. */
+export const challengeSendTriggerEnum = pgEnum("activity_challenge_send_trigger", [
+  "scheduled",
+  "organiser",
+]);
+
 /** How a weekly reminder was triggered. */
 export const challengeReminderKindEnum = pgEnum("activity_challenge_reminder_kind", [
   "automatic",
@@ -55,6 +71,8 @@ export const activityChallenge = pgTable(
     finalEditCutoff: timestamp("final_edit_cutoff", { withTimezone: true }).notNull(),
     // Pins the scoring ladder so future versions never rewrite history.
     scoringVersion: text("scoring_version").notNull(),
+    // Leaderboard digest schedule, organiser-controlled.
+    digestCadence: challengeDigestCadenceEnum("digest_cadence").notNull().default("twice_weekly"),
     joinToken: text("join_token").notNull(),
     joiningClosed: boolean("joining_closed").notNull().default(false),
     participantEditingLocked: boolean("participant_editing_locked")
@@ -85,8 +103,9 @@ export const activityChallengeMember = pgTable(
     displayName: text("display_name").notNull(),
     // Locale this person last used in the app — reminder emails follow it.
     locale: text("locale").notNull().default("en"),
-    // Per-person opt-out from reminder emails (never blocks sign-in emails).
+    // Per-person opt-outs (neither ever blocks sign-in emails).
     remindersOptOut: boolean("reminders_opt_out").notNull().default(false),
+    digestOptOut: boolean("digest_opt_out").notNull().default(false),
     joinedAt: timestamp("joined_at", { withTimezone: true }).notNull().defaultNow(),
     // Soft removal keeps history; a removed account can't rejoin until restored.
     removedAt: timestamp("removed_at", { withTimezone: true }),
@@ -171,5 +190,31 @@ export const activityChallengeReminder = pgTable(
       .on(r.memberId, r.weekNumber)
       .where(sql`${r.kind} = 'automatic'`),
     index("activity_challenge_reminder_member_idx").on(r.memberId),
+  ],
+);
+
+/**
+ * One row per leaderboard digest sent. `slot` is the local send window it
+ * belongs to (e.g. "2026-10-01T18"), which makes the schedule idempotent:
+ * the job can run every few minutes and each member gets at most one email
+ * per slot. Organiser-triggered sends are recorded but not constrained.
+ */
+export const activityChallengeDigest = pgTable(
+  "activity_challenge_digest",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    memberId: uuid("member_id")
+      .notNull()
+      .references(() => activityChallengeMember.id, { onDelete: "cascade" }),
+    slot: text("slot").notNull(),
+    trigger: challengeSendTriggerEnum("trigger").notNull(),
+    sentBy: text("sent_by").references(() => user.id, { onDelete: "set null" }),
+    sentAt: timestamp("sent_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (d) => [
+    uniqueIndex("activity_challenge_digest_slot_idx")
+      .on(d.memberId, d.slot)
+      .where(sql`${d.trigger} = 'scheduled'`),
+    index("activity_challenge_digest_member_idx").on(d.memberId),
   ],
 );

@@ -80,3 +80,12 @@ export function localeFromCookie(cookieHeader: unknown): string {
   const value = match?.[1] ? decodeURIComponent(match[1]) : "";
   return LOCALES.includes(value) ? value : "en";
 }
+
+export const DIGEST_CADENCES = ["off", "weekly", "twice_weekly"] as const;
+export type DigestCadence = (typeof DIGEST_CADENCES)[number];
+
+export function parseDigestCadence(v: unknown): DigestCadence {
+  if (typeof v !== "string" || !(DIGEST_CADENCES as readonly string[]).includes(v))
+    throw challengeError(400, "invalid_setting", { field: "digestCadence" });
+  return v as DigestCadence;
+}

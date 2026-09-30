@@ -496,6 +496,8 @@
       "rename": "Mudar meu nome",
       "remindersOff": "Desativar lembretes por e-mail",
       "remindersOn": "Ativar lembretes por e-mail",
+      "digestOff": "Desativar e-mails de classificação",
+      "digestOn": "Ativar e-mails de classificação",
       "manage": "Ferramentas do organizador",
       "signOut": "Sair",
       "signedInAs": "Conectado como {name}"
@@ -736,7 +738,18 @@
       "reminderSent": "Lembrete enviado.",
       "lastReminder": "lembrete {time}",
       "optedOut": "lembretes desligados",
-      "optedOutHint": "Esta pessoa desativou os lembretes por e-mail."
+      "optedOutHint": "Esta pessoa desativou os lembretes por e-mail.",
+      "digestTitle": "E-mails de classificação",
+      "digestHint": "Envia a classificação atual para todo mundo. Enviado nas noites de quinta e domingo — nunca mais de duas vezes por semana, e nunca na segunda, quando saem os lembretes.",
+      "digestCadence": "Com que frequência",
+      "digestCadence_twice_weekly": "Duas vezes por semana (qui. + dom.)",
+      "digestCadence_weekly": "Uma vez por semana (dom.)",
+      "digestCadence_off": "Desligado",
+      "digestSendNow": "Enviar classificação agora",
+      "digestLastSent": "Último envio {time}",
+      "digestNeverSent": "Ainda não enviado",
+      "digestSent": "{count, plural, =0 {Nenhum e-mail enviado — todos desativaram.} one {Classificação enviada para # pessoa.} other {Classificação enviada para # pessoas.}}",
+      "digestOptedOut": "classificação desligada"
     },
     "leaderboard": {
       "title": "Classificação",
