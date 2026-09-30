@@ -179,3 +179,30 @@ test("a participant can turn reminder emails off, and the organiser sees it", as
   await expect(card.getByRole("button", { name: /Send reminder/ })).toHaveCount(0);
   await p.ctx.close();
 });
+
+test("organiser controls the leaderboard email cadence and can send it now", async ({ page, browser }) => {
+  const c = await createOwnedChallenge();
+  const p = await participant(browser, c.token, "Board Bea");
+
+  await page.goto(`/challenges/${c.id}/manage`);
+  const digest = page.getByRole("region", { name: "Leaderboard emails" });
+  await expect(digest.getByLabel("How often")).toHaveValue("twice_weekly");
+  await expect(digest.getByText("Not sent yet")).toBeVisible();
+
+  await digest.getByLabel("How often").selectOption("weekly");
+  await expect(digest.getByLabel("How often")).toHaveValue("weekly");
+
+  await digest.getByRole("button", { name: "Send leaderboard now" }).click();
+  await expect(digest.getByText("Leaderboard sent to 1 person.")).toBeVisible();
+  await expect(digest.getByText(/Last sent/)).toBeVisible();
+
+  // A participant can opt out; the roster then shows it.
+  await p.page.getByRole("button", { name: "Open menu" }).click();
+  await p.page.getByRole("menuitem", { name: "Turn off leaderboard emails" }).click();
+  await page.reload();
+  await expect(page.locator("details").filter({ hasText: "Board Bea" })).toContainText("leaderboard off");
+
+  await digest.getByRole("button", { name: "Send leaderboard now" }).click();
+  await expect(digest.getByText("No emails sent — everyone has opted out.")).toBeVisible();
+  await p.ctx.close();
+});

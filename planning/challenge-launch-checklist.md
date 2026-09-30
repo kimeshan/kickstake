@@ -77,6 +77,9 @@ Football host (regression):
       roster shows "reminded …" against the right names.
 - [ ] Tell the group that reminders can be turned off per person in the app
       menu, so nobody feels nagged.
+- [ ] Leaderboard emails: confirm the cadence in Manage → Leaderboard emails
+      (default twice weekly: Wednesday + Sunday, 18:00 SAST). Press "Send
+      leaderboard now" once to see what the group will receive.
 
 ## 5. Spreadsheet transition
 

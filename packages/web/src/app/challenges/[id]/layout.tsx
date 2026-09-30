@@ -99,16 +99,21 @@ export default function ChallengeLayout({ children }: { children: React.ReactNod
   const actions: MenuAction[] = [{ label: t("nav.progress"), href: base }];
   if (detail.role.isMember) {
     actions.push({ label: t("menu.rename"), onClick: () => setRenaming(true) });
+    const toggle = (field: "remindersOptOut" | "digestOptOut", value: boolean) => () => {
+      challengeApi(`/${detail.id}/me`, {
+        method: "PATCH",
+        body: JSON.stringify({ [field]: value }),
+      })
+        .then(load)
+        .catch(() => {});
+    };
     actions.push({
       label: detail.role.remindersOptOut ? t("menu.remindersOn") : t("menu.remindersOff"),
-      onClick: () => {
-        challengeApi(`/${detail.id}/me`, {
-          method: "PATCH",
-          body: JSON.stringify({ remindersOptOut: !detail.role.remindersOptOut }),
-        })
-          .then(load)
-          .catch(() => {});
-      },
+      onClick: toggle("remindersOptOut", !detail.role.remindersOptOut),
+    });
+    actions.push({
+      label: detail.role.digestOptOut ? t("menu.digestOn") : t("menu.digestOff"),
+      onClick: toggle("digestOptOut", !detail.role.digestOptOut),
     });
   }
   if (detail.role.isOwner) actions.push({ label: t("menu.manage"), href: `${base}/manage` });

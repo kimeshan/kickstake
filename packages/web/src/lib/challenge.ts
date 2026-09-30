@@ -58,6 +58,8 @@ export interface Summary {
   enteredWeeks: number;
 }
 
+export type DigestCadence = "off" | "weekly" | "twice_weekly";
+
 export interface ChallengeDetail {
   id: string;
   title: string;
@@ -69,6 +71,7 @@ export interface ChallengeDetail {
   ladder: Rung[];
   joiningClosed: boolean;
   participantEditingLocked: boolean;
+  digestCadence: DigestCadence;
   timing: Timing;
   role: {
     isOwner: boolean;
@@ -76,6 +79,7 @@ export interface ChallengeDetail {
     memberId: string | null;
     displayName: string | null;
     remindersOptOut: boolean;
+    digestOptOut: boolean;
     locale: string | null;
   };
 }
@@ -311,6 +315,7 @@ export interface ManageMember {
   joinedAt: string;
   removedAt: string | null;
   remindersOptOut: boolean;
+  digestOptOut: boolean;
   /** When this person was last nudged (automatic or by the organiser). */
   lastReminderAt: string | null;
   remindedWeeks: number[];
@@ -321,6 +326,8 @@ export interface ManageMember {
 
 export interface ManageView extends Omit<ChallengeDetail, "role"> {
   joinToken: string;
+  /** Last leaderboard digest sent to anyone in this challenge. */
+  lastDigestAt: string | null;
   invitationUrl: string;
   finalEditCutoff: string;
   members: ManageMember[];
@@ -341,6 +348,11 @@ export interface ReminderOutcome {
   memberId: string;
   sent: boolean;
   reason?: "already_entered" | "opted_out" | "not_a_member" | "send_failed" | "already_reminded";
+}
+
+export interface DigestResult {
+  outcomes: { memberId: string; sent: boolean; reason?: string }[];
+  manage: ManageView;
 }
 
 export interface RemindersResult {

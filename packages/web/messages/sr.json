@@ -496,6 +496,8 @@
       "rename": "Promeni moje ime",
       "remindersOff": "Isključi podsetnike mejlom",
       "remindersOn": "Uključi podsetnike mejlom",
+      "digestOff": "Isključi mejlove sa rang-listom",
+      "digestOn": "Uključi mejlove sa rang-listom",
       "manage": "Alati organizatora",
       "signOut": "Odjavi se",
       "signedInAs": "Prijavljeni ste kao {name}"
@@ -736,7 +738,18 @@
       "reminderSent": "Podsetnik poslat.",
       "lastReminder": "podsećen {time}",
       "optedOut": "podsetnici isključeni",
-      "optedOutHint": "Ova osoba je isključila podsetnike mejlom."
+      "optedOutHint": "Ova osoba je isključila podsetnike mejlom.",
+      "digestTitle": "Mejlovi sa rang-listom",
+      "digestHint": "Šalje svima trenutnu rang-listu. Šalje se sredom i nedeljom uveče — najviše dva puta nedeljno i nikad ponedeljkom, kada idu podsetnici.",
+      "digestCadence": "Koliko često",
+      "digestCadence_twice_weekly": "Dvaput nedeljno (sre. + ned.)",
+      "digestCadence_weekly": "Jednom nedeljno (ned.)",
+      "digestCadence_off": "Isključeno",
+      "digestSendNow": "Pošalji rang-listu odmah",
+      "digestLastSent": "Poslednje slanje {time}",
+      "digestNeverSent": "Još nije poslato",
+      "digestSent": "{count, plural, =0 {Nijedan mejl nije poslat — svi su isključili.} one {Rang-lista poslata # osobi.} few {Rang-lista poslata # osobama.} other {Rang-lista poslata # osobama.}}",
+      "digestOptedOut": "rang-lista isključena"
     },
     "leaderboard": {
       "title": "Rang-lista",

@@ -64,6 +64,13 @@
       "when": 1790767088397,
       "tag": "0008_purple_excalibur",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790769319534,
+      "tag": "0009_natural_joystick",
+      "breakpoints": true
     }
   ]
 }

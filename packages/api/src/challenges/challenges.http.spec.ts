@@ -370,6 +370,7 @@ describe("Challenges HTTP", () => {
       memberId: null,
       displayName: null,
       remindersOptOut: false,
+      digestOptOut: false,
       locale: null,
     });
     expect((await owner.agent.get(`/challenges/${c.id}/me`).expect(403)).body.code).toBe("not_a_member");

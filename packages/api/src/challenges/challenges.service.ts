@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 import { db } from "../db";
 import {
   activityChallenge,
+  activityChallengeDigest,
   activityChallengeMember,
   activityChallengeReminder,
   activityChallengeWeek,
@@ -12,6 +13,7 @@ import {
 import { challengeInviteUrl } from "../constants";
 import { ChallengeClock } from "./clock";
 import { challengeError } from "./errors";
+import { ChallengeDigestsService } from "./digests.service";
 import { ChallengeRemindersService } from "./reminders.service";
 import {
   scoringRules,
@@ -20,10 +22,12 @@ import {
   type ScoringRules,
   type WeekResult,
 } from "./scoring";
+import { buildStandings } from "./standings";
 import { challengeTiming, type ChallengeTiming, type WeekWindow } from "./timing";
 import {
   isUuid,
   parseBody,
+  parseDigestCadence,
   parseLocale,
   parseDisplayName,
   parseMinutes,
@@ -52,6 +56,7 @@ export class ChallengesService {
   constructor(
     private readonly clock: ChallengeClock,
     private readonly reminders: ChallengeRemindersService,
+    private readonly digests: ChallengeDigestsService,
   ) {}
 
   // --- Lookups + access -------------------------------------------------
@@ -144,6 +149,7 @@ export class ChallengesService {
       ladder: rules.ladder,
       joiningClosed: c.joiningClosed,
       participantEditingLocked: c.participantEditingLocked,
+      digestCadence: c.digestCadence,
     };
   }
 
@@ -331,6 +337,7 @@ export class ChallengesService {
         memberId: active?.id ?? null,
         displayName: active?.displayName ?? null,
         remindersOptOut: active?.remindersOptOut ?? false,
+        digestOptOut: active?.digestOptOut ?? false,
         locale: active?.locale ?? null,
       },
     };
@@ -355,14 +362,21 @@ export class ChallengesService {
   }
 
   async updateMe(userId: string, challengeId: string, body: unknown) {
-    const input = parseBody(body, ["displayName", "remindersOptOut", "locale"]);
+    const input = parseBody(body, ["displayName", "remindersOptOut", "digestOptOut", "locale"]);
     const { member } = await this.requireMember(userId, challengeId);
-    const patch: Partial<Pick<Member, "displayName" | "remindersOptOut" | "locale">> = {};
+    const patch: Partial<
+      Pick<Member, "displayName" | "remindersOptOut" | "digestOptOut" | "locale">
+    > = {};
     if (input.displayName !== undefined) patch.displayName = parseDisplayName(input.displayName);
     if (input.remindersOptOut !== undefined) {
       if (typeof input.remindersOptOut !== "boolean")
         throw challengeError(400, "invalid_setting", { field: "remindersOptOut" });
       patch.remindersOptOut = input.remindersOptOut;
+    }
+    if (input.digestOptOut !== undefined) {
+      if (typeof input.digestOptOut !== "boolean")
+        throw challengeError(400, "invalid_setting", { field: "digestOptOut" });
+      patch.digestOptOut = input.digestOptOut;
     }
     if (input.locale !== undefined) patch.locale = parseLocale(input.locale);
     if (!Object.keys(patch).length) throw challengeError(400, "invalid_member_update");
@@ -375,11 +389,21 @@ export class ChallengesService {
       memberId: updated.id,
       displayName: updated.displayName,
       remindersOptOut: updated.remindersOptOut,
+      digestOptOut: updated.digestOptOut,
       locale: updated.locale,
     };
   }
 
   /** Owner: nudge one or more people who haven't entered a week's total. */
+  /** Owner: email the current leaderboard to everyone who hasn't opted out. */
+  async sendDigestNow(userId: string, challengeId: string) {
+    const { challenge } = await this.requireOwner(userId, challengeId);
+    const timing = this.timing(challenge);
+    if (timing.phase === "upcoming") throw challengeError(409, "week_not_started");
+    const outcomes = await this.digests.sendNow(challenge, userId);
+    return { outcomes, manage: await this.manage(userId, challengeId) };
+  }
+
   async sendReminders(userId: string, challengeId: string, body: unknown) {
     const input = parseBody(body, ["weekNumber", "memberIds"]);
     const { challenge } = await this.requireOwner(userId, challengeId);
@@ -493,60 +517,18 @@ export class ChallengesService {
 
   private async weekStandings(c: Challenge, weekNumber: number, viewerUserId: string | null) {
     const timing = this.timing(c);
-    const rules = this.rules(c);
     const w = timing.weeks[weekNumber - 1];
     const members = await this.activeMembers(c.id);
     const rows = await this.weeksFor(members.map((m) => m.id));
-    const byMember = new Map<string, WeekRow[]>();
-    for (const r of rows) byMember.set(r.memberId, [...(byMember.get(r.memberId) ?? []), r]);
-
-    const entries = members.map((m) => {
-      const mine = byMember.get(m.id) ?? [];
-      const row = mine.find((r) => r.weekNumber === weekNumber);
-      const minutes = row?.minutes ?? null;
-      const result = weekResult(minutes, rules);
-      const summary = summarise(this.minutesByWeek(c, mine), rules);
-      return {
-        memberId: m.id,
-        displayName: m.displayName,
-        minutes,
-        level: result?.level ?? null,
-        medal: result?.medal ?? null,
-        reachedBaseline: result?.reachedBaseline ?? false,
-        updateSource: row?.updateSource ?? null,
-        successfulWeeks: summary.successfulWeeks,
-        // Whole-challenge total for the overall leaderboard.
-        totalMinutes: summary.totalMinutes,
-        isMe: m.userId === viewerUserId,
-        rank: null as number | null,
-        overallRank: null as number | null,
-      };
+    const { entries, aggregates } = buildStandings({
+      weekNumber,
+      weekCount: c.weekCount,
+      rules: this.rules(c),
+      members,
+      rows,
+      viewerUserId,
     });
-
-    // Overall: by challenge total. Assigned before the weekly sort below,
-    // which fixes the display order.
-    assignRanks(entries, (e) => e.totalMinutes, (e, r) => (e.overallRank = r));
-    // Weekly: entered totals by minutes desc (names only stabilise display
-    // order), then "Not entered" — unranked. Ties share a rank (1, 1, 3).
-    assignRanks(entries, (e) => e.minutes, (e, r) => (e.rank = r));
-
-    const entered = entries.filter((e) => e.minutes !== null);
-    const levelCounts: Record<string, number> = {};
-    for (const rung of rules.ladder) levelCounts[rung.level] = 0;
-    for (const e of entered) levelCounts[e.level!]++;
-    return {
-      week: w,
-      inProgress: w.status === "current",
-      aggregates: {
-        groupMinutes: entered.reduce((s, e) => s + e.minutes!, 0),
-        activeCount: entries.length,
-        atBaselineCount: entered.filter((e) => e.reachedBaseline).length,
-        enteredCount: entered.length,
-        notEnteredCount: entries.length - entered.length,
-        levelCounts,
-      },
-      entries,
-    };
+    return { week: w, inProgress: w.status === "current", aggregates, entries };
   }
 
   private weekQuery(c: Challenge, v: unknown): number {
@@ -588,8 +570,22 @@ export class ChallengesService {
             ),
           )
       : [];
+    const digests = members.length
+      ? await db
+          .select()
+          .from(activityChallengeDigest)
+          .where(
+            inArray(
+              activityChallengeDigest.memberId,
+              members.map((m) => m.id),
+            ),
+          )
+      : [];
+    const lastDigestAt =
+      digests.sort((a, b) => b.sentAt.getTime() - a.sentAt.getTime())[0]?.sentAt ?? null;
     return {
       ...this.config(c),
+      lastDigestAt,
       joinToken: c.joinToken,
       invitationUrl: challengeInviteUrl(c.joinToken),
       finalEditCutoff: c.finalEditCutoff,
@@ -609,6 +605,7 @@ export class ChallengesService {
           joinedAt: m.joinedAt,
           removedAt: m.removedAt,
           remindersOptOut: m.remindersOptOut,
+          digestOptOut: m.digestOptOut,
           lastReminderAt: mineReminders[0]?.sentAt ?? null,
           remindedWeeks: [...new Set(mineReminders.map((r) => r.weekNumber))].sort((a, b) => a - b),
           lastUpdatedAt: updated[0] ?? null,
@@ -627,14 +624,17 @@ export class ChallengesService {
   }
 
   async updateSettings(userId: string, challengeId: string, body: unknown) {
-    const input = parseBody(body, ["joiningClosed", "participantEditingLocked"]);
+    const input = parseBody(body, ["joiningClosed", "participantEditingLocked", "digestCadence"]);
     await this.requireOwner(userId, challengeId);
-    const patch: Partial<Pick<Challenge, "joiningClosed" | "participantEditingLocked">> = {};
+    const patch: Partial<
+      Pick<Challenge, "joiningClosed" | "participantEditingLocked" | "digestCadence">
+    > = {};
     for (const key of ["joiningClosed", "participantEditingLocked"] as const) {
       if (input[key] === undefined) continue;
       if (typeof input[key] !== "boolean") throw challengeError(400, "invalid_setting", { field: key });
       patch[key] = input[key] as boolean;
     }
+    if (input.digestCadence !== undefined) patch.digestCadence = parseDigestCadence(input.digestCadence);
     if (!Object.keys(patch).length) throw challengeError(400, "invalid_setting");
     await db
       .update(activityChallenge)
@@ -759,35 +759,6 @@ export class ChallengesService {
     }
     return lines.map((cols) => cols.map(csvCell).join(",")).join("\r\n") + "\r\n";
   }
-}
-
-const collator = new Intl.Collator("en", { sensitivity: "base" });
-
-/**
- * Sorts `items` by value desc (null last, names break ties for display only)
- * and assigns competition ranks — equal values share a rank (1, 1, 3); null
- * values stay unranked.
- */
-function assignRanks<T extends { displayName: string }>(
-  items: T[],
-  value: (t: T) => number | null,
-  setRank: (t: T, rank: number | null) => void,
-) {
-  items.sort((a, b) => {
-    const va = value(a);
-    const vb = value(b);
-    if (va === null || vb === null)
-      return va === vb ? collator.compare(a.displayName, b.displayName) : va === null ? 1 : -1;
-    return vb - va || collator.compare(a.displayName, b.displayName);
-  });
-  let prev: { value: number; rank: number } | null = null;
-  items.forEach((t, i) => {
-    const v = value(t);
-    if (v === null) return setRank(t, null);
-    const rank = prev && prev.value === v ? prev.rank : i + 1;
-    setRank(t, rank);
-    prev = { value: v, rank };
-  });
 }
 
 /**

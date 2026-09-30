@@ -496,6 +496,8 @@
       "rename": "Changer mon nom",
       "remindersOff": "Désactiver les rappels par e-mail",
       "remindersOn": "Activer les rappels par e-mail",
+      "digestOff": "Désactiver les e-mails de classement",
+      "digestOn": "Activer les e-mails de classement",
       "manage": "Outils de l'organisateur",
       "signOut": "Se déconnecter",
       "signedInAs": "Connecté en tant que {name}"
@@ -736,7 +738,18 @@
       "reminderSent": "Rappel envoyé.",
       "lastReminder": "relancé {time}",
       "optedOut": "rappels désactivés",
-      "optedOutHint": "Cette personne a désactivé les rappels par e-mail."
+      "optedOutHint": "Cette personne a désactivé les rappels par e-mail.",
+      "digestTitle": "E-mails de classement",
+      "digestHint": "Envoie le classement du moment à tout le monde. Envoyé le mercredi et le dimanche en soirée — jamais plus de deux fois par semaine, et jamais le lundi, jour des rappels.",
+      "digestCadence": "Fréquence",
+      "digestCadence_twice_weekly": "Deux fois par semaine (mer. + dim.)",
+      "digestCadence_weekly": "Une fois par semaine (dim.)",
+      "digestCadence_off": "Désactivé",
+      "digestSendNow": "Envoyer le classement maintenant",
+      "digestLastSent": "Dernier envoi {time}",
+      "digestNeverSent": "Jamais envoyé",
+      "digestSent": "{count, plural, =0 {Aucun e-mail envoyé — tout le monde s'est désabonné.} one {Classement envoyé à # personne.} other {Classement envoyé à # personnes.}}",
+      "digestOptedOut": "classement désactivé"
     },
     "leaderboard": {
       "title": "Classement",

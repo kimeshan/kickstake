@@ -496,6 +496,8 @@
       "rename": "Cambiar mi nombre",
       "remindersOff": "Desactivar recordatorios por correo",
       "remindersOn": "Activar recordatorios por correo",
+      "digestOff": "Desactivar correos de clasificación",
+      "digestOn": "Activar correos de clasificación",
       "manage": "Herramientas del organizador",
       "signOut": "Cerrar sesión",
       "signedInAs": "Sesión iniciada como {name}"
@@ -736,7 +738,18 @@
       "reminderSent": "Recordatorio enviado.",
       "lastReminder": "recordado {time}",
       "optedOut": "recordatorios desactivados",
-      "optedOutHint": "Esta persona ha desactivado los recordatorios por correo."
+      "optedOutHint": "Esta persona ha desactivado los recordatorios por correo.",
+      "digestTitle": "Correos de clasificación",
+      "digestHint": "Envía a todos la clasificación actual. Se manda los miércoles y domingos por la tarde: nunca más de dos veces por semana, y nunca los lunes, cuando salen los recordatorios.",
+      "digestCadence": "Frecuencia",
+      "digestCadence_twice_weekly": "Dos veces por semana (mié. y dom.)",
+      "digestCadence_weekly": "Una vez por semana (dom.)",
+      "digestCadence_off": "Desactivado",
+      "digestSendNow": "Enviar clasificación ahora",
+      "digestLastSent": "Último envío {time}",
+      "digestNeverSent": "Aún sin enviar",
+      "digestSent": "{count, plural, =0 {No se envió ningún correo: todos lo han desactivado.} one {Clasificación enviada a # persona.} other {Clasificación enviada a # personas.}}",
+      "digestOptedOut": "clasificación desactivada"
     },
     "leaderboard": {
       "title": "Clasificación",
