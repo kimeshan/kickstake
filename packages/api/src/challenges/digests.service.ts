@@ -21,11 +21,11 @@ type Challenge = typeof activityChallenge.$inferSelect;
 /** Local hour the digest goes out. Evening, so the day's activity counts. */
 const SEND_HOUR = 18;
 /**
- * Thursday (4) and Sunday (7) — roughly every three days, and deliberately
+ * Wednesday (3) and Sunday (7) — roughly every three days, and deliberately
  * NOT Monday, which is when the "you haven't entered" reminder lands.
  * Sunday evening doubles as the last nudge before the week closes.
  */
-const TWICE_WEEKLY_DAYS = [4, 7];
+const TWICE_WEEKLY_DAYS = [3, 7];
 const WEEKLY_DAYS = [7];
 /** How long after a slot the job may still send (covers downtime). */
 const SEND_WINDOW_MS = 6 * 60 * 60 * 1000;

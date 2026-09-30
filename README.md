@@ -137,7 +137,7 @@ been removed are never emailed.
 **Leaderboard emails**
 
 Everyone gets the current leaderboard — their own position, the top of the
-board, and the group's total — on **Thursday and Sunday evenings (18:00
+board, and the group's total — on **Wednesday and Sunday evenings (18:00
 local)**. That is capped at twice a week by design, and deliberately avoids
 Monday, which is reminder day, so nobody gets two emails at once. Organisers
 choose the cadence per challenge in **Manage → Leaderboard emails** (twice

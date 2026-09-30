@@ -10,16 +10,16 @@ import { INITIAL_CHALLENGE } from "./config";
 import { newJoinToken } from "./challenges.service";
 import { ChallengeDigestsService } from "./digests.service";
 
-// Leaderboard digests: schedule (Thu + Sun 18:00 local, at most twice a
+// Leaderboard digests: schedule (Wed + Sun 18:00 local, at most twice a
 // week), opt-out, idempotency, and the organiser's "send now".
 
 type Agent = ReturnType<typeof request.agent>;
 
 // Week 1 of the fixture challenge runs Mon 21 – Sun 27 Sep 2026 (SAST).
-const THU_18_SAST = "2026-09-24T16:00:00Z";
-const THU_19_SAST = "2026-09-24T17:00:00Z";
+const WED_18_SAST = "2026-09-23T16:00:00Z";
+const WED_19_SAST = "2026-09-23T17:00:00Z";
 const SUN_18_SAST = "2026-09-27T16:00:00Z";
-const FRI_18_SAST = "2026-09-25T16:00:00Z";
+const THU_18_SAST = "2026-09-24T16:00:00Z";
 const MON_18_SAST = "2026-09-21T16:00:00Z";
 
 describe("Challenge leaderboard digests", () => {
@@ -43,7 +43,7 @@ describe("Challenge leaderboard digests", () => {
   });
 
   beforeEach(() => {
-    clock.set(THU_18_SAST);
+    clock.set(WED_18_SAST);
     testDigestStore.length = 0;
   });
 
@@ -75,7 +75,7 @@ describe("Challenge leaderboard digests", () => {
 
   const sentTo = (emails: string[]) => testDigestStore.filter((m) => emails.includes(m.to));
 
-  it("sends on Thursday and Sunday evenings — at most twice a week — and never twice per slot", async () => {
+  it("sends on Wednesday and Sunday evenings — at most twice a week — and never twice per slot", async () => {
     const owner = await signIn("owner");
     const c = await createChallenge(owner.userId);
     const a = await signIn("a");
@@ -85,7 +85,7 @@ describe("Challenge leaderboard digests", () => {
     await a.agent.put(`/challenges/${c.id}/me/weeks/1`).send({ minutes: 300, expectedVersion: 0 }).expect(200);
     const mine = [a.email, b.email];
 
-    // Thursday 18:00 local.
+    // Wednesday 18:00 local.
     await digests.sendDueDigests();
     expect(sentTo(mine)).toHaveLength(2);
     const toAma = sentTo([a.email])[0];
@@ -98,12 +98,12 @@ describe("Challenge leaderboard digests", () => {
 
     // Later the same evening (the job runs every 15 minutes): no repeats.
     testDigestStore.length = 0;
-    clock.set(THU_19_SAST);
+    clock.set(WED_19_SAST);
     await digests.sendDueDigests();
     expect(sentTo(mine)).toHaveLength(0);
 
-    // Friday: not a send day.
-    clock.set(FRI_18_SAST);
+    // Thursday: not a send day.
+    clock.set(THU_18_SAST);
     await digests.sendDueDigests();
     expect(sentTo(mine)).toHaveLength(0);
 
@@ -128,7 +128,7 @@ describe("Challenge leaderboard digests", () => {
     await join(w.agent, weekly.joinToken, "Weekly Wes");
     await join(o.agent, off.joinToken, "Off Ope");
 
-    await digests.sendDueDigests(); // Thursday
+    await digests.sendDueDigests(); // Wednesday
     expect(sentTo([w.email, o.email])).toHaveLength(0);
 
     clock.set(SUN_18_SAST);
@@ -195,12 +195,12 @@ describe("Challenge leaderboard digests", () => {
     const p = await signIn("p");
     await join(p.agent, c.joinToken, "Pat");
 
-    clock.set("2026-09-17T16:00:00Z"); // Thursday before the start
+    clock.set("2026-09-16T16:00:00Z"); // Wednesday before the start
     await digests.sendDueDigests();
     expect(sentTo([p.email])).toHaveLength(0);
     await owner.agent.post(`/challenges/${c.id}/digest`).expect(409);
 
-    clock.set("2026-10-22T16:00:00Z"); // Thursday after the final cutoff
+    clock.set("2026-10-21T16:00:00Z"); // Wednesday after the final cutoff
     await digests.sendDueDigests();
     expect(sentTo([p.email])).toHaveLength(0);
   });
