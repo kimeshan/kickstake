@@ -494,6 +494,8 @@
       "open": "Abrir menu",
       "close": "Fechar menu",
       "rename": "Mudar meu nome",
+      "remindersOff": "Desativar lembretes por e-mail",
+      "remindersOn": "Ativar lembretes por e-mail",
       "manage": "Ferramentas do organizador",
       "signOut": "Sair",
       "signedInAs": "Conectado como {name}"
@@ -720,7 +722,21 @@
       "removeYes": "Sim, remover",
       "removedDone": "Removido.",
       "restore": "Restaurar",
-      "restored": "Restaurado."
+      "restored": "Restaurado.",
+      "remindersTitle": "Lembretes",
+      "remindersHint": "Envia um e-mail para quem não registrou o total. Enviado automaticamente na segunda seguinte a cada semana; você também pode enviar agora.",
+      "remindersMissing": "{count, plural, one {# pessoa não registrou esta semana} other {# pessoas não registraram esta semana}}",
+      "remindersNobody": "Todo mundo registrou esta semana. Nada a enviar.",
+      "remindersClosed": "Os registros estão encerrados, então os lembretes estão desligados.",
+      "remindAll": "{count, plural, one {Lembrar # pessoa} other {Lembrar as # pessoas}}",
+      "remindersSending": "Enviando…",
+      "remindersSent": "{count, plural, =0 {Nenhum e-mail enviado — todos já registraram ou desativaram.} one {Lembrete enviado para # pessoa.} other {Lembretes enviados para # pessoas.}}",
+      "remindPerson": "Enviar lembrete da semana {n}",
+      "remindPersonHint": "Só envia se a pessoa ainda não registrou aquela semana.",
+      "reminderSent": "Lembrete enviado.",
+      "lastReminder": "lembrete {time}",
+      "optedOut": "lembretes desligados",
+      "optedOutHint": "Esta pessoa desativou os lembretes por e-mail."
     },
     "leaderboard": {
       "title": "Classificação",

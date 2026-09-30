@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -22,6 +23,7 @@ export default function ChallengeLayout({ children }: { children: React.ReactNod
   const [detail, setDetail] = useState<ChallengeDetail | null>(null);
   const [state, setState] = useState<LoadState>("loading");
   const [renaming, setRenaming] = useState(false);
+  const locale = useLocale();
 
   const [nonce, load] = useReload();
 
@@ -51,6 +53,15 @@ export default function ChallengeLayout({ children }: { children: React.ReactNod
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, nonce, router]);
   useRefreshOnFocus(load);
+
+  // Keep the stored language in step with the app, so reminder emails are
+  // written in the language this person actually uses.
+  const memberLocale = detail?.role.locale ?? null;
+  const memberId = detail?.role.memberId ?? null;
+  useEffect(() => {
+    if (!memberId || !memberLocale || memberLocale === locale) return;
+    challengeApi(`/${id}/me`, { method: "PATCH", body: JSON.stringify({ locale }) }).catch(() => {});
+  }, [id, memberId, memberLocale, locale]);
 
   const base = `/challenges/${id}`;
 
@@ -86,7 +97,20 @@ export default function ChallengeLayout({ children }: { children: React.ReactNod
   }
 
   const actions: MenuAction[] = [{ label: t("nav.progress"), href: base }];
-  if (detail.role.isMember) actions.push({ label: t("menu.rename"), onClick: () => setRenaming(true) });
+  if (detail.role.isMember) {
+    actions.push({ label: t("menu.rename"), onClick: () => setRenaming(true) });
+    actions.push({
+      label: detail.role.remindersOptOut ? t("menu.remindersOn") : t("menu.remindersOff"),
+      onClick: () => {
+        challengeApi(`/${detail.id}/me`, {
+          method: "PATCH",
+          body: JSON.stringify({ remindersOptOut: !detail.role.remindersOptOut }),
+        })
+          .then(load)
+          .catch(() => {});
+      },
+    });
+  }
   if (detail.role.isOwner) actions.push({ label: t("menu.manage"), href: `${base}/manage` });
 
   const tabs = [

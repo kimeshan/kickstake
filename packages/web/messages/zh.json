@@ -494,6 +494,8 @@
       "open": "打开菜单",
       "close": "关闭菜单",
       "rename": "修改我的名字",
+      "remindersOff": "关闭邮件提醒",
+      "remindersOn": "开启邮件提醒",
       "manage": "组织者工具",
       "signOut": "退出登录",
       "signedInAs": "已登录为 {name}"
@@ -720,7 +722,21 @@
       "removeYes": "确定移除",
       "removedDone": "已移除。",
       "restore": "恢复",
-      "restored": "已恢复。"
+      "restored": "已恢复。",
+      "remindersTitle": "提醒",
+      "remindersHint": "向尚未填写总数的人发送邮件。每周结束后的周一自动发送，你也可以现在就发。",
+      "remindersMissing": "{count, plural, other {本周有 # 人尚未填写}}",
+      "remindersNobody": "本周所有人都已填写，无需发送。",
+      "remindersClosed": "填写已截止，提醒已关闭。",
+      "remindAll": "{count, plural, other {提醒全部 # 人}}",
+      "remindersSending": "发送中…",
+      "remindersSent": "{count, plural, =0 {未发送邮件——所有人都已填写或已关闭提醒。} other {已向 # 人发送提醒。}}",
+      "remindPerson": "发送第 {n} 周的提醒",
+      "remindPersonHint": "仅在对方尚未填写该周时发送。",
+      "reminderSent": "提醒已发送。",
+      "lastReminder": "已于 {time} 提醒",
+      "optedOut": "提醒已关闭",
+      "optedOutHint": "此人已关闭邮件提醒。"
     },
     "leaderboard": {
       "title": "排行榜",

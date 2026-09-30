@@ -5,12 +5,14 @@ import { db } from "../db";
 import {
   activityChallenge,
   activityChallengeMember,
+  activityChallengeReminder,
   activityChallengeWeek,
   activityChallengeWeekAudit,
 } from "../db/schema";
 import { challengeInviteUrl } from "../constants";
 import { ChallengeClock } from "./clock";
 import { challengeError } from "./errors";
+import { ChallengeRemindersService } from "./reminders.service";
 import {
   scoringRules,
   summarise,
@@ -22,6 +24,7 @@ import { challengeTiming, type ChallengeTiming, type WeekWindow } from "./timing
 import {
   isUuid,
   parseBody,
+  parseLocale,
   parseDisplayName,
   parseMinutes,
   parseReason,
@@ -46,7 +49,10 @@ interface Access {
 
 @Injectable()
 export class ChallengesService {
-  constructor(private readonly clock: ChallengeClock) {}
+  constructor(
+    private readonly clock: ChallengeClock,
+    private readonly reminders: ChallengeRemindersService,
+  ) {}
 
   // --- Lookups + access -------------------------------------------------
 
@@ -231,7 +237,7 @@ export class ChallengesService {
    * week rows per account, however many times (or how concurrently) Join is
    * pressed. An existing active member just gets their membership back.
    */
-  async join(userId: string, token: string, body: unknown) {
+  async join(userId: string, token: string, body: unknown, locale = "en") {
     const input = parseBody(body, ["displayName"]);
     const displayName = parseDisplayName(input.displayName);
     const c = await this.challengeByToken(token);
@@ -250,7 +256,7 @@ export class ChallengesService {
       // to commit, so the loser sees nothing here and falls through to re-read.
       const [m] = await tx
         .insert(activityChallengeMember)
-        .values({ challengeId: c.id, userId, displayName })
+        .values({ challengeId: c.id, userId, displayName, locale })
         .onConflictDoNothing({
           target: [activityChallengeMember.challengeId, activityChallengeMember.userId],
         })
@@ -324,6 +330,8 @@ export class ChallengesService {
         isMember: !!active,
         memberId: active?.id ?? null,
         displayName: active?.displayName ?? null,
+        remindersOptOut: active?.remindersOptOut ?? false,
+        locale: active?.locale ?? null,
       },
     };
   }
@@ -347,15 +355,51 @@ export class ChallengesService {
   }
 
   async updateMe(userId: string, challengeId: string, body: unknown) {
-    const input = parseBody(body, ["displayName"]);
-    const displayName = parseDisplayName(input.displayName);
+    const input = parseBody(body, ["displayName", "remindersOptOut", "locale"]);
     const { member } = await this.requireMember(userId, challengeId);
+    const patch: Partial<Pick<Member, "displayName" | "remindersOptOut" | "locale">> = {};
+    if (input.displayName !== undefined) patch.displayName = parseDisplayName(input.displayName);
+    if (input.remindersOptOut !== undefined) {
+      if (typeof input.remindersOptOut !== "boolean")
+        throw challengeError(400, "invalid_setting", { field: "remindersOptOut" });
+      patch.remindersOptOut = input.remindersOptOut;
+    }
+    if (input.locale !== undefined) patch.locale = parseLocale(input.locale);
+    if (!Object.keys(patch).length) throw challengeError(400, "invalid_member_update");
     const [updated] = await db
       .update(activityChallengeMember)
-      .set({ displayName })
+      .set(patch)
       .where(eq(activityChallengeMember.id, member.id))
       .returning();
-    return { memberId: updated.id, displayName: updated.displayName };
+    return {
+      memberId: updated.id,
+      displayName: updated.displayName,
+      remindersOptOut: updated.remindersOptOut,
+      locale: updated.locale,
+    };
+  }
+
+  /** Owner: nudge one or more people who haven't entered a week's total. */
+  async sendReminders(userId: string, challengeId: string, body: unknown) {
+    const input = parseBody(body, ["weekNumber", "memberIds"]);
+    const { challenge } = await this.requireOwner(userId, challengeId);
+    const weekNumber = parseWeek(
+      typeof input.weekNumber === "number" ? String(input.weekNumber) : input.weekNumber,
+      challenge.weekCount,
+    );
+    if (!Array.isArray(input.memberIds) || input.memberIds.length === 0 || input.memberIds.length > 100)
+      throw challengeError(400, "invalid_member_update");
+    const memberIds = input.memberIds.map((id) => {
+      if (typeof id !== "string" || !isUuid(id)) throw challengeError(400, "invalid_member_update");
+      return id;
+    });
+    const timing = this.timing(challenge);
+    if (timing.weeks[weekNumber - 1].status === "future")
+      throw challengeError(409, "week_not_started");
+    if (!timing.beforeCutoff) throw challengeError(409, "editing_closed");
+
+    const outcomes = await this.reminders.sendManual(challenge, weekNumber, memberIds);
+    return { weekNumber, outcomes, manage: await this.manage(userId, challengeId) };
   }
 
   async saveMyWeek(userId: string, challengeId: string, weekParam: string, body: unknown) {
@@ -533,6 +577,17 @@ export class ChallengesService {
       .where(eq(activityChallengeMember.challengeId, c.id))
       .orderBy(asc(activityChallengeMember.joinedAt));
     const rows = await this.weeksFor(members.map((m) => m.id));
+    const reminders = members.length
+      ? await db
+          .select()
+          .from(activityChallengeReminder)
+          .where(
+            inArray(
+              activityChallengeReminder.memberId,
+              members.map((m) => m.id),
+            ),
+          )
+      : [];
     return {
       ...this.config(c),
       joinToken: c.joinToken,
@@ -545,11 +600,17 @@ export class ChallengesService {
           .map((r) => r.updatedAt)
           .filter((d): d is Date => !!d)
           .sort((a, b) => b.getTime() - a.getTime());
+        const mineReminders = reminders
+          .filter((r) => r.memberId === m.id)
+          .sort((a, b) => b.sentAt.getTime() - a.sentAt.getTime());
         return {
           memberId: m.id,
           displayName: m.displayName,
           joinedAt: m.joinedAt,
           removedAt: m.removedAt,
+          remindersOptOut: m.remindersOptOut,
+          lastReminderAt: mineReminders[0]?.sentAt ?? null,
+          remindedWeeks: [...new Set(mineReminders.map((r) => r.weekNumber))].sort((a, b) => a - b),
           lastUpdatedAt: updated[0] ?? null,
           weeks: mine.map((r) => ({
             weekNumber: r.weekNumber,

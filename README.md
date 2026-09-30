@@ -101,6 +101,8 @@ through the web rewrite) — see Swagger at `/api-docs`.
 | `CORS_ORIGIN` | API | Must include the challenge origin alongside the football one (exact origins, comma-separated). Also drives Better Auth trusted origins and the challenge CSRF origin check. |
 | `NEXT_PUBLIC_CHALLENGE_APP_URL` | Web (build arg) | Exact host for the `/` → `/challenges` rewrite + challenge metadata. Unset locally. |
 | `CHALLENGE_NOW` | API, dev only | Pin challenge server time (ISO instant) to preview later weeks. Ignored in production. |
+| `CHALLENGE_REMINDERS_CRON` | API | Schedule for the reminder job (default `*/15 * * * *`). The job is idempotent, so this only changes how soon a due reminder goes out. |
+| `CHALLENGE_REMINDERS_ENABLED` | API | `false` stops automatic reminders; organiser-sent ones still work. |
 
 **Run it locally**
 
@@ -118,6 +120,22 @@ pnpm --filter @kickstake/api db:challenge:bootstrap --organiser-email you@exampl
 The bootstrap command is explicit and idempotent: it never runs on deploy,
 never grants ownership to "whoever registered first", refuses to reassign an
 existing challenge and fails clearly if the organiser account doesn't exist.
+
+**Reminder emails**
+
+People who haven't entered a week's total get one email per week, in the
+language they use the app in. It goes out at the week's reporting time (the
+following Monday, 12:00 local) — or six hours before the final cutoff for the
+last week, since that week's reporting time *is* the cutoff. The job runs
+every 15 minutes and claims each (member, week) before sending, so restarts
+and retries can't email anyone twice, and it stops once entries close. People
+who have already entered, opted out (menu → *Turn off email reminders*) or
+been removed are never emailed.
+
+Organisers can also nudge from **Manage → Reminders**: everyone who is
+missing that week, or one person from their roster card. Manual nudges are
+repeatable and still skip people who entered or opted out. Sending needs
+`RESEND_API_KEY`; without it the email is logged to the API console.
 
 See [`planning/challenge-launch-checklist.md`](./planning/challenge-launch-checklist.md)
 for the Render/DNS launch steps.

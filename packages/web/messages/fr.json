@@ -494,6 +494,8 @@
       "open": "Ouvrir le menu",
       "close": "Fermer le menu",
       "rename": "Changer mon nom",
+      "remindersOff": "Désactiver les rappels par e-mail",
+      "remindersOn": "Activer les rappels par e-mail",
       "manage": "Outils de l'organisateur",
       "signOut": "Se déconnecter",
       "signedInAs": "Connecté en tant que {name}"
@@ -720,7 +722,21 @@
       "removeYes": "Oui, retirer",
       "removedDone": "Retiré.",
       "restore": "Réintégrer",
-      "restored": "Réintégré."
+      "restored": "Réintégré.",
+      "remindersTitle": "Rappels",
+      "remindersHint": "Envoie un e-mail aux personnes qui n'ont pas saisi leur total. Envoyé automatiquement le lundi suivant chaque semaine ; vous pouvez aussi en envoyer un maintenant.",
+      "remindersMissing": "{count, plural, one {# personne n'a pas saisi cette semaine} other {# personnes n'ont pas saisi cette semaine}}",
+      "remindersNobody": "Tout le monde a saisi cette semaine. Rien à envoyer.",
+      "remindersClosed": "Les saisies sont fermées, les rappels sont donc désactivés.",
+      "remindAll": "{count, plural, one {Relancer # personne} other {Relancer les # personnes}}",
+      "remindersSending": "Envoi…",
+      "remindersSent": "{count, plural, =0 {Aucun e-mail envoyé — tout le monde avait saisi ou s'est désabonné.} one {Rappel envoyé à # personne.} other {Rappels envoyés à # personnes.}}",
+      "remindPerson": "Envoyer un rappel pour la semaine {n}",
+      "remindPersonHint": "Envoyé seulement si cette semaine n'est pas encore saisie.",
+      "reminderSent": "Rappel envoyé.",
+      "lastReminder": "relancé {time}",
+      "optedOut": "rappels désactivés",
+      "optedOutHint": "Cette personne a désactivé les rappels par e-mail."
     },
     "leaderboard": {
       "title": "Classement",

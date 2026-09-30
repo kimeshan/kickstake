@@ -14,6 +14,7 @@ import {
   parseMinutesInput,
   type ManageMember,
   type ManageView,
+  type RemindersResult,
   type WeekSummary,
 } from "@/lib/challenge";
 import { apiUrl } from "@/lib/api";
@@ -74,6 +75,7 @@ export default function ManagePage() {
         <div className="space-y-4">
           <InvitationCard view={view} onChange={onChange} />
           <SettingsCard view={view} onChange={onChange} />
+          <RemindersCard view={view} onChange={onChange} />
           <SummaryCard view={view} />
           <section className={card} aria-labelledby="export-h">
             <h2 id="export-h" className={heading}>
@@ -261,6 +263,77 @@ function SettingsCard({ view, onChange }: { view: ManageView; onChange: (v: Mana
   );
 }
 
+/** Who still owes a total for `week`, and who can be emailed about it. */
+function missingFor(view: ManageView, week: number) {
+  return view.members.filter(
+    (m) =>
+      !m.removedAt &&
+      !m.remindersOptOut &&
+      (m.weeks.find((w) => w.weekNumber === week)?.minutes ?? null) === null,
+  );
+}
+
+function RemindersCard({ view, onChange }: { view: ManageView; onChange: (v: ManageView) => void }) {
+  const t = useTranslations("challenge.manage");
+  const te = useTranslations("challenge.errors");
+  // Default to the most recent week that has started — the one people owe.
+  const started = view.timing.weeks.filter((w) => w.status !== "future");
+  const [week, setWeek] = useState(started.length ? started[started.length - 1].weekNumber : 1);
+  const [pending, setPending] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const missing = missingFor(view, week);
+  const closed = !view.timing.beforeCutoff;
+
+  async function send(memberIds: string[]) {
+    setPending(true);
+    setMessage(null);
+    try {
+      const r = await challengeApi<RemindersResult>(`/${view.id}/reminders`, {
+        method: "POST",
+        body: JSON.stringify({ weekNumber: week, memberIds }),
+      });
+      onChange(r.manage);
+      setMessage(t("remindersSent", { count: r.outcomes.filter((o) => o.sent).length }));
+    } catch (e) {
+      setMessage(te(errorKey(e)));
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <section className={card} aria-labelledby="reminders-h">
+      <h2 id="reminders-h" className={heading}>
+        {t("remindersTitle")}
+      </h2>
+      <p className="mb-3 text-sm text-muted-foreground">{t("remindersHint")}</p>
+      <WeekPicker weeks={view.timing.weeks} value={week} onChange={setWeek} />
+      <p className="mt-3 text-sm">
+        {closed
+          ? t("remindersClosed")
+          : missing.length === 0
+            ? t("remindersNobody")
+            : t("remindersMissing", { count: missing.length })}
+      </p>
+      {missing.length > 0 && !closed && (
+        <button
+          type="button"
+          className={cn(btnPrimary, "mt-2")}
+          disabled={pending}
+          onClick={() => send(missing.map((m) => m.memberId))}
+        >
+          {pending ? t("remindersSending") : t("remindAll", { count: missing.length })}
+        </button>
+      )}
+      {message && (
+        <p role="status" className="mt-2 text-sm text-primary">
+          {message}
+        </p>
+      )}
+    </section>
+  );
+}
+
 function SummaryCard({ view }: { view: ManageView }) {
   const t = useTranslations("challenge.manage");
   const tc = useTranslations("challenge");
@@ -369,11 +442,17 @@ function MemberCard({
   const parsed = parseMinutesInput(minutes);
   const removed = !!member.removedAt;
 
-  async function call(path: string, method: string, body: unknown, ok: string) {
+  async function call(
+    path: string,
+    method: string,
+    body: unknown,
+    ok: string,
+    unwrap: (response: ManageView) => ManageView = (r) => r,
+  ) {
     setPending(true);
     setMessage(null);
     try {
-      onChange(await challengeApi<ManageView>(path, { method, body: JSON.stringify(body) }));
+      onChange(unwrap(await challengeApi<ManageView>(path, { method, body: JSON.stringify(body) })));
       setMessage({ tone: "ok", text: ok });
       return true;
     } catch (e) {
@@ -440,6 +519,9 @@ function MemberCard({
             {member.lastUpdatedAt
               ? t("lastUpdate", { time: formatInstant(member.lastUpdatedAt, locale, view.timeZone) })
               : t("neverUpdated")}
+            {member.lastReminderAt &&
+              ` · ${t("lastReminder", { time: formatInstant(member.lastReminderAt, locale, view.timeZone) })}`}
+            {member.remindersOptOut && ` · ${t("optedOut")}`}
           </div>
         </div>
         <span aria-hidden className="text-muted-foreground transition group-open:rotate-180">
@@ -523,6 +605,31 @@ function MemberCard({
               </button>
             </div>
           </form>
+        )}
+
+        {!removed && !member.remindersOptOut && view.timing.beforeCutoff && (
+          <div className="space-y-1">
+            <button
+              type="button"
+              className={btn}
+              disabled={pending || !started.length}
+              onClick={() =>
+                call(
+                  `/${view.id}/reminders`,
+                  "POST",
+                  { weekNumber: week, memberIds: [member.memberId] },
+                  t("reminderSent"),
+                  (r) => (r as unknown as RemindersResult).manage,
+                )
+              }
+            >
+              {t("remindPerson", { n: week })}
+            </button>
+            <p className="text-xs text-muted-foreground">{t("remindPersonHint")}</p>
+          </div>
+        )}
+        {member.remindersOptOut && !removed && (
+          <p className="text-xs text-muted-foreground">{t("optedOutHint")}</p>
         )}
 
         {removed ? (

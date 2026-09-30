@@ -63,3 +63,20 @@ export function parseReason(v: unknown): string {
   if (!reason || reason.length > REASON_MAX) throw challengeError(400, "reason_required");
   return reason;
 }
+
+/** The nine locales the web app ships; anything else falls back to English. */
+export const LOCALES = ["en", "es", "fr", "zh", "hi", "ar", "pt", "ru", "sr"];
+
+export function parseLocale(v: unknown): string {
+  if (typeof v !== "string" || !LOCALES.includes(v))
+    throw challengeError(400, "invalid_setting", { field: "locale" });
+  return v;
+}
+
+/** Best-effort locale from the web app's NEXT_LOCALE cookie. */
+export function localeFromCookie(cookieHeader: unknown): string {
+  if (typeof cookieHeader !== "string") return "en";
+  const match = /(?:^|;\s*)NEXT_LOCALE=([^;]+)/.exec(cookieHeader);
+  const value = match?.[1] ? decodeURIComponent(match[1]) : "";
+  return LOCALES.includes(value) ? value : "en";
+}

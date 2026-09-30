@@ -75,6 +75,8 @@ export interface ChallengeDetail {
     isMember: boolean;
     memberId: string | null;
     displayName: string | null;
+    remindersOptOut: boolean;
+    locale: string | null;
   };
 }
 
@@ -308,6 +310,10 @@ export interface ManageMember {
   displayName: string;
   joinedAt: string;
   removedAt: string | null;
+  remindersOptOut: boolean;
+  /** When this person was last nudged (automatic or by the organiser). */
+  lastReminderAt: string | null;
+  remindedWeeks: number[];
   lastUpdatedAt: string | null;
   weeks: ManageWeek[];
   summary: Summary;
@@ -329,6 +335,18 @@ export interface WeekSummary extends Aggregates {
   startDate: string;
   endDate: string;
   inProgress: boolean;
+}
+
+export interface ReminderOutcome {
+  memberId: string;
+  sent: boolean;
+  reason?: "already_entered" | "opted_out" | "not_a_member" | "send_failed" | "already_reminded";
+}
+
+export interface RemindersResult {
+  weekNumber: number;
+  outcomes: ReminderOutcome[];
+  manage: ManageView;
 }
 
 /** Copies text; falls back to a hidden textarea where the async API is unavailable. */
