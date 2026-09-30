@@ -24,11 +24,8 @@ export async function demoChallenge() {
 export const uniqueEmail = (label: string) =>
   `e2e-ch-${label}-${Date.now()}-${Math.floor(Math.random() * 1e6)}@kickstake.dev`;
 
-/** Completes the real email-code form on the current page, reading the OTP from the DB. */
-export async function completeOtp(page: Page, email: string) {
-  await page.getByPlaceholder("you@email.com").fill(email);
-  await page.getByRole("button", { name: "Send me a code" }).click();
-  await expect(page.getByText("Check your inbox")).toBeVisible();
+/** Polls for the most recent sign-in code issued to `email`. */
+export async function readOtp(email: string) {
   let otp = "";
   await expect
     .poll(async () => {
@@ -40,6 +37,15 @@ export async function completeOtp(page: Page, email: string) {
       return otp.length;
     })
     .toBe(6);
+  return otp;
+}
+
+/** Completes the real email-code form on the current page, reading the OTP from the DB. */
+export async function completeOtp(page: Page, email: string) {
+  await page.getByPlaceholder("you@email.com").fill(email);
+  await page.getByRole("button", { name: "Send me a code" }).click();
+  await expect(page.getByText("Check your inbox")).toBeVisible();
+  const otp = await readOtp(email);
   await page.getByPlaceholder("••••••").fill(otp);
   await page.getByRole("button", { name: /Verify/ }).click();
 }
