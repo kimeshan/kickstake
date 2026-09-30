@@ -2,6 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import {
   completeOtp,
   demoChallenge,
+  readOtp,
   expectNoHorizontalOverflow,
   uniqueEmail,
 } from "./challenge-helpers";
@@ -193,4 +194,44 @@ test("progress page shows the level scale and a leaderboard of everyone", async 
   const overall = page.getByRole("list", { name: "Overall" });
   await expect(overall.getByRole("listitem").filter({ hasText: "You" })).toContainText("260");
   await expectNoHorizontalOverflow(page);
+});
+
+test("sign-in survives leaving for the mail app (tab discarded and reloaded)", async ({ page }) => {
+  const { id, token } = await demoChallenge();
+  const email = uniqueEmail("switch");
+  await page.goto(`/challenges/join/${token}`);
+  await page.getByPlaceholder("you@email.com").fill(email);
+  await page.getByRole("button", { name: "Send me a code" }).click();
+  await expect(page.getByText("Check your inbox")).toBeVisible();
+
+  // Switching to Gmail can make mobile Chrome discard and reload the tab.
+  await page.reload();
+  await expect(page.getByText("Check your inbox")).toBeVisible();
+  await expect(page.getByText(email)).toBeVisible();
+
+  // The emailed code still works after the reload.
+  const otp = await readOtp(email);
+  await page.getByPlaceholder("••••••").fill(otp);
+  await page.getByRole("button", { name: /Verify/ }).click();
+  await page.getByLabel("Your name in the group").fill("Switcher Sue");
+  await page.getByRole("button", { name: "Join challenge" }).click();
+  await expect(page).toHaveURL(new RegExp(`/challenges/${id}$`));
+
+  // Signing in clears the pending state: a fresh visit starts at step one.
+  await page.goto(`/login`);
+  await expect(page.getByText("Check your inbox")).toHaveCount(0);
+});
+
+test("a stale pending sign-in expires instead of stranding you on the code step", async ({ page }) => {
+  await page.goto("/login");
+  await page.evaluate(() => {
+    const elevenMinutesAgo = Date.now() - 11 * 60 * 1000;
+    localStorage.setItem(
+      "kickstake.pending-signin",
+      JSON.stringify({ email: "stale@kickstake.dev", sentAt: elevenMinutesAgo }),
+    );
+  });
+  await page.reload();
+  await expect(page.getByPlaceholder("you@email.com")).toBeVisible();
+  await expect(page.getByText("Check your inbox")).toHaveCount(0);
 });

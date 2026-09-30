@@ -1,9 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
 import { signIn, emailOtp } from "@/lib/auth-client";
 import { Input } from "@/components/ui/input";
+import {
+  clearPendingSignin,
+  pendingSigninSnapshot,
+  readPendingSignin,
+  savePendingSignin,
+  subscribePendingSignin,
+} from "@/lib/pending-signin";
 
 /**
  * The email → 6-digit code sign-in steps (Better Auth email OTP). Shared by
@@ -19,8 +26,20 @@ export function EmailOtpForm({
   emailSub?: string;
 }) {
   const t = useTranslations("auth");
-  const [step, setStep] = useState<"email" | "code">("email");
-  const [email, setEmail] = useState("");
+  // A code we already emailed (survives the tab being discarded while the
+  // person fetches it from their mail app). Null on the server, so the email
+  // step renders first and the code step appears after hydration.
+  const stored = useSyncExternalStore(
+    subscribePendingSignin,
+    pendingSigninSnapshot,
+    () => null,
+  );
+  const pending = readPendingSignin(stored);
+  // Local edits take precedence over the stored value.
+  const [draft, setDraft] = useState<{ step: "email" | "code"; email: string } | null>(null);
+  const step = draft?.step ?? (pending ? "code" : "email");
+  const email = draft?.email ?? pending?.email ?? "";
+  const setEmail = (value: string) => setDraft({ step: "email", email: value });
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +55,8 @@ export function EmailOtpForm({
     setLoading(false);
     if (error) return setError(error.message ?? t("errSend"));
     setCode("");
-    setStep("code");
+    savePendingSignin(email.trim());
+    setDraft({ step: "code", email: email.trim() });
   }
 
   async function verify(e: React.FormEvent) {
@@ -46,6 +66,8 @@ export function EmailOtpForm({
     const { error } = await signIn.emailOtp({ email: email.trim(), otp: code });
     setLoading(false);
     if (error) return setError(error.message ?? t("errVerify"));
+    clearPendingSignin();
+    setDraft(null);
     onSignedIn();
   }
 
@@ -123,7 +145,8 @@ export function EmailOtpForm({
             <button
               type="button"
               onClick={() => {
-                setStep("email");
+                clearPendingSignin();
+                setDraft({ step: "email", email: "" });
                 setError(null);
               }}
               className="min-h-11 text-muted-foreground transition hover:text-foreground"
